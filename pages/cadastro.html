@@ -1,0 +1,481 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#123d2b">
+
+    <title>Criar conta | SoloSmart</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #f4f8f4;
+            color: #1c2c23;
+            min-height: 100vh;
+        }
+
+        header {
+            background: #fff;
+            border-bottom: 1px solid #e6ede7;
+            padding: 18px 5%;
+        }
+
+        .logo {
+            color: #123d2b;
+            font-family: 'Manrope', sans-serif;
+            font-size: 23px;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .logo span {
+            margin-right: 8px;
+        }
+
+        .container {
+            width: min(680px, 92%);
+            margin: 45px auto;
+        }
+
+        .card {
+            background: #fff;
+            padding: 35px;
+            border-radius: 18px;
+            border: 1px solid #e6ede7;
+            box-shadow: 0 12px 35px rgba(18,61,43,.07);
+        }
+
+        h1 {
+            font-family: 'Manrope', sans-serif;
+            color: #123d2b;
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .intro {
+            color: #718078;
+            font-size: 14px;
+            margin-bottom: 30px;
+            line-height: 1.7;
+        }
+
+        h2 {
+            color: #176b45;
+            font-size: 16px;
+            margin: 25px 0 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e6ede7;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            margin-bottom: 15px;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #34483b;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #dce6dd;
+            border-radius: 9px;
+            background: #fff;
+            font: inherit;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: #176b45;
+            box-shadow: 0 0 0 3px rgba(23,107,69,.09);
+        }
+
+        .hint {
+            font-size: 11px;
+            color: #718078;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #176b45;
+            color: white;
+            border: none;
+            border-radius: 9px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background: #123d2b;
+        }
+
+        button:disabled {
+            opacity: .6;
+            cursor: wait;
+        }
+
+        .message {
+            display: none;
+            padding: 14px;
+            margin-top: 18px;
+            border-radius: 9px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .message.success {
+            display: block;
+            background: #e9f5ed;
+            color: #176b45;
+        }
+
+        .message.error {
+            display: block;
+            background: #fff0ef;
+            color: #a52c25;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 22px;
+            font-size: 13px;
+            color: #718078;
+        }
+
+        .footer a {
+            color: #176b45;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .notice {
+            font-size: 12px;
+            color: #718078;
+            line-height: 1.6;
+            margin-top: 18px;
+        }
+
+        @media (max-width: 560px) {
+            .card {
+                padding: 23px 18px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .full {
+                grid-column: auto;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <a class="logo" href="../index.html">
+        <span>🌱</span>SoloSmart
+    </a>
+</header>
+
+<main class="container">
+
+    <div class="card">
+
+        <h1>Crie sua conta</h1>
+
+        <p class="intro">
+            Cadastre sua empresa e o responsável pela administração
+            da conta no SoloSmart.
+        </p>
+
+        <form id="cadastroForm">
+
+            <h2>Dados da empresa</h2>
+
+            <div class="grid">
+
+                <div class="field full">
+                    <label for="nomeEmpresa">Nome da empresa *</label>
+                    <input
+                        id="nomeEmpresa"
+                        type="text"
+                        maxlength="150"
+                        required
+                        placeholder="Nome da empresa"
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="cnpj">CNPJ</label>
+                    <input
+                        id="cnpj"
+                        type="text"
+                        inputmode="numeric"
+                        maxlength="18"
+                        placeholder="00.000.000/0000-00"
+                    >
+                    <span class="hint">Opcional nesta etapa.</span>
+                </div>
+
+                <div class="field">
+                    <label for="emailEmpresa">E-mail da empresa *</label>
+                    <input
+                        id="emailEmpresa"
+                        type="email"
+                        maxlength="150"
+                        required
+                        placeholder="contato@empresa.com.br"
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="telefone">Telefone</label>
+                    <input
+                        id="telefone"
+                        type="tel"
+                        maxlength="30"
+                        placeholder="(00) 00000-0000"
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="cidade">Cidade</label>
+                    <input
+                        id="cidade"
+                        type="text"
+                        maxlength="100"
+                        placeholder="Cidade"
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="estado">Estado</label>
+                    <select id="estado">
+                        <option value="">Selecione</option>
+                        <option value="AC">Acre</option>
+                        <option value="AL">Alagoas</option>
+                        <option value="AP">Amapá</option>
+                        <option value="AM">Amazonas</option>
+                        <option value="BA">Bahia</option>
+                        <option value="CE">Ceará</option>
+                        <option value="DF">Distrito Federal</option>
+                        <option value="ES">Espírito Santo</option>
+                        <option value="GO">Goiás</option>
+                        <option value="MA">Maranhão</option>
+                        <option value="MT">Mato Grosso</option>
+                        <option value="MS">Mato Grosso do Sul</option>
+                        <option value="MG">Minas Gerais</option>
+                        <option value="PA">Pará</option>
+                        <option value="PB">Paraíba</option>
+                        <option value="PR">Paraná</option>
+                        <option value="PE">Pernambuco</option>
+                        <option value="PI">Piauí</option>
+                        <option value="RJ">Rio de Janeiro</option>
+                        <option value="RN">Rio Grande do Norte</option>
+                        <option value="RS">Rio Grande do Sul</option>
+                        <option value="RO">Rondônia</option>
+                        <option value="RR">Roraima</option>
+                        <option value="SC">Santa Catarina</option>
+                        <option value="SP">São Paulo</option>
+                        <option value="SE">Sergipe</option>
+                        <option value="TO">Tocantins</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <h2>Responsável pela conta</h2>
+
+            <div class="grid">
+
+                <div class="field full">
+                    <label for="nomeResponsavel">Nome completo *</label>
+                    <input
+                        id="nomeResponsavel"
+                        type="text"
+                        maxlength="150"
+                        required
+                        placeholder="Nome do responsável"
+                    >
+                </div>
+
+                <div class="field full">
+                    <label for="emailResponsavel">E-mail do responsável *</label>
+                    <input
+                        id="emailResponsavel"
+                        type="email"
+                        maxlength="150"
+                        required
+                        placeholder="seuemail@exemplo.com"
+                    >
+                </div>
+
+            </div>
+
+            <button type="submit" id="btnEnviar">
+                Enviar cadastro
+            </button>
+
+            <div id="mensagem" class="message" role="status" aria-live="polite"></div>
+
+            <p class="notice">
+                O envio registra os dados para análise inicial.
+                Ainda não cria uma senha nem libera acesso ao sistema.
+            </p>
+
+        </form>
+
+        <iframe
+            name="respostaCadastro"
+            id="respostaCadastro"
+            title="Resposta do cadastro"
+            style="display:none"
+        ></iframe>
+
+    </div>
+
+    <div class="footer">
+        Já possui uma conta?
+        <a href="login.html">Entrar</a>
+        <br><br>
+        <a href="../index.html">Voltar para o início</a>
+    </div>
+
+</main>
+
+<script>
+    const API_URL =
+        "https://script.google.com/macros/s/AKfycbza7aTvU6tcodaFJ7cscc_5hNMirRX3K79Bv2yyJYmz2QKi-3uyIKc_yCvrNmrYJ9nZ/exec";
+
+    const formulario = document.getElementById("cadastroForm");
+    const botao = document.getElementById("btnEnviar");
+    const mensagem = document.getElementById("mensagem");
+
+    let formularioEnviado = false;
+
+    function mostrarMensagem(texto, tipo) {
+        mensagem.textContent = texto;
+        mensagem.className = "message " + tipo;
+    }
+
+    document.getElementById("cnpj").addEventListener("input", function () {
+        let valor = this.value.replace(/\D/g, "").slice(0, 14);
+
+        valor = valor.replace(/^(\d{2})(\d)/, "$1.$2");
+        valor = valor.replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3");
+        valor = valor.replace(/\.(\d{3})(\d)/, ".$1/$2");
+        valor = valor.replace(/(\d{4})(\d)/, "$1-$2");
+
+        this.value = valor;
+    });
+
+    formulario.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        if (!formulario.reportValidity()) return;
+
+        if (formularioEnviado) return;
+
+        const dados = {
+            empresa: {
+                nome: document.getElementById("nomeEmpresa").value.trim(),
+                cnpj: document.getElementById("cnpj").value.trim(),
+                email: document.getElementById("emailEmpresa").value.trim(),
+                telefone: document.getElementById("telefone").value.trim(),
+                cidade: document.getElementById("cidade").value.trim(),
+                estado: document.getElementById("estado").value
+            },
+            responsavel: {
+                nome: document.getElementById("nomeResponsavel").value.trim(),
+                email: document.getElementById("emailResponsavel").value.trim()
+            }
+        };
+
+        const envio = document.createElement("form");
+
+        envio.method = "POST";
+        envio.action = API_URL;
+        envio.target = "respostaCadastro";
+        envio.style.display = "none";
+
+        const campo = document.createElement("input");
+
+        campo.type = "hidden";
+        campo.name = "payload";
+        campo.value = JSON.stringify(dados);
+
+        envio.appendChild(campo);
+        document.body.appendChild(envio);
+
+        formularioEnviado = true;
+        botao.disabled = true;
+        botao.textContent = "Enviando...";
+
+        mostrarMensagem(
+            "Enviando solicitação ao SoloSmart...",
+            "success"
+        );
+
+        envio.submit();
+
+        setTimeout(function () {
+            document.body.removeChild(envio);
+        }, 3000);
+
+        // O navegador não permite ler diretamente a resposta
+        // do iframe de outro domínio. Por isso, não declaramos
+        // o cadastro como concluído sem verificar a planilha.
+
+        setTimeout(function () {
+            botao.disabled = false;
+            botao.textContent = "Enviar cadastro";
+
+            mostrarMensagem(
+                "A solicitação foi enviada ao servidor. Confira as abas Empresas e Usuarios na planilha para confirmar se o registro foi gravado. Se não aparecer, envie o resultado para verificarmos.",
+                "success"
+            );
+
+            formularioEnviado = false;
+        }, 5000);
+    });
+</script>
+
+</body>
+</html>
