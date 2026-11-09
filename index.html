@@ -1,0 +1,1050 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SoloSmart: plataforma inteligente para gestão de propriedades rurais, amostragem georreferenciada e monitoramento IoT do solo.">
+    <meta name="theme-color" content="#123d2b">
+
+    <title>SoloSmart | Gestão Inteligente do Solo</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --green-dark: #123d2b;
+            --green: #176b45;
+            --green-light: #e9f5ed;
+            --lime: #b7df87;
+            --text: #1c2c23;
+            --muted: #718078;
+            --background: #f7faf7;
+            --white: #ffffff;
+            --border: #e6ede7;
+            --radius: 16px;
+            --shadow: 0 12px 35px rgba(18, 61, 43, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text);
+            background: var(--background);
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .container {
+            width: min(1160px, 90%);
+            margin: auto;
+        }
+
+        /* HEADER */
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255,255,255,0.96);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(12px);
+        }
+
+        .navbar {
+            min-height: 76px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 25px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--green-dark);
+            font-family: 'Manrope', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .logo-icon {
+            width: 39px;
+            height: 39px;
+            background: var(--green);
+            color: white;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            font-size: 23px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #56645b;
+        }
+
+        .nav-links a:hover {
+            color: var(--green);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 21px;
+            border-radius: 9px;
+            border: 1px solid transparent;
+            font-size: 14px;
+            font-weight: 700;
+            transition: .2s;
+        }
+
+        .btn-primary {
+            background: var(--green);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--green-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            border-color: var(--border);
+            color: var(--green-dark);
+            background: white;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--green);
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: 0;
+            font-size: 27px;
+            color: var(--green-dark);
+        }
+
+        /* HERO */
+
+        .hero {
+            padding: 85px 0 90px;
+            background:
+                radial-gradient(circle at 85% 20%, #e1f2e4 0, transparent 30%),
+                linear-gradient(135deg, #f8fbf7, #edf6ed);
+            overflow: hidden;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.05fr .95fr;
+            align-items: center;
+            gap: 60px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 13px;
+            border-radius: 30px;
+            background: var(--green-light);
+            color: var(--green);
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .7px;
+            margin-bottom: 23px;
+        }
+
+        .hero h1 {
+            font-family: 'Manrope', sans-serif;
+            font-size: clamp(38px, 5vw, 61px);
+            line-height: 1.12;
+            letter-spacing: -2.5px;
+            color: var(--green-dark);
+            margin-bottom: 24px;
+        }
+
+        .hero h1 span {
+            color: var(--green);
+        }
+
+        .hero-description {
+            font-size: 17px;
+            color: var(--muted);
+            max-width: 520px;
+            margin-bottom: 32px;
+            line-height: 1.8;
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 13px;
+        }
+
+        .hero-note {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 24px;
+        }
+
+        /* DASHBOARD PREVIEW */
+
+        .preview {
+            position: relative;
+            background: white;
+            border: 1px solid #e4ece5;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 30px 70px rgba(18,61,43,.13);
+            transform: rotate(1deg);
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .preview-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--green-dark);
+        }
+
+        .status {
+            background: #e7f5e9;
+            color: #25854a;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 6px 10px;
+            border-radius: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .stat-card {
+            padding: 16px;
+            background: #f7faf7;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .stat-value {
+            color: var(--green-dark);
+            font-size: 25px;
+            font-weight: 800;
+            margin: 5px 0;
+        }
+
+        .stat-detail {
+            font-size: 10px;
+            color: var(--green);
+        }
+
+        .map-preview {
+            position: relative;
+            height: 205px;
+            border-radius: 13px;
+            overflow: hidden;
+            background:
+                linear-gradient(35deg, transparent 47%, rgba(255,255,255,.7) 48%, rgba(255,255,255,.7) 50%, transparent 51%),
+                linear-gradient(120deg, transparent 47%, rgba(255,255,255,.6) 48%, rgba(255,255,255,.6) 50%, transparent 51%),
+                #cfe4bb;
+            background-size: 100% 100%, 100% 100%, auto;
+        }
+
+        .field {
+            position: absolute;
+            border: 2px solid rgba(32,111,62,.7);
+            background: rgba(70,150,75,.16);
+            transform: rotate(-18deg);
+            border-radius: 8px;
+        }
+
+        .field-one {
+            width: 42%;
+            height: 54%;
+            top: 12%;
+            left: 9%;
+        }
+
+        .field-two {
+            width: 36%;
+            height: 48%;
+            top: 35%;
+            right: 9%;
+            transform: rotate(16deg);
+        }
+
+        .field-three {
+            width: 28%;
+            height: 34%;
+            bottom: 3%;
+            left: 34%;
+            transform: rotate(-8deg);
+        }
+
+        .map-pin {
+            position: absolute;
+            color: white;
+            background: var(--green);
+            width: 22px;
+            height: 22px;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            display: grid;
+            place-items: center;
+            font-size: 9px;
+            border: 2px solid white;
+            box-shadow: 0 3px 8px #4b7150;
+        }
+
+        .map-pin::after {
+            content: "";
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: white;
+        }
+
+        .pin-one { top: 28%; left: 30%; }
+        .pin-two { top: 56%; left: 63%; }
+        .pin-three { top: 75%; left: 43%; }
+
+        .map-caption {
+            position: absolute;
+            left: 12px;
+            bottom: 12px;
+            padding: 7px 10px;
+            background: white;
+            border-radius: 7px;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--green-dark);
+        }
+
+        /* SECTIONS */
+
+        section {
+            padding: 85px 0;
+        }
+
+        .section-heading {
+            text-align: center;
+            max-width: 650px;
+            margin: 0 auto 45px;
+        }
+
+        .section-heading .eyebrow {
+            margin-bottom: 14px;
+        }
+
+        .section-heading h2 {
+            font-family: 'Manrope', sans-serif;
+            color: var(--green-dark);
+            font-size: clamp(27px, 3vw, 39px);
+            letter-spacing: -1.3px;
+            line-height: 1.25;
+            margin-bottom: 15px;
+        }
+
+        .section-heading p {
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        /* FEATURES */
+
+        .features {
+            background: white;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .feature-card {
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 27px;
+            background: white;
+            transition: .25s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+            border-color: #c9e3cf;
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 13px;
+            display: grid;
+            place-items: center;
+            background: var(--green-light);
+            font-size: 23px;
+            margin-bottom: 19px;
+        }
+
+        .feature-card h3 {
+            color: var(--green-dark);
+            font-size: 17px;
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        /* HOW IT WORKS */
+
+        .how {
+            background: #f2f7f2;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .step {
+            text-align: center;
+            padding: 20px 12px;
+        }
+
+        .step-number {
+            width: 53px;
+            height: 53px;
+            margin: 0 auto 17px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: var(--green);
+            color: white;
+            font-size: 19px;
+            font-weight: 800;
+        }
+
+        .step h3 {
+            color: var(--green-dark);
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .step p {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        /* CTA */
+
+        .cta {
+            background: var(--green-dark);
+            color: white;
+            padding: 65px 0;
+        }
+
+        .cta-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .cta h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 31px;
+            margin-bottom: 9px;
+        }
+
+        .cta p {
+            color: #c4d9ca;
+            font-size: 14px;
+        }
+
+        .cta .btn {
+            background: var(--lime);
+            color: var(--green-dark);
+            white-space: nowrap;
+        }
+
+        /* FOOTER */
+
+        footer {
+            padding: 35px 0;
+            background: #0d3021;
+            color: #d5e4d9;
+        }
+
+        .footer-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .footer-brand {
+            font-size: 19px;
+            font-weight: 800;
+            color: white;
+        }
+
+        .footer-text {
+            font-size: 12px;
+            color: #a9c2b0;
+            margin-top: 5px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+            font-size: 12px;
+        }
+
+        .footer-links a:hover {
+            color: var(--lime);
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 900px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                gap: 45px;
+            }
+
+            .hero-copy {
+                text-align: center;
+            }
+
+            .hero-description {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .hero-buttons,
+            .hero-note {
+                justify-content: center;
+            }
+
+            .preview {
+                max-width: 600px;
+                width: 100%;
+                margin: auto;
+            }
+
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .steps {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 650px) {
+            .navbar {
+                min-height: 68px;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 68px;
+                left: 0;
+                width: 100%;
+                background: white;
+                padding: 25px 5%;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-actions .btn-outline {
+                display: none;
+            }
+
+            .nav-actions .btn {
+                padding: 10px 13px;
+                font-size: 12px;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .hero {
+                padding: 60px 0;
+            }
+
+            .hero h1 {
+                letter-spacing: -1.5px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .steps {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .cta h2 {
+                font-size: 26px;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="container navbar">
+
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🌱</span>
+                SoloSmart
+            </a>
+
+            <nav class="nav-links" id="navLinks">
+                <a href="#inicio">Início</a>
+                <a href="#recursos">Recursos</a>
+                <a href="#funcionamento">Como funciona</a>
+                <a href="#sobre">Sobre</a>
+            </nav>
+
+            <div class="nav-actions">
+                <a href="pages/login.html" class="btn btn-outline">Entrar</a>
+                <a href="pages/cadastro.html" class="btn btn-primary">Criar conta</a>
+            </div>
+
+            <button class="menu-toggle" id="menuToggle"
+                aria-label="Abrir menu" aria-expanded="false">
+                ☰
+            </button>
+
+        </div>
+    </header>
+
+    <main>
+
+        <!-- HERO -->
+        <section class="hero" id="inicio">
+            <div class="container hero-grid">
+
+                <div class="hero-copy">
+
+                    <div class="eyebrow">
+                        🌿 Tecnologia para agricultura de precisão
+                    </div>
+
+                    <h1>
+                        Inteligência para
+                        <span>entender o solo.</span>
+                    </h1>
+
+                    <p class="hero-description">
+                        Gerencie propriedades rurais, organize campanhas
+                        de amostragem, registre pontos georreferenciados
+                        e acompanhe informações do solo em uma única plataforma.
+                    </p>
+
+                    <div class="hero-buttons">
+                        <a href="pages/cadastro.html" class="btn btn-primary">
+                            Começar agora →
+                        </a>
+
+                        <a href="#recursos" class="btn btn-outline">
+                            Conhecer recursos
+                        </a>
+                    </div>
+
+                    <div class="hero-note">
+                        ✓ Gestão de dados agrícolas em um só lugar
+                    </div>
+
+                </div>
+
+                <!-- DASHBOARD ILUSTRATIVO -->
+                <div class="preview">
+
+                    <div class="preview-header">
+                        <div class="preview-title">
+                            Visão geral da propriedade
+                        </div>
+                        <span class="status">Demonstração</span>
+                    </div>
+
+                    <div class="stats-grid">
+
+                        <div class="stat-card">
+                            <div class="stat-label">Propriedades</div>
+                            <div class="stat-value">--</div>
+                            <div class="stat-detail">Áreas cadastradas</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-label">Amostras</div>
+                            <div class="stat-value">--</div>
+                            <div class="stat-detail">Pontos registrados</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-label">Dispositivos IoT</div>
+                            <div class="stat-value">--</div>
+                            <div class="stat-detail">Sensores cadastrados</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-label">Campanhas</div>
+                            <div class="stat-value">--</div>
+                            <div class="stat-detail">Coletas organizadas</div>
+                        </div>
+
+                    </div>
+
+                    <div class="map-preview">
+                        <div class="field field-one"></div>
+                        <div class="field field-two"></div>
+                        <div class="field field-three"></div>
+
+                        <div class="map-pin pin-one"></div>
+                        <div class="map-pin pin-two"></div>
+                        <div class="map-pin pin-three"></div>
+
+                        <div class="map-caption">
+                            📍 Visualização geográfica ilustrativa
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- RECURSOS -->
+        <section class="features" id="recursos">
+
+            <div class="container">
+
+                <div class="section-heading">
+                    <div class="eyebrow">Funcionalidades</div>
+
+                    <h2>Tudo o que você precisa para gerenciar o solo</h2>
+
+                    <p>
+                        Uma plataforma centralizada para organizar
+                        informações, atividades de campo e monitoramento agrícola.
+                    </p>
+                </div>
+
+                <div class="features-grid">
+
+                    <article class="feature-card">
+                        <div class="feature-icon">🌾</div>
+                        <h3>Propriedades rurais</h3>
+                        <p>
+                            Cadastre propriedades, organize talhões
+                            e mantenha todas as informações em um só lugar.
+                        </p>
+                    </article>
+
+                    <article class="feature-card">
+                        <div class="feature-icon">📍</div>
+                        <h3>Geolocalização</h3>
+                        <p>
+                            Registre coordenadas GPS e identifique
+                            geograficamente cada ponto de coleta.
+                        </p>
+                    </article>
+
+                    <article class="feature-card">
+                        <div class="feature-icon">🧪</div>
+                        <h3>Amostragem do solo</h3>
+                        <p>
+                            Organize campanhas, registre profundidades,
+                            responsáveis e histórico das amostras.
+                        </p>
+                    </article>
+
+                    <article class="feature-card">
+                        <div class="feature-icon">📷</div>
+                        <h3>Registro fotográfico</h3>
+                        <p>
+                            Associe fotografias às amostras e mantenha
+                            um histórico visual das atividades de campo.
+                        </p>
+                    </article>
+
+                    <article class="feature-card">
+                        <div class="feature-icon">📡</div>
+                        <h3>Integração IoT</h3>
+                        <p>
+                            Prepare sua operação para integrar sensores,
+                            dispositivos e dados de monitoramento.
+                        </p>
+                    </article>
+
+                    <article class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3>Relatórios e indicadores</h3>
+                        <p>
+                            Consulte históricos, acompanhe informações
+                            e gere relatórios para apoiar decisões.
+                        </p>
+                    </article>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- FUNCIONAMENTO -->
+        <section class="how" id="funcionamento">
+
+            <div class="container">
+
+                <div class="section-heading">
+                    <div class="eyebrow">Simples e organizado</div>
+
+                    <h2>Como funciona o SoloSmart?</h2>
+
+                    <p>
+                        Organize seu processo de gestão do solo
+                        em etapas simples.
+                    </p>
+                </div>
+
+                <div class="steps">
+
+                    <div class="step">
+                        <div class="step-number">01</div>
+                        <h3>Cadastre sua empresa</h3>
+                        <p>
+                            Crie sua conta e organize os usuários
+                            da sua operação.
+                        </p>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">02</div>
+                        <h3>Cadastre propriedades</h3>
+                        <p>
+                            Registre fazendas, áreas e talhões
+                            que serão monitorados.
+                        </p>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">03</div>
+                        <h3>Registre amostras</h3>
+                        <p>
+                            Organize campanhas e registre
+                            informações georreferenciadas.
+                        </p>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">04</div>
+                        <h3>Acompanhe os dados</h3>
+                        <p>
+                            Consulte históricos, fotografias,
+                            relatórios e dados de sensores.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- SOBRE -->
+        <section id="sobre">
+
+            <div class="container">
+
+                <div class="section-heading">
+
+                    <div class="eyebrow">Nossa proposta</div>
+
+                    <h2>Conectando o campo à informação</h2>
+
+                    <p>
+                        O SoloSmart nasce com o propósito de tornar
+                        a gestão das informações do solo mais simples,
+                        organizada e acessível, conectando dados de campo,
+                        geolocalização e tecnologias de monitoramento.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- CTA -->
+        <section class="cta">
+
+            <div class="container cta-content">
+
+                <div>
+                    <h2>Comece a organizar seus dados agrícolas.</h2>
+
+                    <p>
+                        Conheça a proposta do SoloSmart e acompanhe
+                        a evolução da plataforma.
+                    </p>
+                </div>
+
+                <a href="pages/cadastro.html" class="btn">
+                    Criar minha conta →
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+
+        <div class="container footer-content">
+
+            <div>
+                <div class="footer-brand">🌱 SoloSmart</div>
+
+                <div class="footer-text">
+                    Gestão inteligente do solo.
+                </div>
+            </div>
+
+            <div class="footer-links">
+                <a href="#inicio">Início</a>
+                <a href="#recursos">Recursos</a>
+                <a href="#sobre">Sobre</a>
+            </div>
+
+            <div class="footer-text">
+                © <span id="year"></span> SoloSmart.
+                Todos os direitos reservados.
+            </div>
+
+        </div>
+
+    </footer>
+
+    <script>
+        // Menu responsivo
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+
+        menuToggle.addEventListener('click', function () {
+            const aberto = navLinks.classList.toggle('active');
+
+            menuToggle.setAttribute('aria-expanded', aberto);
+            menuToggle.textContent = aberto ? '✕' : '☰';
+        });
+
+        // Fechar menu após selecionar uma seção
+        document.querySelectorAll('#navLinks a').forEach(link => {
+            link.addEventListener('click', function () {
+                navLinks.classList.remove('active');
+                menuToggle.setAttribute('aria-expanded', 'false');
+                menuToggle.textContent = '☰';
+            });
+        });
+
+        // Ano automático no rodapé
+        document.getElementById('year').textContent =
+            new Date().getFullYear();
+    </script>
+
+</body>
+</html>
