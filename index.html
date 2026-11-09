@@ -160,6 +160,43 @@
             color: var(--green-dark);
         }
 
+        /* STATUS DA API */
+
+        .api-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            white-space: nowrap;
+        }
+
+        .api-status-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #d6a23a;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .api-status.online {
+            color: #25854a;
+        }
+
+        .api-status.online .api-status-dot {
+            background: #25854a;
+        }
+
+        .api-status.offline {
+            color: #c0392b;
+        }
+
+        .api-status.offline .api-status-dot {
+            background: #c0392b;
+        }
+
         /* HERO */
 
         .hero {
@@ -637,6 +674,10 @@
                 font-size: 12px;
             }
 
+            .api-status {
+                display: none;
+            }
+
             .logo {
                 font-size: 20px;
             }
@@ -700,6 +741,11 @@
             <div class="nav-actions">
                 <a href="pages/login.html" class="btn btn-outline">Entrar</a>
                 <a href="pages/cadastro.html" class="btn btn-primary">Criar conta</a>
+
+                <span id="apiStatus" class="api-status" role="status" aria-live="polite">
+                    <span class="api-status-dot"></span>
+                    Verificando conexão
+                </span>
             </div>
 
             <button class="menu-toggle" id="menuToggle"
@@ -1021,29 +1067,139 @@
     </footer>
 
     <script>
-        // Menu responsivo
-        const menuToggle = document.getElementById('menuToggle');
-        const navLinks = document.getElementById('navLinks');
+        // CONFIGURAÇÃO DA API SOLOSMART
 
-        menuToggle.addEventListener('click', function () {
-            const aberto = navLinks.classList.toggle('active');
+        const API_URL =
+            "https://script.google.com/macros/s/AKfycbx-j0AcUdhz5T0BCEqEe1U_jV7IZjBAW0RryFRHSS-XmgbUgfnH1TjFmW_cuiylvGw/exec";
 
-            menuToggle.setAttribute('aria-expanded', aberto);
-            menuToggle.textContent = aberto ? '✕' : '☰';
+        // MENU RESPONSIVO
+
+        const menuToggle = document.getElementById("menuToggle");
+        const navLinks = document.getElementById("navLinks");
+
+        menuToggle.addEventListener("click", function () {
+            const aberto = navLinks.classList.toggle("active");
+
+            menuToggle.setAttribute("aria-expanded", aberto);
+            menuToggle.textContent = aberto ? "✕" : "☰";
         });
 
-        // Fechar menu após selecionar uma seção
-        document.querySelectorAll('#navLinks a').forEach(link => {
-            link.addEventListener('click', function () {
-                navLinks.classList.remove('active');
-                menuToggle.setAttribute('aria-expanded', 'false');
-                menuToggle.textContent = '☰';
+        // FECHAR MENU APÓS SELECIONAR UMA SEÇÃO
+
+        document.querySelectorAll("#navLinks a").forEach(link => {
+            link.addEventListener("click", function () {
+                navLinks.classList.remove("active");
+                menuToggle.setAttribute("aria-expanded", "false");
+                menuToggle.textContent = "☰";
             });
         });
 
-        // Ano automático no rodapé
-        document.getElementById('year').textContent =
+        // ANO AUTOMÁTICO NO RODAPÉ
+
+        document.getElementById("year").textContent =
             new Date().getFullYear();
+
+        // ATUALIZAR INDICADOR DA API
+
+        function atualizarStatusAPI(status, mensagem) {
+            const indicador = document.getElementById("apiStatus");
+
+            if (!indicador) return;
+
+            indicador.className = "api-status " + status;
+
+            indicador.innerHTML =
+                '<span class="api-status-dot"></span>' + mensagem;
+        }
+
+        // VERIFICAR CONEXÃO COM O BACKEND
+
+        function verificarAPI() {
+            const callbackName =
+                "soloSmartCallback_" + Date.now() +
+                "_" + Math.floor(Math.random() * 100000);
+
+            const script = document.createElement("script");
+
+            let finalizado = false;
+
+            atualizarStatusAPI("", "Verificando conexão");
+
+            function limpar() {
+                clearTimeout(timeout);
+
+                if (script.parentNode) {
+                    script.parentNode.removeChild(script);
+                }
+
+                try {
+                    delete window[callbackName];
+                } catch (erro) {
+                    window[callbackName] = undefined;
+                }
+            }
+
+            const timeout = setTimeout(function () {
+                if (finalizado) return;
+
+                finalizado = true;
+                limpar();
+
+                atualizarStatusAPI(
+                    "offline",
+                    "API indisponível"
+                );
+            }, 12000);
+
+            window[callbackName] = function (resposta) {
+                if (finalizado) return;
+
+                finalizado = true;
+
+                if (
+                    resposta &&
+                    resposta.sistema === "SoloSmart" &&
+                    resposta.status === "online"
+                ) {
+                    atualizarStatusAPI(
+                        "online",
+                        "Sistema online"
+                    );
+                } else {
+                    atualizarStatusAPI(
+                        "offline",
+                        "Resposta inválida"
+                    );
+                }
+
+                limpar();
+            };
+
+            script.onerror = function () {
+                if (finalizado) return;
+
+                finalizado = true;
+                limpar();
+
+                atualizarStatusAPI(
+                    "offline",
+                    "Falha na conexão"
+                );
+            };
+
+            script.src =
+                API_URL +
+                "?callback=" + encodeURIComponent(callbackName) +
+                "&_=" + Date.now();
+
+            script.async = true;
+
+            document.body.appendChild(script);
+        }
+
+        // EXECUTAR TESTE AO CARREGAR A PÁGINA
+
+        verificarAPI();
     </script>
 
 </body>
