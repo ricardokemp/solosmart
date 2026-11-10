@@ -213,31 +213,10 @@
 
   </main>
 
-  <iframe
-    name="respostaSoloSmart"
-    id="respostaSoloSmart"
-    title="Resposta de autenticação"
-    hidden>
-  </iframe>
-
-  <form
-    id="formValidacao"
-    method="POST"
-    target="respostaSoloSmart"
-    action="https://script.google.com/macros/s/AKfycbzca2ENUlDi_g3zfAOmChk0seaAcfnMt22kYxWublrYLg5qNku6FQkkM_h1HzFTwlsS/exec"
-    hidden>
-
-    <input name="action" value="validarAcesso">
-    <input name="idToken" id="idToken">
-
-  </form>
-
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
   <script>
-
-    // Configuração do Firebase SoloSmart.
 
     const firebaseConfig = {
       apiKey: "AIzaSyBzt9NrZaX24HP9husP9iwTjUHsUEtBrWc",
@@ -249,20 +228,16 @@
       measurementId: "G-9G79YVZ2XM"
     };
 
-    const API_ORIGEM = "solosmart-api";
-    const TEMPO_LIMITE = 25000;
+    const URL_API = "https://script.google.com/macros/s/AKfycbzca2ENUlDi_g3zfAOmChk0seaAcfnMt22kYxWublrYLg5qNku6FQkkM_h1HzFTwlsS/exec";
 
     const app = firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
     const formLogin = document.getElementById("formLogin");
-    const formValidacao = document.getElementById("formValidacao");
     const botao = document.getElementById("botaoEntrar");
     const mensagem = document.getElementById("mensagem");
-    const iframe = document.getElementById("respostaSoloSmart");
 
-    let aguardandoValidacao = false;
-    let temporizadorValidacao = null;
+    let processando = false;
 
     function mostrarMensagem(texto, tipo) {
       mensagem.textContent = texto;
@@ -271,207 +246,81 @@
 
     function bloquearFormulario(bloquear) {
       botao.disabled = bloquear;
-      botao.textContent = bloquear
-        ? "Verificando..."
-        : "Entrar";
+      botao.textContent = bloquear ? "Verificando..." : "Entrar";
     }
-
-    function encerrarValidacao() {
-      aguardandoValidacao = false;
-
-      if (temporizadorValidacao) {
-        clearTimeout(temporizadorValidacao);
-        temporizadorValidacao = null;
-      }
-
-      bloquearFormulario(false);
-    }
-
-    function origemPermitida(origem) {
-      try {
-        const url = new URL(origem);
-
-        return (
-          url.protocol === "https:" &&
-          (
-            url.hostname === "script.google.com" ||
-            url.hostname === "script.googleusercontent.com"
-          )
-        );
-
-      } catch (erro) {
-        return false;
-      }
-    }
-
-    // Autenticação do usuário pelo Firebase.
 
     formLogin.addEventListener("submit", async function(evento) {
-
       evento.preventDefault();
 
-      if (aguardandoValidacao) {
+      if (processando) {
         return;
       }
 
       mensagem.className = "mensagem";
       bloquearFormulario(true);
+      processando = true;
 
-      const email = document
-        .getElementById("email")
-        .value
-        .trim();
-
+      const email = document.getElementById("email").value.trim();
       const senha = document.getElementById("senha").value;
 
       try {
+        const credencial = await auth.signInWithEmailAndPassword(email, senha);
+        const idToken = await credencial.user.getIdToken(true);
 
-        const credencial =
-          await auth.signInWithEmailAndPassword(email, senha);
+        mostrarMensagem("Credenciais confirmadas. Verificando sua autorização...", "sucesso");
 
-        const idToken =
-          await credencial.user.getIdToken(true);
+        const corpo = new URLSearchParams();
+        corpo.append("action", "validarAcesso");
+        corpo.append("idToken", idToken);
 
-        aguardandoValidacao = true;
+        const resposta = await fetch(URL_API, {
+          method: "POST",
+          body: corpo
+        });
 
-        document.getElementById("idToken").value = idToken;
+        const resultado = await resposta.json();
 
-        mostrarMensagem(
-          "Credenciais confirmadas. Verificando sua autorização...",
-          "sucesso"
-        );
+        if (!resultado.sucesso) {
+          bloquearFormulario(false);
+          processando = false;
+          mostrarMensagem(resultado.mensagem || "Acesso não autorizado.", "erro");
+          return;
+        }
 
-        // Se a API não responder, encerra a espera.
+        const usuario = resultado.usuario;
 
-        temporizadorValidacao = setTimeout(function() {
+        if (!usuario) {
+          bloquearFormulario(false);
+          processando = false;
+          mostrarMensagem("O servidor autorizou o acesso, mas não retornou os dados do usuário.", "erro");
+          return;
+        }
 
-          if (!aguardandoValidacao) {
-            return;
-          }
+        sessionStorage.setItem("solosmart_usuario", JSON.stringify(usuario));
 
-          encerrarValidacao();
+        mostrarMensagem("Acesso autorizado. Entrando...", "sucesso");
 
-          mostrarMensagem(
-            "O servidor não respondeu dentro do prazo. Tente novamente. Se o problema persistir, será necessário verificar a comunicação com o Apps Script.",
-            "erro"
-          );
-
-        }, TEMPO_LIMITE);
-
-        formValidacao.submit();
+        setTimeout(function() {
+          alert("Login realizado com sucesso! Bem-vindo, " + usuario.nome);
+          // window.location.href = "painel.html"; // Descomente quando criar a página do painel
+        }, 800);
 
       } catch (erro) {
-
-        encerrarValidacao();
+        bloquearFormulario(false);
+        processando = false;
 
         const mensagens = {
-          "auth/invalid-email":
-            "O formato do e-mail é inválido.",
-
-          "auth/user-disabled":
-            "Esta conta está desativada.",
-
-          "auth/user-not-found":
-            "Não existe uma conta com esse e-mail.",
-
-          "auth/wrong-password":
-            "E-mail ou senha incorretos.",
-
-          "auth/invalid-credential":
-            "E-mail ou senha incorretos.",
-
-          "auth/too-many-requests":
-            "Muitas tentativas. Aguarde e tente novamente.",
-
-          "auth/network-request-failed":
-            "Falha de conexão. Verifique sua internet."
+          "auth/invalid-email": "O formato do e-mail é inválido.",
+          "auth/user-disabled": "Esta conta está desativada.",
+          "auth/user-not-found": "Não existe uma conta com esse e-mail.",
+          "auth/wrong-password": "E-mail ou senha incorretos.",
+          "auth/invalid-credential": "E-mail ou senha incorretos.",
+          "auth/too-many-requests": "Muitas tentativas. Aguarde e tente novamente.",
+          "auth/network-request-failed": "Falha de conexão. Verifique sua internet."
         };
 
-        mostrarMensagem(
-          mensagens[erro.code] ||
-          "Não foi possível entrar. Verifique seus dados e tente novamente.",
-          "erro"
-        );
-
+        mostrarMensagem(mensagens[erro.code] || "Não foi possível entrar. Verifique seus dados e tente novamente.", "erro");
       }
-
-    });
-
-    // Recebe a resposta enviada pelo Apps Script.
-
-    window.addEventListener("message", function(evento) {
-
-      // Confere se a mensagem veio do iframe utilizado
-      // na solicitação de validação.
-
-      if (evento.source !== iframe.contentWindow) {
-        return;
-      }
-
-      // Confere se a origem é um domínio autorizado do Google.
-
-      if (!origemPermitida(evento.origin)) {
-        return;
-      }
-
-      const resposta = evento.data;
-
-      if (
-        !resposta ||
-        resposta.origem !== API_ORIGEM ||
-        !resposta.dados
-      ) {
-        return;
-      }
-
-      if (!aguardandoValidacao) {
-        return;
-      }
-
-      encerrarValidacao();
-
-      if (!resposta.dados.sucesso) {
-
-        mostrarMensagem(
-          resposta.dados.mensagem || "Acesso não autorizado.",
-          "erro"
-        );
-
-        return;
-      }
-
-      const usuario = resposta.dados.usuario;
-
-      if (!usuario) {
-
-        mostrarMensagem(
-          "O servidor autorizou o acesso, mas não retornou os dados do usuário.",
-          "erro"
-        );
-
-        return;
-      }
-
-      sessionStorage.setItem(
-        "solosmart_usuario",
-        JSON.stringify(usuario)
-      );
-
-      mostrarMensagem(
-        "Acesso autorizado. Sua conta está pronta para entrar no painel.",
-        "sucesso"
-      );
-
-      // Quando a página do painel estiver pronta,
-      // habilite o redirecionamento abaixo.
-
-      // window.location.href = "painel.html";
-
-    });
-
-    iframe.addEventListener("load", function() {
-      // A carga inicial do iframe não representa
-      // necessariamente a resposta da API.
     });
 
   </script>
