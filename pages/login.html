@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -5,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Entrar | SoloSmart</title>
   <meta name="description" content="Acesse sua conta SoloSmart.">
+
   <style>
     :root {
       --verde: #236b45;
@@ -14,7 +16,11 @@
       --cinza: #66756c;
       --borda: #dce6de;
     }
-    * { box-sizing: border-box; }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       min-height: 100vh;
@@ -25,6 +31,7 @@
       color: var(--texto);
       font-family: Arial, Helvetica, sans-serif;
     }
+
     .container {
       width: 100%;
       max-width: 430px;
@@ -34,41 +41,128 @@
       padding: 34px;
       box-shadow: 0 16px 45px rgba(28, 65, 43, .09);
     }
-    .marca { text-align: center; margin-bottom: 28px; }
+
+    .marca {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
     .simbolo {
-      width: 54px; height: 54px; margin: 0 auto 12px;
-      display: grid; place-items: center; border-radius: 16px;
-      background: var(--verde); color: white; font-size: 27px;
+      width: 54px;
+      height: 54px;
+      margin: 0 auto 12px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      background: var(--verde);
+      color: white;
+      font-size: 27px;
       font-weight: bold;
     }
-    h1 { margin: 0; font-size: 27px; color: var(--verde-escuro); }
-    .subtitulo { margin: 9px 0 0; color: var(--cinza); font-size: 14px; }
-    label { display: block; margin: 18px 0 7px; font-size: 14px; font-weight: 700; }
+
+    h1 {
+      margin: 0;
+      font-size: 27px;
+      color: var(--verde-escuro);
+    }
+
+    .subtitulo {
+      margin: 9px 0 0;
+      color: var(--cinza);
+      font-size: 14px;
+    }
+
+    label {
+      display: block;
+      margin: 18px 0 7px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
     input {
-      width: 100%; padding: 13px 14px; border: 1px solid var(--borda);
-      border-radius: 9px; font-size: 15px; outline: none;
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid var(--borda);
+      border-radius: 9px;
+      font-size: 15px;
+      outline: none;
     }
-    input:focus { border-color: var(--verde); box-shadow: 0 0 0 3px rgba(35,107,69,.10); }
+
+    input:focus {
+      border-color: var(--verde);
+      box-shadow: 0 0 0 3px rgba(35,107,69,.10);
+    }
+
     button {
-      width: 100%; margin-top: 23px; padding: 14px;
-      border: 0; border-radius: 9px; background: var(--verde);
-      color: white; font-size: 15px; font-weight: 700; cursor: pointer;
+      width: 100%;
+      margin-top: 23px;
+      padding: 14px;
+      border: 0;
+      border-radius: 9px;
+      background: var(--verde);
+      color: white;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
     }
-    button:hover { background: var(--verde-escuro); }
-    button:disabled { opacity: .65; cursor: wait; }
+
+    button:hover {
+      background: var(--verde-escuro);
+    }
+
+    button:disabled {
+      opacity: .65;
+      cursor: wait;
+    }
+
     .mensagem {
-      display: none; margin-top: 17px; padding: 12px;
-      border-radius: 8px; font-size: 14px; line-height: 1.45;
+      display: none;
+      margin-top: 17px;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      line-height: 1.45;
     }
-    .erro { display: block; color: #8a2525; background: #fff0f0; }
-    .sucesso { display: block; color: #205d38; background: #edf8ef; }
-    .rodape { margin-top: 22px; text-align: center; color: var(--cinza); font-size: 13px; }
-    .rodape a { color: var(--verde); text-decoration: none; font-weight: 700; }
-    .aviso { margin-top: 14px; color: var(--cinza); font-size: 12px; text-align: center; line-height: 1.5; }
+
+    .erro {
+      display: block;
+      color: #8a2525;
+      background: #fff0f0;
+    }
+
+    .sucesso {
+      display: block;
+      color: #205d38;
+      background: #edf8ef;
+    }
+
+    .rodape {
+      margin-top: 22px;
+      text-align: center;
+      color: var(--cinza);
+      font-size: 13px;
+    }
+
+    .rodape a {
+      color: var(--verde);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .aviso {
+      margin-top: 14px;
+      color: var(--cinza);
+      font-size: 12px;
+      text-align: center;
+      line-height: 1.5;
+    }
   </style>
 </head>
+
 <body>
+
   <main class="container">
+
     <header class="marca">
       <div class="simbolo">S</div>
       <h1>SoloSmart</h1>
@@ -76,39 +170,76 @@
     </header>
 
     <form id="formLogin">
+
       <label for="email">E-mail</label>
-      <input id="email" type="email" autocomplete="username" required
-             placeholder="seu@email.com">
+      <input
+        id="email"
+        type="email"
+        autocomplete="username"
+        required
+        placeholder="seu@email.com"
+      >
 
       <label for="senha">Senha</label>
-      <input id="senha" type="password" autocomplete="current-password"
-             required placeholder="Digite sua senha">
+      <input
+        id="senha"
+        type="password"
+        autocomplete="current-password"
+        required
+        placeholder="Digite sua senha"
+      >
 
-      <button id="botaoEntrar" type="submit">Entrar</button>
-      <div id="mensagem" class="mensagem" role="status" aria-live="polite"></div>
+      <button id="botaoEntrar" type="submit">
+        Entrar
+      </button>
+
+      <div
+        id="mensagem"
+        class="mensagem"
+        role="status"
+        aria-live="polite">
+      </div>
+
     </form>
 
     <div class="rodape">
       Ainda não tem cadastro?
       <a href="cadastro.html">Solicitar acesso</a>
     </div>
-    <p class="aviso">O acesso depende da aprovação da empresa e do usuário pela administração do SoloSmart.</p>
+
+    <p class="aviso">
+      O acesso depende da aprovação da empresa e do usuário
+      pela administração do SoloSmart.
+    </p>
+
   </main>
 
-  <iframe name="respostaSoloSmart" id="respostaSoloSmart"
-          title="Resposta de autenticação" hidden></iframe>
+  <iframe
+    name="respostaSoloSmart"
+    id="respostaSoloSmart"
+    title="Resposta de autenticação"
+    hidden>
+  </iframe>
 
-  <form id="formValidacao" method="POST" target="respostaSoloSmart"
-        action="https://script.google.com/macros/s/AKfycbx06T6GX4a8HuC3sn-iDe3QfJmv85NWRgHfnR-967KvM3h46GjYWToAMlobpEfacq6D/exec"
-        hidden>
+  <form
+    id="formValidacao"
+    method="POST"
+    target="respostaSoloSmart"
+    action="https://script.google.com/macros/s/AKfycbx06T6GX4a8HuC3sn-iDe3QfJmv85NWRgHfnR-967KvM3h46GjYWToAMlobpEfacq6D/exec"
+    hidden>
+
     <input name="action" value="validarAcesso">
     <input name="idToken" id="idToken">
+
   </form>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
   <script>
-    // Configuração pública do aplicativo Firebase SoloSmart.
+
+    // Configuração do Firebase SoloSmart.
+
     const firebaseConfig = {
       apiKey: "AIzaSyBzt9NrZaX24HP9husP9iwTjUHsUEtBrWc",
       authDomain: "solosmart.firebaseapp.com",
@@ -120,14 +251,19 @@
     };
 
     const API_ORIGEM = "solosmart-api";
+    const TEMPO_LIMITE = 25000;
+
     const app = firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
     const formLogin = document.getElementById("formLogin");
+    const formValidacao = document.getElementById("formValidacao");
     const botao = document.getElementById("botaoEntrar");
     const mensagem = document.getElementById("mensagem");
     const iframe = document.getElementById("respostaSoloSmart");
+
     let aguardandoValidacao = false;
+    let temporizadorValidacao = null;
 
     function mostrarMensagem(texto, tipo) {
       mensagem.textContent = texto;
@@ -136,66 +272,210 @@
 
     function bloquearFormulario(bloquear) {
       botao.disabled = bloquear;
-      botao.textContent = bloquear ? "Verificando..." : "Entrar";
+      botao.textContent = bloquear
+        ? "Verificando..."
+        : "Entrar";
     }
 
+    function encerrarValidacao() {
+      aguardandoValidacao = false;
+
+      if (temporizadorValidacao) {
+        clearTimeout(temporizadorValidacao);
+        temporizadorValidacao = null;
+      }
+
+      bloquearFormulario(false);
+    }
+
+    function origemPermitida(origem) {
+      try {
+        const url = new URL(origem);
+
+        return (
+          url.protocol === "https:" &&
+          (
+            url.hostname === "script.google.com" ||
+            url.hostname === "script.googleusercontent.com"
+          )
+        );
+
+      } catch (erro) {
+        return false;
+      }
+    }
+
+    // Autenticação do usuário pelo Firebase.
+
     formLogin.addEventListener("submit", async function(evento) {
+
       evento.preventDefault();
+
+      if (aguardandoValidacao) {
+        return;
+      }
+
       mensagem.className = "mensagem";
       bloquearFormulario(true);
 
-      const email = document.getElementById("email").value.trim();
+      const email = document
+        .getElementById("email")
+        .value
+        .trim();
+
       const senha = document.getElementById("senha").value;
 
       try {
-        const credencial = await auth.signInWithEmailAndPassword(email, senha);
-        const idToken = await credencial.user.getIdToken(true);
+
+        const credencial =
+          await auth.signInWithEmailAndPassword(email, senha);
+
+        const idToken =
+          await credencial.user.getIdToken(true);
 
         aguardandoValidacao = true;
-        document.getElementById("idToken").value = idToken;
-        document.getElementById("formValidacao").submit();
 
-        mostrarMensagem("Credenciais confirmadas. Verificando sua autorização...", "sucesso");
+        document.getElementById("idToken").value = idToken;
+
+        mostrarMensagem(
+          "Credenciais confirmadas. Verificando sua autorização...",
+          "sucesso"
+        );
+
+        // Se a API não responder, encerra a espera.
+
+        temporizadorValidacao = setTimeout(function() {
+
+          if (!aguardandoValidacao) {
+            return;
+          }
+
+          encerrarValidacao();
+
+          mostrarMensagem(
+            "O servidor não respondeu dentro do prazo. Tente novamente. Se o problema persistir, será necessário verificar a comunicação com o Apps Script.",
+            "erro"
+          );
+
+        }, TEMPO_LIMITE);
+
+        formValidacao.submit();
+
       } catch (erro) {
-        bloquearFormulario(false);
+
+        encerrarValidacao();
+
         const mensagens = {
-          "auth/invalid-email": "O formato do e-mail é inválido.",
-          "auth/user-disabled": "Esta conta está desativada.",
-          "auth/user-not-found": "Não existe uma conta com esse e-mail.",
-          "auth/wrong-password": "E-mail ou senha incorretos.",
-          "auth/invalid-credential": "E-mail ou senha incorretos.",
-          "auth/too-many-requests": "Muitas tentativas. Aguarde e tente novamente."
+          "auth/invalid-email":
+            "O formato do e-mail é inválido.",
+
+          "auth/user-disabled":
+            "Esta conta está desativada.",
+
+          "auth/user-not-found":
+            "Não existe uma conta com esse e-mail.",
+
+          "auth/wrong-password":
+            "E-mail ou senha incorretos.",
+
+          "auth/invalid-credential":
+            "E-mail ou senha incorretos.",
+
+          "auth/too-many-requests":
+            "Muitas tentativas. Aguarde e tente novamente.",
+
+          "auth/network-request-failed":
+            "Falha de conexão. Verifique sua internet."
         };
-        mostrarMensagem(mensagens[erro.code] || "Não foi possível entrar. Verifique seus dados e tente novamente.", "erro");
+
+        mostrarMensagem(
+          mensagens[erro.code] ||
+          "Não foi possível entrar. Verifique seus dados e tente novamente.",
+          "erro"
+        );
+
       }
+
     });
 
+    // Recebe a resposta enviada pelo Apps Script.
+
     window.addEventListener("message", function(evento) {
-      if (evento.source !== iframe.contentWindow) return;
+
+      // Confere se a mensagem veio do iframe utilizado
+      // na solicitação de validação.
+
+      if (evento.source !== iframe.contentWindow) {
+        return;
+      }
+
+      // Confere se a origem é um domínio autorizado do Google.
+
+      if (!origemPermitida(evento.origin)) {
+        return;
+      }
+
       const resposta = evento.data;
 
-      if (!resposta || resposta.origem !== API_ORIGEM || !resposta.dados) return;
-      if (!aguardandoValidacao) return;
+      if (
+        !resposta ||
+        resposta.origem !== API_ORIGEM ||
+        !resposta.dados
+      ) {
+        return;
+      }
 
-      aguardandoValidacao = false;
-      bloquearFormulario(false);
+      if (!aguardandoValidacao) {
+        return;
+      }
+
+      encerrarValidacao();
 
       if (!resposta.dados.sucesso) {
-        mostrarMensagem(resposta.dados.mensagem || "Acesso não autorizado.", "erro");
+
+        mostrarMensagem(
+          resposta.dados.mensagem || "Acesso não autorizado.",
+          "erro"
+        );
+
         return;
       }
 
       const usuario = resposta.dados.usuario;
-      sessionStorage.setItem("solosmart_usuario", JSON.stringify(usuario));
-      mostrarMensagem("Acesso autorizado. Sua conta está pronta para entrar no painel.", "sucesso");
 
-      // Após criar a página do painel, substitua o comentário abaixo por:
+      if (!usuario) {
+
+        mostrarMensagem(
+          "O servidor autorizou o acesso, mas não retornou os dados do usuário.",
+          "erro"
+        );
+
+        return;
+      }
+
+      sessionStorage.setItem(
+        "solosmart_usuario",
+        JSON.stringify(usuario)
+      );
+
+      mostrarMensagem(
+        "Acesso autorizado. Sua conta está pronta para entrar no painel.",
+        "sucesso"
+      );
+
+      // Quando a página do painel estiver pronta,
+      // habilite o redirecionamento abaixo.
+
       // window.location.href = "painel.html";
+
     });
 
     iframe.addEventListener("load", function() {
-      // A primeira carga do iframe é vazia. A resposta real chega por postMessage.
+      // A carga inicial do iframe não representa
+      // necessariamente a resposta da API.
     });
+
   </script>
+
 </body>
 </html>
