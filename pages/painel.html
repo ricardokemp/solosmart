@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel | SoloSmart</title>
+  <meta name="description" content="Painel de gestão rural do SoloSmart.">
+
+  <style>
+    :root {
+      --verde: #236b45;
+      --verde-escuro: #174b31;
+      --fundo: #f3f7f3;
+      --texto: #203229;
+      --cinza: #66756c;
+      --borda: #dce6de;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(145deg, #edf5ee, #f8faf8);
+      color: var(--texto);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    header {
+      background: #fff;
+      border-bottom: 1px solid var(--borda);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(28, 65, 43, .04);
+    }
+
+    .marca-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .simbolo {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: var(--verde);
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 20px;
+      color: var(--verde-escuro);
+    }
+
+    .botao-sair {
+      background: #fff0f0;
+      color: #8a2525;
+      border: 1px solid #f5c2c2;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .botao-sair:hover {
+      background: #ffe0e0;
+    }
+
+    main {
+      flex: 1;
+      max-width: 900px;
+      width: 100%;
+      margin: 32px auto;
+      padding: 0 24px;
+    }
+
+    .cartao {
+      background: #fff;
+      border: 1px solid var(--borda);
+      border-radius: 18px;
+      padding: 28px;
+      box-shadow: 0 16px 45px rgba(28, 65, 43, .09);
+      margin-bottom: 24px;
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 22px;
+      color: var(--verde-escuro);
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .info-item {
+      background: var(--fundo);
+      padding: 16px;
+      border-radius: 10px;
+      border: 1px solid var(--borda);
+    }
+
+    .info-label {
+      font-size: 12px;
+      color: var(--cinza);
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .info-valor {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--texto);
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="marca-container">
+      <div class="simbolo">S</div>
+      <h1>SoloSmart</h1>
+    </div>
+    <button id="botaoSair" class="botao-sair">Sair</button>
+  </header>
+
+  <main>
+    <div class="cartao">
+      <h2 id="saudacao">Bem-vindo ao Painel</h2>
+      <p style="color: var(--cinza); margin-top: 6px;">Gestão e monitoramento da sua operação rural.</p>
+
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label">Usuário</div>
+          <div id="valNome" class="info-valor">-</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">E-mail</div>
+          <div id="valEmail" class="info-valor">-</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Empresa</div>
+          <div id="valEmpresa" class="info-valor">-</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Perfil de Acesso</div>
+          <div id="valPerfil" class="info-valor">-</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBzt9NrZaX24HP9husP9iwTjUHsUEtBrWc",
+      authDomain: "solosmart.firebaseapp.com",
+      projectId: "solosmart",
+      storageBucket: "solosmart.firebasestorage.app",
+      messagingSenderId: "684064638812",
+      appId: "1:684064638812:web:e3e038664a47a5701b2399",
+      measurementId: "G-9G79YVZ2XM"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // Recupera os dados salvos na sessão durante o login
+    const dadosUsuarioStr = sessionStorage.getItem("solosmart_usuario");
+
+    if (!dadosUsuarioStr) {
+      // Se não houver sessão ativa, redireciona de volta para o login
+      window.location.href = "login.html";
+    } else {
+      const usuario = JSON.parse(dadosUsuarioStr);
+
+      // Preenche os dados na tela
+      document.getElementById("saudacao").textContent = "Olá, " + usuario.nome;
+      document.getElementById("valNome").textContent = usuario.nome;
+      document.getElementById("valEmail").textContent = usuario.email;
+      document.getElementById("valEmpresa").textContent = usuario.empresa;
+      document.getElementById("valPerfil").textContent = usuario.perfil;
+    }
+
+    // Ação do botão de logout
+    document.getElementById("botaoSair").addEventListener("click", async function() {
+      try {
+        await auth.signOut();
+      } catch (e) {
+        // Ignora erros do Firebase no logout
+      }
+      sessionStorage.removeItem("solosmart_usuario");
+      window.location.href = "login.html";
+    });
+  </script>
+
+</body>
+</html>
