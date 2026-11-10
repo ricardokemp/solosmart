@@ -1,299 +1,114 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#166534">
-
   <title>Entrar | SoloSmart</title>
-
+  <meta name="description" content="Acesse sua conta SoloSmart.">
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+    :root {
+      --verde: #236b45;
+      --verde-escuro: #174b31;
+      --fundo: #f3f7f3;
+      --texto: #203229;
+      --cinza: #66756c;
+      --borda: #dce6de;
     }
-
+    * { box-sizing: border-box; }
     body {
+      margin: 0;
       min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: linear-gradient(145deg, #edf5ee, #f8faf8);
+      color: var(--texto);
       font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(135deg, #f0fdf4, #dcfce7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      color: #1f2937;
     }
-
     .container {
       width: 100%;
-      max-width: 420px;
-      background: #ffffff;
-      padding: 38px 30px;
+      max-width: 430px;
+      background: #fff;
+      border: 1px solid var(--borda);
       border-radius: 18px;
-      box-shadow: 0 12px 35px rgba(0,0,0,0.08);
+      padding: 34px;
+      box-shadow: 0 16px 45px rgba(28, 65, 43, .09);
     }
-
-    .logo {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .logo-icon {
-      width: 58px;
-      height: 58px;
-      background: #166534;
-      color: white;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 12px;
-      font-size: 30px;
-    }
-
-    .logo h1 {
-      color: #166534;
-      font-size: 29px;
-      margin-bottom: 7px;
-    }
-
-    .logo p {
-      color: #64748b;
-      font-size: 13px;
-    }
-
-    h2 {
-      font-size: 21px;
-      margin-bottom: 8px;
-    }
-
-    .descricao {
-      color: #64748b;
-      font-size: 14px;
-      margin-bottom: 25px;
-    }
-
-    .campo {
-      margin-bottom: 18px;
-    }
-
-    label {
-      display: block;
-      font-size: 13px;
+    .marca { text-align: center; margin-bottom: 28px; }
+    .simbolo {
+      width: 54px; height: 54px; margin: 0 auto 12px;
+      display: grid; place-items: center; border-radius: 16px;
+      background: var(--verde); color: white; font-size: 27px;
       font-weight: bold;
-      margin-bottom: 8px;
     }
-
+    h1 { margin: 0; font-size: 27px; color: var(--verde-escuro); }
+    .subtitulo { margin: 9px 0 0; color: var(--cinza); font-size: 14px; }
+    label { display: block; margin: 18px 0 7px; font-size: 14px; font-weight: 700; }
     input {
-      width: 100%;
-      padding: 13px;
-      border: 1px solid #d1d5db;
-      border-radius: 9px;
-      font-size: 15px;
-      outline: none;
+      width: 100%; padding: 13px 14px; border: 1px solid var(--borda);
+      border-radius: 9px; font-size: 15px; outline: none;
     }
-
-    input:focus {
-      border-color: #16a34a;
-      box-shadow: 0 0 0 3px rgba(22,163,74,0.10);
+    input:focus { border-color: var(--verde); box-shadow: 0 0 0 3px rgba(35,107,69,.10); }
+    button {
+      width: 100%; margin-top: 23px; padding: 14px;
+      border: 0; border-radius: 9px; background: var(--verde);
+      color: white; font-size: 15px; font-weight: 700; cursor: pointer;
     }
-
-    .senha-wrapper {
-      position: relative;
-    }
-
-    .senha-wrapper input {
-      padding-right: 65px;
-    }
-
-    .mostrar-senha {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      border: none;
-      background: none;
-      color: #166534;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: bold;
-    }
-
-    .recuperar {
-      display: block;
-      text-align: right;
-      margin-top: -5px;
-      margin-bottom: 22px;
-      color: #166534;
-      font-size: 13px;
-      text-decoration: none;
-      cursor: pointer;
-    }
-
-    .botao {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 9px;
-      background: #166534;
-      color: white;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .botao:hover {
-      background: #14532d;
-    }
-
-    .botao:disabled {
-      background: #86a58e;
-      cursor: not-allowed;
-    }
-
+    button:hover { background: var(--verde-escuro); }
+    button:disabled { opacity: .65; cursor: wait; }
     .mensagem {
-      display: none;
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 13px;
-      margin-bottom: 18px;
-      line-height: 1.5;
+      display: none; margin-top: 17px; padding: 12px;
+      border-radius: 8px; font-size: 14px; line-height: 1.45;
     }
-
-    .erro {
-      display: block;
-      background: #fef2f2;
-      color: #991b1b;
-    }
-
-    .sucesso {
-      display: block;
-      background: #f0fdf4;
-      color: #166534;
-    }
-
-    .cadastro {
-      text-align: center;
-      margin-top: 25px;
-      padding-top: 20px;
-      border-top: 1px solid #e5e7eb;
-      font-size: 13px;
-      color: #64748b;
-    }
-
-    .cadastro a {
-      color: #166534;
-      font-weight: bold;
-      text-decoration: none;
-    }
-
-    footer {
-      text-align: center;
-      margin-top: 25px;
-      color: #94a3b8;
-      font-size: 11px;
-    }
-
-    @media (max-width: 480px) {
-      .container {
-        padding: 30px 22px;
-      }
-    }
+    .erro { display: block; color: #8a2525; background: #fff0f0; }
+    .sucesso { display: block; color: #205d38; background: #edf8ef; }
+    .rodape { margin-top: 22px; text-align: center; color: var(--cinza); font-size: 13px; }
+    .rodape a { color: var(--verde); text-decoration: none; font-weight: 700; }
+    .aviso { margin-top: 14px; color: var(--cinza); font-size: 12px; text-align: center; line-height: 1.5; }
   </style>
 </head>
-
 <body>
-
   <main class="container">
-
-    <div class="logo">
-      <div class="logo-icon">🌱</div>
+    <header class="marca">
+      <div class="simbolo">S</div>
       <h1>SoloSmart</h1>
-      <p>Gestão inteligente de propriedades rurais</p>
-    </div>
-
-    <h2>Acesse sua conta</h2>
-
-    <p class="descricao">
-      Entre com seu e-mail e senha cadastrados.
-    </p>
-
-    <div id="mensagem" class="mensagem" role="alert"></div>
+      <p class="subtitulo">Entre para acessar sua gestão rural</p>
+    </header>
 
     <form id="formLogin">
+      <label for="email">E-mail</label>
+      <input id="email" type="email" autocomplete="username" required
+             placeholder="seu@email.com">
 
-      <div class="campo">
-        <label for="email">E-mail</label>
-        <input
-          type="email"
-          id="email"
-          placeholder="seu@email.com"
-          autocomplete="username"
-          required
-        >
-      </div>
+      <label for="senha">Senha</label>
+      <input id="senha" type="password" autocomplete="current-password"
+             required placeholder="Digite sua senha">
 
-      <div class="campo">
-        <label for="senha">Senha</label>
-
-        <div class="senha-wrapper">
-          <input
-            type="password"
-            id="senha"
-            placeholder="Digite sua senha"
-            autocomplete="current-password"
-            required
-          >
-
-          <button
-            type="button"
-            class="mostrar-senha"
-            id="mostrarSenha"
-          >
-            Mostrar
-          </button>
-        </div>
-      </div>
-
-      <a class="recuperar" id="recuperarSenha">
-        Esqueceu sua senha?
-      </a>
-
-      <button type="submit" class="botao" id="botaoEntrar">
-        Entrar
-      </button>
-
+      <button id="botaoEntrar" type="submit">Entrar</button>
+      <div id="mensagem" class="mensagem" role="status" aria-live="polite"></div>
     </form>
 
-    <div class="cadastro">
+    <div class="rodape">
       Ainda não tem cadastro?
-      <br><br>
-      <a href="cadastro.html">Cadastre sua empresa</a>
+      <a href="cadastro.html">Solicitar acesso</a>
     </div>
-
-    <footer>
-      SoloSmart © 2026. Todos os direitos reservados.
-    </footer>
-
+    <p class="aviso">O acesso depende da aprovação da empresa e do usuário pela administração do SoloSmart.</p>
   </main>
 
-  <script type="module">
+  <iframe name="respostaSoloSmart" id="respostaSoloSmart"
+          title="Resposta de autenticação" hidden></iframe>
 
-    import { initializeApp }
-      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  <form id="formValidacao" method="POST" target="respostaSoloSmart"
+        action="https://script.google.com/macros/s/AKfycbyh6qu1fg8rWi3-R8FOycYoeir4NzKrsYAeMY2b81g-6l6wJMT_q36tN58czZvghpc-/exec"
+        hidden>
+    <input name="action" value="validarAcesso">
+    <input name="idToken" id="idToken">
+  </form>
 
-    import {
-      getAuth,
-      signInWithEmailAndPassword,
-      sendPasswordResetEmail,
-      onAuthStateChanged,
-      signOut
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-    // CONFIGURAÇÃO FIREBASE
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script>
+    // Configuração pública do aplicativo Firebase SoloSmart.
     const firebaseConfig = {
       apiKey: "AIzaSyBzt9NrZaX24HP9husP9iwTjUHsUEtBrWc",
       authDomain: "solosmart.firebaseapp.com",
@@ -304,146 +119,83 @@
       measurementId: "G-9G79YVZ2XM"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    const API_ORIGEM = "solosmart-api";
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
 
-    const form = document.getElementById("formLogin");
-    const emailInput = document.getElementById("email");
-    const senhaInput = document.getElementById("senha");
-    const botaoEntrar = document.getElementById("botaoEntrar");
+    const formLogin = document.getElementById("formLogin");
+    const botao = document.getElementById("botaoEntrar");
     const mensagem = document.getElementById("mensagem");
+    const iframe = document.getElementById("respostaSoloSmart");
+    let aguardandoValidacao = false;
 
     function mostrarMensagem(texto, tipo) {
       mensagem.textContent = texto;
       mensagem.className = "mensagem " + tipo;
     }
 
-    function limparMensagem() {
-      mensagem.textContent = "";
+    function bloquearFormulario(bloquear) {
+      botao.disabled = bloquear;
+      botao.textContent = bloquear ? "Verificando..." : "Entrar";
+    }
+
+    formLogin.addEventListener("submit", async function(evento) {
+      evento.preventDefault();
       mensagem.className = "mensagem";
-    }
+      bloquearFormulario(true);
 
-    function traduzirErro(codigo) {
-      const erros = {
-        "auth/invalid-email": "O e-mail informado é inválido.",
-        "auth/user-not-found": "Usuário não encontrado.",
-        "auth/wrong-password": "Senha incorreta.",
-        "auth/invalid-credential": "E-mail ou senha incorretos.",
-        "auth/too-many-requests": "Muitas tentativas. Tente novamente mais tarde.",
-        "auth/network-request-failed": "Falha de conexão. Verifique sua internet."
-      };
+      const email = document.getElementById("email").value.trim();
+      const senha = document.getElementById("senha").value;
 
-      return erros[codigo] || "Não foi possível realizar o login.";
-    }
+      try {
+        const credencial = await auth.signInWithEmailAndPassword(email, senha);
+        const idToken = await credencial.user.getIdToken(true);
 
-    // MOSTRAR OU OCULTAR SENHA
-    document.getElementById("mostrarSenha")
-      .addEventListener("click", function() {
+        aguardandoValidacao = true;
+        document.getElementById("idToken").value = idToken;
+        document.getElementById("formValidacao").submit();
 
-        const visivel = senhaInput.type === "text";
+        mostrarMensagem("Credenciais confirmadas. Verificando sua autorização...", "sucesso");
+      } catch (erro) {
+        bloquearFormulario(false);
+        const mensagens = {
+          "auth/invalid-email": "O formato do e-mail é inválido.",
+          "auth/user-disabled": "Esta conta está desativada.",
+          "auth/user-not-found": "Não existe uma conta com esse e-mail.",
+          "auth/wrong-password": "E-mail ou senha incorretos.",
+          "auth/invalid-credential": "E-mail ou senha incorretos.",
+          "auth/too-many-requests": "Muitas tentativas. Aguarde e tente novamente."
+        };
+        mostrarMensagem(mensagens[erro.code] || "Não foi possível entrar. Verifique seus dados e tente novamente.", "erro");
+      }
+    });
 
-        senhaInput.type = visivel ? "password" : "text";
-        this.textContent = visivel ? "Mostrar" : "Ocultar";
+    window.addEventListener("message", function(evento) {
+      if (evento.source !== iframe.contentWindow) return;
+      const resposta = evento.data;
 
-      });
+      if (!resposta || resposta.origem !== API_ORIGEM || !resposta.dados) return;
+      if (!aguardandoValidacao) return;
 
-    // LOGIN
-    form.addEventListener("submit", async function(event) {
+      aguardandoValidacao = false;
+      bloquearFormulario(false);
 
-      event.preventDefault();
-      limparMensagem();
-
-      const email = emailInput.value.trim().toLowerCase();
-      const senha = senhaInput.value;
-
-      if (!email || !senha) {
-        mostrarMensagem("Preencha o e-mail e a senha.", "erro");
+      if (!resposta.dados.sucesso) {
+        mostrarMensagem(resposta.dados.mensagem || "Acesso não autorizado.", "erro");
         return;
       }
 
-      botaoEntrar.disabled = true;
-      botaoEntrar.textContent = "Verificando...";
+      const usuario = resposta.dados.usuario;
+      sessionStorage.setItem("solosmart_usuario", JSON.stringify(usuario));
+      mostrarMensagem("Acesso autorizado. Sua conta está pronta para entrar no painel.", "sucesso");
 
-      try {
-
-        const resultado = await signInWithEmailAndPassword(
-          auth,
-          email,
-          senha
-        );
-
-        // A autenticação Firebase foi concluída.
-        // A autorização no banco SoloSmart ainda depende
-        // da integração com o Apps Script.
-
-        await signOut(auth);
-
-        mostrarMensagem(
-          "Senha autenticada pelo Firebase. A autorização do SoloSmart ainda está sendo configurada. O acesso ao painel não foi liberado.",
-          "sucesso"
-        );
-
-      } catch (erro) {
-
-        mostrarMensagem(
-          traduzirErro(erro.code),
-          "erro"
-        );
-
-      } finally {
-
-        botaoEntrar.disabled = false;
-        botaoEntrar.textContent = "Entrar";
-
-      }
-
+      // Após criar a página do painel, substitua o comentário abaixo por:
+      // window.location.href = "painel.html";
     });
 
-    // RECUPERAÇÃO DE SENHA
-    document.getElementById("recuperarSenha")
-      .addEventListener("click", async function() {
-
-        limparMensagem();
-
-        const email = emailInput.value.trim().toLowerCase();
-
-        if (!email) {
-          mostrarMensagem(
-            "Informe seu e-mail para receber o link de recuperação.",
-            "erro"
-          );
-          emailInput.focus();
-          return;
-        }
-
-        try {
-
-          await sendPasswordResetEmail(auth, email);
-
-          mostrarMensagem(
-            "Se houver uma conta cadastrada para esse e-mail, você receberá as instruções de recuperação.",
-            "sucesso"
-          );
-
-        } catch (erro) {
-
-          mostrarMensagem(
-            "Não foi possível solicitar a recuperação. Confira o e-mail e tente novamente.",
-            "erro"
-          );
-
-        }
-
-      });
-
-    // NÃO LIBERAR ACESSO AUTOMÁTICO
-    onAuthStateChanged(auth, function(usuario) {
-      if (usuario) {
-        signOut(auth);
-      }
+    iframe.addEventListener("load", function() {
+      // A primeira carga do iframe é vazia. A resposta real chega por postMessage.
     });
-
   </script>
-
 </body>
 </html>
