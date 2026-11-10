@@ -269,13 +269,11 @@
 
         mostrarMensagem("Credenciais confirmadas. Verificando sua autorização...", "sucesso");
 
-        const corpo = new URLSearchParams();
-        corpo.append("action", "validarAcesso");
-        corpo.append("idToken", idToken);
+        // Monta a URL com os parâmetros GET para evitar bloqueio de CORS no Apps Script
+        const urlRequisicao = `${URL_API}?action=validarAcesso&idToken=${encodeURIComponent(idToken)}`;
 
-        const resposta = await fetch(URL_API, {
-          method: "POST",
-          body: corpo
+        const resposta = await fetch(urlRequisicao, {
+          method: "GET"
         });
 
         const resultado = await resposta.json();
