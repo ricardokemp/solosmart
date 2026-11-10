@@ -1,0 +1,449 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#166534">
+
+  <title>Entrar | SoloSmart</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: #1f2937;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 420px;
+      background: #ffffff;
+      padding: 38px 30px;
+      border-radius: 18px;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.08);
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .logo-icon {
+      width: 58px;
+      height: 58px;
+      background: #166534;
+      color: white;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+      font-size: 30px;
+    }
+
+    .logo h1 {
+      color: #166534;
+      font-size: 29px;
+      margin-bottom: 7px;
+    }
+
+    .logo p {
+      color: #64748b;
+      font-size: 13px;
+    }
+
+    h2 {
+      font-size: 21px;
+      margin-bottom: 8px;
+    }
+
+    .descricao {
+      color: #64748b;
+      font-size: 14px;
+      margin-bottom: 25px;
+    }
+
+    .campo {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #d1d5db;
+      border-radius: 9px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #16a34a;
+      box-shadow: 0 0 0 3px rgba(22,163,74,0.10);
+    }
+
+    .senha-wrapper {
+      position: relative;
+    }
+
+    .senha-wrapper input {
+      padding-right: 65px;
+    }
+
+    .mostrar-senha {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      background: none;
+      color: #166534;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .recuperar {
+      display: block;
+      text-align: right;
+      margin-top: -5px;
+      margin-bottom: 22px;
+      color: #166534;
+      font-size: 13px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .botao {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 9px;
+      background: #166534;
+      color: white;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .botao:hover {
+      background: #14532d;
+    }
+
+    .botao:disabled {
+      background: #86a58e;
+      cursor: not-allowed;
+    }
+
+    .mensagem {
+      display: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+
+    .erro {
+      display: block;
+      background: #fef2f2;
+      color: #991b1b;
+    }
+
+    .sucesso {
+      display: block;
+      background: #f0fdf4;
+      color: #166534;
+    }
+
+    .cadastro {
+      text-align: center;
+      margin-top: 25px;
+      padding-top: 20px;
+      border-top: 1px solid #e5e7eb;
+      font-size: 13px;
+      color: #64748b;
+    }
+
+    .cadastro a {
+      color: #166534;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 25px;
+      color: #94a3b8;
+      font-size: 11px;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 30px 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="container">
+
+    <div class="logo">
+      <div class="logo-icon">🌱</div>
+      <h1>SoloSmart</h1>
+      <p>Gestão inteligente de propriedades rurais</p>
+    </div>
+
+    <h2>Acesse sua conta</h2>
+
+    <p class="descricao">
+      Entre com seu e-mail e senha cadastrados.
+    </p>
+
+    <div id="mensagem" class="mensagem" role="alert"></div>
+
+    <form id="formLogin">
+
+      <div class="campo">
+        <label for="email">E-mail</label>
+        <input
+          type="email"
+          id="email"
+          placeholder="seu@email.com"
+          autocomplete="username"
+          required
+        >
+      </div>
+
+      <div class="campo">
+        <label for="senha">Senha</label>
+
+        <div class="senha-wrapper">
+          <input
+            type="password"
+            id="senha"
+            placeholder="Digite sua senha"
+            autocomplete="current-password"
+            required
+          >
+
+          <button
+            type="button"
+            class="mostrar-senha"
+            id="mostrarSenha"
+          >
+            Mostrar
+          </button>
+        </div>
+      </div>
+
+      <a class="recuperar" id="recuperarSenha">
+        Esqueceu sua senha?
+      </a>
+
+      <button type="submit" class="botao" id="botaoEntrar">
+        Entrar
+      </button>
+
+    </form>
+
+    <div class="cadastro">
+      Ainda não tem cadastro?
+      <br><br>
+      <a href="cadastro.html">Cadastre sua empresa</a>
+    </div>
+
+    <footer>
+      SoloSmart © 2026. Todos os direitos reservados.
+    </footer>
+
+  </main>
+
+  <script type="module">
+
+    import { initializeApp }
+      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      sendPasswordResetEmail,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    // CONFIGURAÇÃO FIREBASE
+    const firebaseConfig = {
+      apiKey: "AIzaSyBzt9NrZaX24HP9husP9iwTjUHsUEtBrWc",
+      authDomain: "solosmart.firebaseapp.com",
+      projectId: "solosmart",
+      storageBucket: "solosmart.firebasestorage.app",
+      messagingSenderId: "684064638812",
+      appId: "1:684064638812:web:e3e038664a47a5701b2399",
+      measurementId: "G-9G79YVZ2XM"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const form = document.getElementById("formLogin");
+    const emailInput = document.getElementById("email");
+    const senhaInput = document.getElementById("senha");
+    const botaoEntrar = document.getElementById("botaoEntrar");
+    const mensagem = document.getElementById("mensagem");
+
+    function mostrarMensagem(texto, tipo) {
+      mensagem.textContent = texto;
+      mensagem.className = "mensagem " + tipo;
+    }
+
+    function limparMensagem() {
+      mensagem.textContent = "";
+      mensagem.className = "mensagem";
+    }
+
+    function traduzirErro(codigo) {
+      const erros = {
+        "auth/invalid-email": "O e-mail informado é inválido.",
+        "auth/user-not-found": "Usuário não encontrado.",
+        "auth/wrong-password": "Senha incorreta.",
+        "auth/invalid-credential": "E-mail ou senha incorretos.",
+        "auth/too-many-requests": "Muitas tentativas. Tente novamente mais tarde.",
+        "auth/network-request-failed": "Falha de conexão. Verifique sua internet."
+      };
+
+      return erros[codigo] || "Não foi possível realizar o login.";
+    }
+
+    // MOSTRAR OU OCULTAR SENHA
+    document.getElementById("mostrarSenha")
+      .addEventListener("click", function() {
+
+        const visivel = senhaInput.type === "text";
+
+        senhaInput.type = visivel ? "password" : "text";
+        this.textContent = visivel ? "Mostrar" : "Ocultar";
+
+      });
+
+    // LOGIN
+    form.addEventListener("submit", async function(event) {
+
+      event.preventDefault();
+      limparMensagem();
+
+      const email = emailInput.value.trim().toLowerCase();
+      const senha = senhaInput.value;
+
+      if (!email || !senha) {
+        mostrarMensagem("Preencha o e-mail e a senha.", "erro");
+        return;
+      }
+
+      botaoEntrar.disabled = true;
+      botaoEntrar.textContent = "Verificando...";
+
+      try {
+
+        const resultado = await signInWithEmailAndPassword(
+          auth,
+          email,
+          senha
+        );
+
+        // A autenticação Firebase foi concluída.
+        // A autorização no banco SoloSmart ainda depende
+        // da integração com o Apps Script.
+
+        await signOut(auth);
+
+        mostrarMensagem(
+          "Senha autenticada pelo Firebase. A autorização do SoloSmart ainda está sendo configurada. O acesso ao painel não foi liberado.",
+          "sucesso"
+        );
+
+      } catch (erro) {
+
+        mostrarMensagem(
+          traduzirErro(erro.code),
+          "erro"
+        );
+
+      } finally {
+
+        botaoEntrar.disabled = false;
+        botaoEntrar.textContent = "Entrar";
+
+      }
+
+    });
+
+    // RECUPERAÇÃO DE SENHA
+    document.getElementById("recuperarSenha")
+      .addEventListener("click", async function() {
+
+        limparMensagem();
+
+        const email = emailInput.value.trim().toLowerCase();
+
+        if (!email) {
+          mostrarMensagem(
+            "Informe seu e-mail para receber o link de recuperação.",
+            "erro"
+          );
+          emailInput.focus();
+          return;
+        }
+
+        try {
+
+          await sendPasswordResetEmail(auth, email);
+
+          mostrarMensagem(
+            "Se houver uma conta cadastrada para esse e-mail, você receberá as instruções de recuperação.",
+            "sucesso"
+          );
+
+        } catch (erro) {
+
+          mostrarMensagem(
+            "Não foi possível solicitar a recuperação. Confira o e-mail e tente novamente.",
+            "erro"
+          );
+
+        }
+
+      });
+
+    // NÃO LIBERAR ACESSO AUTOMÁTICO
+    onAuthStateChanged(auth, function(usuario) {
+      if (usuario) {
+        signOut(auth);
+      }
+    });
+
+  </script>
+
+</body>
+</html>
