@@ -39,7 +39,7 @@
     .pagina-titulo h1 { font-family: 'Manrope', sans-serif; font-size: 26px; color: var(--verde-escuro); margin: 0 0 6px; letter-spacing: -.5px; }
     .pagina-titulo p { color: var(--cinza); font-size: 14px; margin: 0; }
     
-    /* Formulário */
+    /* Formulário e Tabela */
     .cartao { background: #fff; border: 1px solid var(--borda); border-radius: 14px; padding: 24px; box-shadow: 0 6px 18px rgba(28,65,43,.05); margin-bottom: 24px; }
     .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; align-items: end; }
     .campo { display: flex; flex-direction: column; gap: 6px; }
@@ -50,7 +50,10 @@
     .btn:hover { background: var(--verde-escuro); }
     .btn:disabled { opacity: .6; cursor: wait; }
     
-    /* Tabela */
+    /* Botão Excluir */
+    .btn-excluir { background: transparent; border: 1px solid #f5c2c2; color: #8a2525; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: 700; transition: .15s; }
+    .btn-excluir:hover { background: #fff0f0; }
+    
     table { width: 100%; border-collapse: collapse; font-size: 14px; }
     th, td { padding: 14px; text-align: left; border-bottom: 1px solid var(--borda); }
     th { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--cinza); font-weight: 800; background: var(--fundo); }
@@ -96,12 +99,14 @@
     <nav>
       <a href="painel.html"><span class="icone">📊</span> Visão geral</a>
       <a href="propriedades.html"><span class="icone">🌾</span> Propriedades</a>
-      <a href="talhoes.html" class="ativo"><span class="icone">🗺️</span> Talhões</a>
+      <a href="talhoes.html" class="ativo"><span class="icone">🔲</span> Talhões</a>
       <a href="#"><span class="icone">🧪</span> Amostras</a>
+      <a href="#"><span class="icone">🗺️</span> Mapas</a>
     </nav>
     <div class="sidebar-secao">Gestão</div>
     <nav>
-      <a href="#"><span class="icone">📋</span> Campanhas</a>
+      <!-- Link de Campanhas adicionado -->
+      <a href="campanhas.html"><span class="icone">📋</span> Campanhas</a>
       <a href="#"><span class="icone">📷</span> Fotografias</a>
       <a href="#"><span class="icone">📡</span> Dispositivos IoT</a>
       <a href="#"><span class="icone">📈</span> Relatórios</a>
@@ -173,6 +178,7 @@
             <th>Área (ha)</th>
             <th>Cultura</th>
             <th>Status</th>
+            <th>Ações</th> <!-- Coluna de Ações adicionada -->
           </tr>
         </thead>
         <tbody id="corpoTabela"></tbody>
@@ -297,9 +303,58 @@
           <td><span class="badge">${t.area_hectares || 0} ha</span></td>
           <td>${t.cultura || '-'}</td>
           <td><span class="badge">${t.status || 'ativa'}</span></td>
+          <td>
+            <button class="btn-excluir" data-id="${t.talhao_id}">Excluir</button>
+          </td>
         `;
         corpo.appendChild(tr);
       });
+
+      // Adiciona evento de clique nos botões de excluir gerados
+      document.querySelectorAll(".btn-excluir").forEach(btn => {
+        btn.addEventListener("click", function() {
+          const id = this.getAttribute("data-id");
+          excluirTalhao(id, this);
+        });
+      });
+    }
+
+    // --- Excluir Talhão ---
+    async function excluirTalhao(id, botao) {
+      if (!confirm("Tem certeza que deseja excluir este talhão?")) return;
+
+      botao.disabled = true;
+      botao.textContent = "Excluindo...";
+
+      idTokenAtual = await firebase.auth().currentUser.getIdToken(true);
+
+      const payload = {
+        action: "excluirTalhao", 
+        idToken: idTokenAtual,
+        id: id
+      };
+
+      try {
+        const resposta = await fetch(SoloSmart.URL_API, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain" }, 
+          body: JSON.stringify(payload)
+        });
+
+        const dados = await resposta.json();
+
+        if (!dados.sucesso) {
+          throw new Error(dados.mensagem || "Erro ao excluir.");
+        }
+
+        mostrarMensagem("Talhão excluído com sucesso!", "sucesso");
+        await carregarTalhoes();
+
+      } catch (erro) {
+        mostrarMensagem(erro.message, "erro");
+        botao.disabled = false;
+        botao.textContent = "Excluir";
+      }
     }
 
     // Submit do Formulário
