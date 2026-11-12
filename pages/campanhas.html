@@ -50,7 +50,10 @@
     .btn:hover { background: var(--verde-escuro); }
     .btn:disabled { opacity: .6; cursor: wait; }
     
-    /* Tabela */
+    /* Botão Excluir */
+    .btn-excluir { background: transparent; border: 1px solid #f5c2c2; color: #8a2525; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: 700; transition: .15s; }
+    .btn-excluir:hover { background: #fff0f0; }
+    
     table { width: 100%; border-collapse: collapse; font-size: 14px; }
     th, td { padding: 14px; text-align: left; border-bottom: 1px solid var(--borda); }
     th { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--cinza); font-weight: 800; background: var(--fundo); }
@@ -97,7 +100,8 @@
       <a href="painel.html"><span class="icone">📊</span> Visão geral</a>
       <a href="propriedades.html"><span class="icone">🌾</span> Propriedades</a>
       <a href="talhoes.html"><span class="icone">🔲</span> Talhões</a>
-      <a href="#"><span class="icone">🧪</span> Amostras</a>
+      <!-- Link de Amostras corrigido -->
+      <a href="amostras.html"><span class="icone">🧪</span> Amostras</a>
       <a href="#"><span class="icone">🗺️</span> Mapas</a>
     </nav>
     <div class="sidebar-secao">Gestão</div>
@@ -174,6 +178,7 @@
             <th>Início</th>
             <th>Término</th>
             <th>Status</th>
+            <th>Ações</th> <!-- Coluna de Ações adicionada -->
           </tr>
         </thead>
         <tbody id="corpoTabela"></tbody>
@@ -292,7 +297,6 @@
       vazio.style.display = "none";
 
       ativas.forEach(c => {
-        // Descobre o nome da propriedade dona desta campanha
         const prop = listaPropriedades.find(p => p.propriedade_id === c.propriedade_id);
         const nomePropriedade = prop ? prop.nome : "Desconhecida";
 
@@ -303,9 +307,57 @@
           <td>${formatarData(c.data_inicio)}</td>
           <td>${formatarData(c.data_fim)}</td>
           <td><span class="badge">${c.status || 'ativa'}</span></td>
+          <td>
+            <button class="btn-excluir" data-id="${c.campanha_id}">Excluir</button>
+          </td>
         `;
         corpo.appendChild(tr);
       });
+
+      document.querySelectorAll(".btn-excluir").forEach(btn => {
+        btn.addEventListener("click", function() {
+          const id = this.getAttribute("data-id");
+          excluirCampanha(id, this);
+        });
+      });
+    }
+
+    // --- Excluir Campanha ---
+    async function excluirCampanha(id, botao) {
+      if (!confirm("Tem certeza que deseja excluir esta campanha?")) return;
+
+      botao.disabled = true;
+      botao.textContent = "Excluindo...";
+
+      idTokenAtual = await firebase.auth().currentUser.getIdToken(true);
+
+      const payload = {
+        action: "excluirCampanha", 
+        idToken: idTokenAtual,
+        id: id
+      };
+
+      try {
+        const resposta = await fetch(SoloSmart.URL_API, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain" }, 
+          body: JSON.stringify(payload)
+        });
+
+        const dados = await resposta.json();
+
+        if (!dados.sucesso) {
+          throw new Error(dados.mensagem || "Erro ao excluir.");
+        }
+
+        mostrarMensagem("Campanha excluída com sucesso!", "sucesso");
+        await carregarCampanhas();
+
+      } catch (erro) {
+        mostrarMensagem(erro.message, "erro");
+        botao.disabled = false;
+        botao.textContent = "Excluir";
+      }
     }
 
     // Submit do Formulário
