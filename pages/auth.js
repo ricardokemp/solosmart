@@ -13,8 +13,8 @@ const firebaseConfig = {
   measurementId: "G-9G79YVZ2XM"
 };
 
-// URL ATUALIZADA DO APPS SCRIPT (Novo Deploy)
-const URL_API = "https://script.google.com/macros/s/AKfycbwxfcV4xnMqIGUx0GLZKPmgN1gYR-qjSRZMPX12FSCNR4Iir8akGsVYp5BpIJtXshjs/exec";
+// URL DEFINITIVA DO APPS SCRIPT (Com permissão de Drive)
+const URL_API = "https://script.google.com/macros/s/AKfycbwWuOUHwy_WpVM60F-AqRIR1oJhPbESTR4iAAUI7H0KnWY09zZe6FL0TYUP8tQXxeZP/exec";
 
 if (typeof firebase !== "undefined") {
   if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
