@@ -6,23 +6,67 @@
   <title>Entrar | SoloSmart</title>
   <meta name="description" content="Acesse sua conta SoloSmart.">
   <style>
-    :root{--verde:#236b45;--verde-escuro:#174b31;--texto:#203229;--cinza:#66756c;--borda:#dce6de}
+    :root{
+      --verde:#236b45;
+      --verde-escuro:#174b31;
+      --texto:#203229;
+      --cinza:#66756c;
+      --borda:#dce6de;
+    }
     *{box-sizing:border-box}
-    body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:linear-gradient(145deg,#edf5ee,#f8faf8);color:var(--texto);font-family:Arial,Helvetica,sans-serif}
-    .container{width:100%;max-width:430px;background:#fff;border:1px solid var(--borda);border-radius:18px;padding:34px;box-shadow:0 16px 45px rgba(28,65,43,.09)}
+    body{
+      margin:0;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      padding:24px;
+      background:linear-gradient(145deg,#edf5ee,#f8faf8);
+      color:var(--texto);
+      font-family:Arial,Helvetica,sans-serif;
+    }
+    .container{
+      width:100%;
+      max-width:430px;
+      background:#fff;
+      border:1px solid var(--borda);
+      border-radius:18px;
+      padding:34px;
+      box-shadow:0 16px 45px rgba(28,65,43,.09);
+    }
     .marca{text-align:center;margin-bottom:28px}
-    .simbolo{width:54px;height:54px;margin:0 auto 12px;display:grid;place-items:center;border-radius:16px;background:var(--verde);color:white;font-size:27px;font-weight:bold}
+    .simbolo{
+      width:54px;height:54px;margin:0 auto 12px;
+      display:grid;place-items:center;border-radius:16px;
+      background:var(--verde);color:white;font-size:27px;font-weight:bold;
+    }
     h1{margin:0;font-size:27px;color:var(--verde-escuro)}
     .subtitulo{margin:9px 0 0;color:var(--cinza);font-size:14px}
     label{display:block;margin:18px 0 7px;font-size:14px;font-weight:700}
-    input{width:100%;padding:13px 14px;border:1px solid var(--borda);border-radius:9px;font-size:15px;outline:none}
-    input:focus{border-color:var(--verde);box-shadow:0 0 0 3px rgba(35,107,69,.10)}
-    button{width:100%;margin-top:14px;padding:14px;border:0;border-radius:9px;background:var(--verde);color:white;font-size:15px;font-weight:700;cursor:pointer}
+    input{
+      width:100%;padding:13px 14px;border:1px solid var(--borda);
+      border-radius:9px;font-size:15px;outline:none;
+      transition:border-color .15s, box-shadow .15s;
+    }
+    input:focus{
+      border-color:var(--verde);
+      box-shadow:0 0 0 3px rgba(35,107,69,.10);
+    }
+    button{
+      width:100%;margin-top:14px;padding:14px;border:0;border-radius:9px;
+      background:var(--verde);color:white;font-size:15px;font-weight:700;cursor:pointer;
+      transition:background .15s;
+    }
     button:hover{background:var(--verde-escuro)}
     button:disabled{opacity:.65;cursor:wait}
-    button.secundario{margin-top:10px;color:var(--verde-escuro);background:#edf5ee;border:1px solid var(--borda)}
+    button.secundario{
+      margin-top:10px;color:var(--verde-escuro);
+      background:#edf5ee;border:1px solid var(--borda);
+    }
     button.secundario:hover{background:#e2eee4}
-    .mensagem{display:none;margin-top:17px;padding:12px;border-radius:8px;font-size:14px;line-height:1.45}
+    .mensagem{
+      display:none;margin-top:17px;padding:12px;border-radius:8px;
+      font-size:14px;line-height:1.45;
+    }
     .erro{display:block;color:#8a2525;background:#fff0f0}
     .sucesso{display:block;color:#205d38;background:#edf8ef}
     .info{display:block;color:#765313;background:#fff8e8}
@@ -40,175 +84,264 @@
       <p class="subtitulo">Entre para acessar sua gestão rural</p>
     </header>
 
-    <form id="formLogin">
+    <form id="formLogin" novalidate>
       <label for="email">E-mail</label>
-      <input id="email" type="email" autocomplete="username" required placeholder="seu@email.com">
+      <input
+        id="email"
+        type="email"
+        autocomplete="username"
+        required
+        placeholder="seu@email.com"
+      >
+
       <label for="senha">Senha</label>
-      <input id="senha" type="password" autocomplete="current-password" required placeholder="Digite sua senha">
+      <input
+        id="senha"
+        type="password"
+        autocomplete="current-password"
+        required
+        placeholder="Digite sua senha"
+      >
+
       <button id="botaoEntrar" type="submit">Entrar</button>
+
       <div id="mensagem" class="mensagem" role="status" aria-live="polite"></div>
+
       <div id="acoesEmail" hidden>
-        <button id="botaoReenviar" class="secundario" type="button">Reenviar e-mail de confirmação</button>
-        <button id="botaoVerificar" class="secundario" type="button">Já confirmei meu e-mail</button>
+        <button id="botaoReenviar" class="secundario" type="button">
+          Reenviar e-mail de confirmação
+        </button>
+        <button id="botaoVerificar" class="secundario" type="button">
+          Já confirmei meu e-mail
+        </button>
       </div>
     </form>
 
-    <div class="rodape">Ainda não tem cadastro? <a href="cadastro.html">Solicitar acesso</a></div>
-    <p class="aviso">O acesso depende da aprovação da empresa e do usuário pela administração do SoloSmart.</p>
+    <div class="rodape">
+      Ainda não tem cadastro?
+      <a href="cadastro.html">Solicitar acesso</a>
+    </div>
+    <p class="aviso">
+      O acesso depende da aprovação da empresa e do usuário
+      pela administração do SoloSmart.
+    </p>
   </main>
 
+  <!-- Firebase + módulo de auth -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBzt9NrZaX24HP9husP9iwTjUHsUEtBrWc",
-      authDomain: "solosmart.firebaseapp.com",
-      projectId: "solosmart",
-      storageBucket: "solosmart.firebasestorage.app",
-      messagingSenderId: "684064638812",
-      appId: "1:684064638812:web:e3e038664a47a5701b2399",
-      measurementId: "G-9G79YVZ2XM"
-    };
+  <script src="auth.js"></script>
 
-    const URL_API = "https://script.google.com/macros/s/AKfycbzXg7vBvdEbX5wkr5vR_JbOajFqQH9N1-p1LnKnT5RTGv4lS9dYZXWCjsTOxG4P8n_A/exec";
-    firebase.initializeApp(firebaseConfig);
+  <script>
+    // auth.js já inicializa o Firebase
     const auth = firebase.auth();
 
-    const formLogin = document.getElementById("formLogin");
-    const botaoEntrar = document.getElementById("botaoEntrar");
-    const botaoReenviar = document.getElementById("botaoReenviar");
+    const formLogin      = document.getElementById("formLogin");
+    const botaoEntrar    = document.getElementById("botaoEntrar");
+    const botaoReenviar  = document.getElementById("botaoReenviar");
     const botaoVerificar = document.getElementById("botaoVerificar");
-    const mensagem = document.getElementById("mensagem");
-    const acoesEmail = document.getElementById("acoesEmail");
+    const mensagem       = document.getElementById("mensagem");
+    const acoesEmail     = document.getElementById("acoesEmail");
 
     let processando = false;
     let usuarioPendente = null;
 
-    function mostrarMensagem(texto,tipo){
-      mensagem.textContent=texto;
-      mensagem.className="mensagem "+tipo;
+    // ------------------------------------------------------------
+    // Helpers de UI
+    // ------------------------------------------------------------
+    function mostrarMensagem(texto, tipo) {
+      mensagem.textContent = texto;
+      mensagem.className = "mensagem " + tipo;
     }
-    function bloquearEntrar(bloquear){
-      botaoEntrar.disabled=bloquear;
-      botaoEntrar.textContent=bloquear?"Verificando...":"Entrar";
+
+    function limparMensagem() {
+      mensagem.className = "mensagem";
+      mensagem.textContent = "";
     }
-    function bloquearAcoesEmail(bloquear){
-      botaoReenviar.disabled=bloquear;
-      botaoVerificar.disabled=bloquear;
+
+    function bloquearEntrar(bloquear) {
+      botaoEntrar.disabled = bloquear;
+      botaoEntrar.textContent = bloquear ? "Verificando..." : "Entrar";
     }
-    function mostrarAcoesEmail(usuario){
-      usuarioPendente=usuario;
-      acoesEmail.hidden=false;
+
+    function bloquearAcoesEmail(bloquear) {
+      botaoReenviar.disabled = bloquear;
+      botaoVerificar.disabled = bloquear;
+    }
+
+    function mostrarAcoesEmail(usuario) {
+      usuarioPendente = usuario;
+      acoesEmail.hidden = false;
       bloquearEntrar(false);
-      processando=false;
-    }
-    function ocultarAcoesEmail(){
-      usuarioPendente=null;
-      acoesEmail.hidden=true;
+      processando = false;
     }
 
-    async function validarAcessoNoSoloSmart(usuarioFirebase){
-      const idToken=await usuarioFirebase.getIdToken(true);
-      const urlRequisicao=`${URL_API}?action=validarAcesso&idToken=${encodeURIComponent(idToken)}`;
-      const resposta=await fetch(urlRequisicao,{method:"GET"});
-      const resultado=await resposta.json();
+    function ocultarAcoesEmail() {
+      usuarioPendente = null;
+      acoesEmail.hidden = true;
+    }
 
-      if(!resultado.sucesso){
-        if(resultado.mensagem && resultado.mensagem.toLowerCase().includes("confirme seu endereço de e-mail")){
-          mostrarMensagem("Seu e-mail ainda não foi confirmado. Verifique sua caixa de entrada ou solicite um novo link abaixo.","info");
-          mostrarAcoesEmail(usuarioFirebase);
-          return false;
-        }
-        throw new Error(resultado.mensagem||"Acesso não autorizado.");
+    // ------------------------------------------------------------
+    // Mensagem de erro vinda da URL (?erro=...)
+    // (ex.: protegerPagina do painel redireciona pra cá)
+    // ------------------------------------------------------------
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const motivo = params.get("erro");
+      if (motivo) {
+        mostrarMensagem(decodeURIComponent(motivo), "erro");
+        // limpa a query string sem recarregar
+        window.history.replaceState({}, "", window.location.pathname);
       }
-      if(!resultado.usuario) throw new Error("O servidor autorizou o acesso, mas não retornou os dados do usuário.");
+    })();
 
-      sessionStorage.setItem("solosmart_usuario",JSON.stringify(resultado.usuario));
-      mostrarMensagem("Acesso autorizado. Entrando...","sucesso");
-      setTimeout(()=>window.location.href="painel.html",800);
+    // ------------------------------------------------------------
+    // Validação no backend + redirecionamento
+    // ------------------------------------------------------------
+    async function validarAcessoNoSoloSmart(usuarioFirebase) {
+      const usuario = await SoloSmart.validarAcessoNoBackend(usuarioFirebase);
+      SoloSmart.salvarUsuarioLocal(usuario);
+
+      mostrarMensagem("Acesso autorizado. Entrando...", "sucesso");
+      setTimeout(() => { window.location.href = "painel.html"; }, 700);
       return true;
     }
 
-    formLogin.addEventListener("submit",async function(evento){
+    // ------------------------------------------------------------
+    // Submit do login
+    // ------------------------------------------------------------
+    formLogin.addEventListener("submit", async function (evento) {
       evento.preventDefault();
-      if(processando)return;
 
-      processando=true;
+      if (processando) return;
+
+      const email = document.getElementById("email").value.trim();
+      const senha = document.getElementById("senha").value;
+
+      if (!email || !senha) {
+        mostrarMensagem("Informe o e-mail e a senha.", "erro");
+        return;
+      }
+
+      processando = true;
       ocultarAcoesEmail();
-      mensagem.className="mensagem";
+      limparMensagem();
       bloquearEntrar(true);
 
-      const email=document.getElementById("email").value.trim();
-      const senha=document.getElementById("senha").value;
+      try {
+        const credencial = await auth.signInWithEmailAndPassword(email, senha);
+        const usuarioFirebase = credencial.user;
 
-      try{
-        const credencial=await auth.signInWithEmailAndPassword(email,senha);
-        const usuarioFirebase=credencial.user;
+        // Garante que o estado mais recente (emailVerified, disabled, etc.)
+        // está em memória antes de checar.
         await usuarioFirebase.reload();
 
-        if(!usuarioFirebase.emailVerified){
-          mostrarMensagem("Sua senha está correta, mas seu endereço de e-mail ainda não foi confirmado. Use uma das opções abaixo.","info");
+        if (!usuarioFirebase.emailVerified) {
+          mostrarMensagem(
+            "Sua senha está correta, mas seu endereço de e-mail ainda não foi confirmado. Use uma das opções abaixo.",
+            "info"
+          );
           mostrarAcoesEmail(usuarioFirebase);
           return;
         }
 
-        mostrarMensagem("E-mail confirmado. Verificando sua autorização no SoloSmart...","sucesso");
+        mostrarMensagem(
+          "E-mail confirmado. Verificando sua autorização no SoloSmart...",
+          "sucesso"
+        );
+
         await validarAcessoNoSoloSmart(usuarioFirebase);
-        if(usuarioPendente===usuarioFirebase)return;
+
+      } catch (erro) {
         bloquearEntrar(false);
-        processando=false;
-      }catch(erro){
-        bloquearEntrar(false);
-        processando=false;
-        const mensagens={
-          "auth/invalid-email":"O formato do e-mail é inválido.",
-          "auth/user-disabled":"Esta conta está desativada.",
-          "auth/user-not-found":"Não existe uma conta com esse e-mail.",
-          "auth/wrong-password":"E-mail ou senha incorretos.",
-          "auth/invalid-credential":"E-mail ou senha incorretos.",
-          "auth/too-many-requests":"Muitas tentativas. Aguarde e tente novamente.",
+        processando = false;
+
+        const mensagens = {
+          "auth/invalid-email":        "O formato do e-mail é inválido.",
+          "auth/user-disabled":        "Esta conta está desativada.",
+          "auth/user-not-found":       "Não existe uma conta com esse e-mail.",
+          "auth/wrong-password":       "E-mail ou senha incorretos.",
+          "auth/invalid-credential":   "E-mail ou senha incorretos.",
+          "auth/invalid-login-credentials": "E-mail ou senha incorretos.",
+          "auth/too-many-requests":    "Muitas tentativas. Aguarde e tente novamente.",
           "auth/network-request-failed":"Falha de conexão. Verifique sua internet."
         };
-        mostrarMensagem(mensagens[erro.code]||erro.message||"Não foi possível entrar. Verifique seus dados e tente novamente.","erro");
+
+        const texto = mensagens[erro.code]
+          || erro.message
+          || "Não foi possível entrar. Verifique seus dados e tente novamente.";
+
+        mostrarMensagem(texto, "erro");
       }
     });
 
-    botaoReenviar.addEventListener("click",async function(){
-      if(!usuarioPendente||botaoReenviar.disabled)return;
+    // ------------------------------------------------------------
+    // Reenviar e-mail de confirmação
+    // ------------------------------------------------------------
+    botaoReenviar.addEventListener("click", async function () {
+      if (!usuarioPendente || botaoReenviar.disabled) return;
+
       bloquearAcoesEmail(true);
-      try{
+
+      try {
         await usuarioPendente.sendEmailVerification();
-        mostrarMensagem("Enviamos um novo e-mail de confirmação para "+usuarioPendente.email+". Verifique também as pastas Spam e Promoções.","sucesso");
-      }catch(erro){
-        const mensagens={
-          "auth/too-many-requests":"Muitos pedidos de envio. Aguarde alguns minutos e tente novamente.",
-          "auth/network-request-failed":"Falha de conexão. Verifique sua internet.",
-          "auth/operation-not-allowed":"O envio de confirmação não está habilitado no Firebase."
+        mostrarMensagem(
+          "Enviamos um novo e-mail de confirmação para " +
+            usuarioPendente.email +
+            ". Verifique também as pastas Spam e Promoções.",
+          "sucesso"
+        );
+      } catch (erro) {
+        const mensagens = {
+          "auth/too-many-requests":       "Muitos pedidos de envio. Aguarde alguns minutos e tente novamente.",
+          "auth/network-request-failed":  "Falha de conexão. Verifique sua internet.",
+          "auth/operation-not-allowed":   "O envio de confirmação não está habilitado no Firebase."
         };
-        mostrarMensagem(mensagens[erro.code]||erro.message||"Não foi possível enviar o e-mail de confirmação.","erro");
-      }finally{
+        mostrarMensagem(
+          mensagens[erro.code] || erro.message ||
+            "Não foi possível enviar o e-mail de confirmação.",
+          "erro"
+        );
+      } finally {
         bloquearAcoesEmail(false);
       }
     });
 
-    botaoVerificar.addEventListener("click",async function(){
-      if(!usuarioPendente||processando)return;
-      processando=true;
+    // ------------------------------------------------------------
+    // Já confirmei meu e-mail
+    // ------------------------------------------------------------
+    botaoVerificar.addEventListener("click", async function () {
+      if (!usuarioPendente || processando) return;
+
+      processando = true;
       bloquearAcoesEmail(true);
-      try{
+
+      try {
         await usuarioPendente.reload();
-        const usuarioAtual=auth.currentUser;
-        if(!usuarioAtual||!usuarioAtual.emailVerified){
-          mostrarMensagem("Ainda não identificamos a confirmação. Abra o link recebido por e-mail e tente novamente.","info");
+        const usuarioAtual = auth.currentUser;
+
+        if (!usuarioAtual || !usuarioAtual.emailVerified) {
+          mostrarMensagem(
+            "Ainda não identificamos a confirmação. Abra o link recebido por e-mail e tente novamente.",
+            "info"
+          );
           return;
         }
+
         ocultarAcoesEmail();
-        mostrarMensagem("E-mail confirmado. Verificando sua autorização no SoloSmart...","sucesso");
+        mostrarMensagem(
+          "E-mail confirmado. Verificando sua autorização no SoloSmart...",
+          "sucesso"
+        );
         await validarAcessoNoSoloSmart(usuarioAtual);
-      }catch(erro){
-        mostrarMensagem(erro.message||"Não foi possível verificar o e-mail. Tente novamente.","erro");
-      }finally{
-        processando=false;
+
+      } catch (erro) {
+        mostrarMensagem(
+          erro.message || "Não foi possível verificar o e-mail. Tente novamente.",
+          "erro"
+        );
+      } finally {
+        processando = false;
         bloquearEntrar(false);
         bloquearAcoesEmail(false);
       }
