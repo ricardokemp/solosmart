@@ -15,7 +15,7 @@
     * { box-sizing: border-box; }
     body { margin: 0; min-height: 100vh; background: var(--fundo); color: var(--texto); font-family: 'DM Sans', Arial, sans-serif; }
     
-    /* Layout Base (Header e Sidebar) */
+    /* Layout Base */
     .topbar { position: fixed; top: 0; left: 0; right: 0; height: var(--header-h); background: #fff; border-bottom: 1px solid var(--borda); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 50; box-shadow: 0 2px 10px rgba(28,65,43,.04); }
     .marca { display: flex; align-items: center; gap: 12px; font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 18px; color: var(--verde-escuro); }
     .simbolo { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 10px; background: var(--verde); color: #fff; font-size: 20px; }
@@ -50,12 +50,15 @@
     .btn:hover { background: var(--verde-escuro); }
     .btn:disabled { opacity: .6; cursor: wait; }
     
+    /* Botão Excluir */
+    .btn-excluir { background: transparent; border: 1px solid #f5c2c2; color: #8a2525; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: 700; transition: .15s; }
+    .btn-excluir:hover { background: #fff0f0; }
+    
     table { width: 100%; border-collapse: collapse; font-size: 14px; }
     th, td { padding: 14px; text-align: left; border-bottom: 1px solid var(--borda); }
     th { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--cinza); font-weight: 800; background: var(--fundo); }
     tr:hover td { background: #fafcfa; }
     .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; background: var(--verde-claro); color: var(--verde-escuro); }
-    .badge.inativa { background: #fff0f0; color: #8a2525; }
     
     .mensagem { display: none; padding: 14px; margin-bottom: 20px; border-radius: 8px; font-size: 14px; }
     .mensagem.sucesso { display: block; background: #edf8ef; color: #205d38; }
@@ -63,7 +66,6 @@
     .loading { text-align: center; color: var(--cinza); padding: 20px; }
     
     .overlay { display: none; position: fixed; inset: var(--header-h) 0 0 0; background: rgba(0,0,0,.35); z-index: 39; }
-    
     @media (max-width: 900px) {
       .menu-toggle { display: block; }
       .sidebar { transform: translateX(-100%); }
@@ -97,6 +99,7 @@
     <nav>
       <a href="painel.html"><span class="icone">📊</span> Visão geral</a>
       <a href="propriedades.html" class="ativo"><span class="icone">🌾</span> Propriedades</a>
+      <a href="talhoes.html"><span class="icone">🔲</span> Talhões</a>
       <a href="#"><span class="icone">🧪</span> Amostras</a>
       <a href="#"><span class="icone">🗺️</span> Mapas</a>
     </nav>
@@ -162,11 +165,10 @@
             <th>Área (ha)</th>
             <th>Endereço</th>
             <th>Status</th>
+            <th>Ações</th>
           </tr>
         </thead>
-        <tbody id="corpoTabela">
-          <!-- Preenchido via JS -->
-        </tbody>
+        <tbody id="corpoTabela"></tbody>
       </table>
       <div id="vazioTabela" style="display: none; text-align: center; color: var(--cinza); padding: 20px;">
         Nenhuma propriedade cadastrada ainda.
@@ -207,7 +209,6 @@
 
     // --- Funções de API ---
     async function carregarPropriedades() {
-      // Requisição POST no formato que o seu API.gs espera
       const payload = {
         action: "listarPropriedades",
         idToken: idTokenAtual
@@ -216,14 +217,13 @@
       try {
         const resposta = await fetch(SoloSmart.URL_API, {
           method: "POST",
-          headers: { "Content-Type": "text/plain" }, // text/plain evita bloqueio CORS do Apps Script
+          headers: { "Content-Type": "text/plain" }, 
           body: JSON.stringify(payload)
         });
         
         const dados = await resposta.json();
         document.getElementById("loadingTabela").style.display = "none";
 
-        // O seu API.gs retorna { sucesso: true, resultado: [...] }
         if (!dados.sucesso) {
           throw new Error(dados.mensagem || "Erro ao carregar propriedades.");
         }
@@ -243,7 +243,9 @@
 
       corpo.innerHTML = "";
 
-      if (!propriedades || propriedades.length === 0) {
+      const ativas = propriedades.filter(p => p.status !== "inativa");
+
+      if (!ativas || ativas.length === 0) {
         tabela.style.display = "none";
         vazio.style.display = "block";
         return;
@@ -252,7 +254,7 @@
       tabela.style.display = "table";
       vazio.style.display = "none";
 
-      propriedades.forEach(p => {
+      ativas.forEach(p => {
         const tr = document.createElement("tr");
         const statusClass = p.status === "ativa" ? "" : "inativa";
         
@@ -261,9 +263,58 @@
           <td><span class="badge">${p.area_hectares || 0}</span></td>
           <td>${p.endereco || '-'}</td>
           <td><span class="badge ${statusClass}">${p.status || 'ativa'}</span></td>
+          <td>
+            <button class="btn-excluir" data-id="${p.propriedade_id}">Excluir</button>
+          </td>
         `;
         corpo.appendChild(tr);
       });
+
+      // Adiciona evento de clique nos botões gerados
+      document.querySelectorAll(".btn-excluir").forEach(btn => {
+        btn.addEventListener("click", function() {
+          const id = this.getAttribute("data-id");
+          excluirPropriedade(id, this);
+        });
+      });
+    }
+
+    // --- Excluir Propriedade ---
+    async function excluirPropriedade(id, botao) {
+      if (!confirm("Tem certeza que deseja excluir esta propriedade?")) return;
+
+      botao.disabled = true;
+      botao.textContent = "Excluindo...";
+
+      idTokenAtual = await firebase.auth().currentUser.getIdToken(true);
+
+      const payload = {
+        action: "excluirPropriedade", 
+        idToken: idTokenAtual,
+        id: id
+      };
+
+      try {
+        const resposta = await fetch(SoloSmart.URL_API, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain" }, 
+          body: JSON.stringify(payload)
+        });
+
+        const dados = await resposta.json();
+
+        if (!dados.sucesso) {
+          throw new Error(dados.mensagem || "Erro ao excluir.");
+        }
+
+        mostrarMensagem("Propriedade excluída com sucesso!", "sucesso");
+        await carregarPropriedades();
+
+      } catch (erro) {
+        mostrarMensagem(erro.message, "erro");
+        botao.disabled = false;
+        botao.textContent = "Excluir";
+      }
     }
 
     // --- Submit do Formulário ---
@@ -282,11 +333,10 @@
         endereco: document.getElementById("cidade").value.trim()
       };
 
-      // Formato esperado pelo seu API.gs
       const payload = {
         action: "criarPropriedade", 
         idToken: idTokenAtual,
-        dados: novaPropriedade // o seu API.gs espera os campos dentro de "dados"
+        dados: novaPropriedade
       };
 
       try {
