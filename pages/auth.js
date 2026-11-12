@@ -13,7 +13,8 @@ const firebaseConfig = {
   measurementId: "G-9G79YVZ2XM"
 };
 
-const URL_API = "https://script.google.com/macros/s/AKfycbzXg7vBvdEbX5wkr5vR_JbOajFqQH9N1-p1LnKnT5RTGv4lS9dYZXWCjsTOxG4P8n_A/exec";
+// URL ATUALIZADA DO APPS SCRIPT (Novo Deploy)
+const URL_API = "https://script.google.com/macros/s/AKfycbwxfcV4xnMqIGUx0GLZKPmgN1gYR-qjSRZMPX12FSCNR4Iir8akGsVYp5BpIJtXshjs/exec";
 
 if (typeof firebase !== "undefined") {
   if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
@@ -87,17 +88,6 @@ const SoloSmart = (function () {
 
   // ---------- Proteção de páginas privadas ----------
 
-  /**
-   * Protege uma página. Redireciona para login se:
-   *  - não houver sessão Firebase ativa
-   *  - e-mail não verificado
-   *  - backend não autorizar o acesso
-   *
-   * @param {Object} opcoes
-   * @param {string} [opcoes.paginaLogin="login.html"]
-   * @param {boolean} [opcoes.forcarRevalidacaoBackend=false]
-   * @returns {Promise<Object>} dados do usuário SoloSmart
-   */
   function protegerPagina(opcoes = {}) {
     const paginaLogin = opcoes.paginaLogin || "login.html";
 
@@ -134,7 +124,6 @@ const SoloSmart = (function () {
         } catch (erro) {
           console.error("Falha ao proteger página:", erro);
           limparSessaoLocal();
-          // Envia para login com motivo para exibir mensagem
           const motivo = encodeURIComponent(erro.message || "Acesso não autorizado.");
           window.location.href = `${paginaLogin}?erro=${motivo}`;
           reject(erro);
