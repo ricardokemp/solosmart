@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapas | SoloSmart</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Biblioteca do Mapa (Leaflet) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <style>
+    :root {
+      --verde: #236b45; --verde-escuro: #174b31; --verde-claro: #e9f5ed;
+      --fundo: #f3f7f3; --texto: #203229; --cinza: #66756c; --borda: #dce6de;
+      --branco: #ffffff; --sidebar-w: 260px; --header-h: 64px;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: var(--fundo); color: var(--texto); font-family: 'DM Sans', Arial, sans-serif; display: flex; flex-direction: column; }
+    
+    /* Layout Base */
+    .topbar { position: fixed; top: 0; left: 0; right: 0; height: var(--header-h); background: #fff; border-bottom: 1px solid var(--borda); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 50; box-shadow: 0 2px 10px rgba(28,65,43,.04); }
+    .marca { display: flex; align-items: center; gap: 12px; font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 18px; color: var(--verde-escuro); }
+    .simbolo { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 10px; background: var(--verde); color: #fff; font-size: 20px; }
+    .menu-toggle { display: none; background: none; border: 0; font-size: 22px; color: var(--verde-escuro); cursor: pointer; padding: 6px; }
+    .topbar-acoes { display: flex; align-items: center; gap: 14px; }
+    .usuario-topo { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--cinza); }
+    .avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--verde-claro); color: var(--verde); display: grid; place-items: center; font-weight: 800; }
+    .botao-sair { background: #fff0f0; color: #8a2525; border: 1px solid #f5c2c2; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
+    
+    .sidebar { position: fixed; top: var(--header-h); left: 0; bottom: 0; width: var(--sidebar-w); background: #fff; border-right: 1px solid var(--borda); padding: 20px 0; overflow-y: auto; z-index: 40; transition: transform .25s ease; }
+    .sidebar-secao { padding: 0 20px; margin-bottom: 8px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; color: var(--cinza); }
+    .sidebar nav { display: flex; flex-direction: column; gap: 2px; margin-bottom: 18px; }
+    .sidebar a { display: flex; align-items: center; gap: 11px; padding: 10px 20px; color: var(--texto); text-decoration: none; font-size: 14px; font-weight: 600; border-left: 3px solid transparent; transition: .15s; }
+    .sidebar a:hover { background: var(--verde-claro); color: var(--verde-escuro); }
+    .sidebar a.ativo { background: var(--verde-claro); color: var(--verde-escuro); border-left-color: var(--verde); }
+    .sidebar a .icone { font-size: 17px; width: 22px; text-align: center; }
+    
+    /* Conteúdo Principal (Ajustado para o Mapa) */
+    .conteudo { margin-left: var(--sidebar-w); margin-top: var(--header-h); padding: 24px 32px; display: flex; flex-direction: column; flex: 1; height: calc(100vh - var(--header-h)); }
+    .pagina-titulo { margin-bottom: 20px; }
+    .pagina-titulo h1 { font-family: 'Manrope', sans-serif; font-size: 26px; color: var(--verde-escuro); margin: 0 0 6px; letter-spacing: -.5px; }
+    .pagina-titulo p { color: var(--cinza); font-size: 14px; margin: 0; }
+
+    /* Container do Mapa */
+    .cartao-mapa { background: #fff; border: 1px solid var(--borda); border-radius: 14px; padding: 12px; box-shadow: 0 6px 18px rgba(28,65,43,.05); flex: 1; display: flex; flex-direction: column; position: relative; }
+    #map { width: 100%; height: 100%; border-radius: 8px; z-index: 1; }
+    .loading-mapa { position: absolute; inset: 0; background: rgba(255,255,255,0.8); display: flex; align-items: center; justify-content: center; z-index: 10; border-radius: 14px; font-weight: 700; color: var(--verde-escuro); }
+    
+    .overlay { display: none; position: fixed; inset: var(--header-h) 0 0 0; background: rgba(0,0,0,.35); z-index: 39; }
+    
+    /* Estilo do Popup do Leaflet */
+    .leaflet-popup-content { font-family: 'DM Sans', Arial, sans-serif; margin: 14px; line-height: 1.5; }
+    .leaflet-popup-content h4 { margin: 0 0 5px; color: var(--verde-escuro); font-size: 15px; }
+    .leaflet-popup-content p { margin: 0; font-size: 12px; color: var(--cinza); }
+    
+    @media (max-width: 900px) {
+      .menu-toggle { display: block; }
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.aberta { transform: translateX(0); }
+      .conteudo { margin-left: 0; padding: 20px; height: calc(100vh - var(--header-h)); }
+      .overlay.ativo { display: block; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="marca">
+      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">☰</button>
+      <div class="simbolo">🌱</div>
+      <span>SoloSmart</span>
+    </div>
+    <div class="topbar-acoes">
+      <div class="usuario-topo">
+        <div class="avatar" id="avatarTopo">?</div>
+        <span class="nome-topo" id="nomeTopo">Carregando...</span>
+      </div>
+      <button id="botaoSair" class="botao-sair">Sair</button>
+    </div>
+  </header>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-secao">Principal</div>
+    <nav>
+      <a href="painel.html"><span class="icone">📊</span> Visão geral</a>
+      <a href="propriedades.html"><span class="icone">🌾</span> Propriedades</a>
+      <a href="talhoes.html"><span class="icone">🔲</span> Talhões</a>
+      <a href="amostras.html"><span class="icone">🧪</span> Amostras</a>
+      <a href="mapas.html" class="ativo"><span class="icone">🗺️</span> Mapas</a>
+    </nav>
+    <div class="sidebar-secao">Gestão</div>
+    <nav>
+      <a href="campanhas.html"><span class="icone">📋</span> Campanhas</a>
+      <a href="#"><span class="icone">📷</span> Fotografias</a>
+      <a href="#"><span class="icone">📡</span> Dispositivos IoT</a>
+      <a href="#"><span class="icone">📈</span> Relatórios</a>
+    </nav>
+    <div class="sidebar-secao">Conta</div>
+    <nav>
+      <a href="#"><span class="icone">👤</span> Meu perfil</a>
+      <a href="#"><span class="icone">🏢</span> Empresa</a>
+      <a href="#"><span class="icone">⚙️</span> Configurações</a>
+    </nav>
+  </aside>
+
+  <div class="overlay" id="overlay"></div>
+
+  <main class="conteudo">
+    <div class="pagina-titulo">
+      <h1>Mapa de Amostras</h1>
+      <p>Visualização geográfica dos pontos de coleta da sua empresa.</p>
+    </div>
+
+    <div class="cartao-mapa">
+      <div id="loading-mapa" class="loading-mapa">Carregando mapa e amostras...</div>
+      <div id="map"></div>
+    </div>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="auth.js"></script>
+
+  <script>
+    let idTokenAtual = "";
+    let mapa = null;
+
+    // Inicializa a página
+    (async function () {
+      try {
+        // 1. Protege a página
+        const usuario = await SoloSmart.protegerPagina({ paginaLogin: "login.html" });
+        
+        // 2. Atualiza header
+        const nome = usuario.nome || usuario.email || "?";
+        document.getElementById("nomeTopo").textContent = nome;
+        document.getElementById("avatarTopo").textContent = nome.charAt(0).toUpperCase();
+
+        // 3. Pega o token
+        idTokenAtual = await firebase.auth().currentUser.getIdToken(true);
+
+        // 4. Desenha o mapa base (Centro do Brasil por padrão)
+        mapa = L.map('map').setView([-15.7801, -47.9292], 4);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '© OpenStreetMap contributors'
+        }).addTo(mapa);
+
+        // 5. Busca e plota as amostras
+        await carregarAmostrasNoMapa();
+
+      } catch (e) {
+        console.error("Erro ao inicializar mapa:", e);
+      }
+    })();
+
+    async function carregarAmostrasNoMapa() {
+      const payload = { action: "listarAmostras", idToken: idTokenAtual };
+      
+      try {
+        const resposta = await fetch(SoloSmart.URL_API, {
+          method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payload)
+        });
+        const dados = await resposta.json();
+        
+        document.getElementById("loading-mapa").style.display = "none";
+
+        if (!dados.sucesso) throw new Error(dados.mensagem || "Erro ao buscar amostras.");
+
+        const amostras = dados.resultado.filter(a => a.status !== "inativa");
+        
+        // Se não tem amostras, avisa
+        if (amostras.length === 0) {
+          alert("Nenhuma amostra cadastrada para exibir no mapa.");
+          return;
+        }
+
+        // Cria um ícone customizado verde para os pinos
+        const iconeVerde = L.divIcon({
+          className: 'custom-div-icon',
+          html: "<div style='background-color:#236b45; width:14px; height:14px; border-radius:50%; border:2px solid white; box-shadow: 0 0 4px rgba(0,0,0,0.5);'></div>",
+          iconSize: [20, 20],
+          iconAnchor: [10, 10]
+        });
+
+        const limites = [];
+
+        amostras.forEach(a => {
+          // Verifica se a amostra tem coordenadas válidas
+          if (a.latitude && a.longitude) {
+            const lat = parseFloat(a.latitude);
+            const lng = parseFloat(a.longitude);
+
+            // Cria o pino
+            const marker = L.marker([lat, lng], { icon: iconeVerde }).addTo(mapa);
+
+            // Adiciona o balão de informações
+            const dataFormatada = a.data_coleta ? new Date(a.data_coleta).toLocaleDateString('pt-BR') : 'Sem data';
+            marker.bindPopup(`
+              <h4>Amostra #${a.amostra_id.substring(0,4)}</h4>
+              <p><strong>Data:</strong> ${dataFormatada}</p>
+              <p><strong>Profundidade:</strong> ${a.profundidade_cm || 0} cm</p>
+            `);
+
+            limites.push([lat, lng]);
+          }
+        });
+
+        // Ajusta o zoom para mostrar todos os pinos na tela
+        if (limites.length > 0) {
+          mapa.fitBounds(limites, { padding: [50, 50] });
+        }
+
+      } catch (erro) {
+        document.getElementById("loading-mapa").style.display = "none";
+        alert("Erro ao carregar o mapa: " + erro.message);
+      }
+    }
+
+    // Logout e Menu
+    document.getElementById("botaoSair").addEventListener("click", () => SoloSmart.sair());
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+    document.getElementById("menuToggle").addEventListener("click", () => {
+      sidebar.classList.toggle("aberta"); overlay.classList.toggle("ativo");
+    });
+    overlay.addEventListener("click", () => {
+      sidebar.classList.remove("aberta"); overlay.classList.remove("ativo");
+    });
+  </script>
+</body>
+</html>
