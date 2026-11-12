@@ -121,12 +121,12 @@
       <a href="painel.html" class="ativo"><span class="icone">📊</span> Visão geral</a>
       <a href="propriedades.html"><span class="icone">🌾</span> Propriedades</a>
       <a href="talhoes.html"><span class="icone">🔲</span> Talhões</a>
-      <a href="#"><span class="icone">🧪</span> Amostras</a>
+      <!-- Link de Amostras corrigido -->
+      <a href="amostras.html"><span class="icone">🧪</span> Amostras</a>
       <a href="#"><span class="icone">🗺️</span> Mapas</a>
     </nav>
     <div class="sidebar-secao">Gestão</div>
     <nav>
-      <!-- Link de Campanhas corrigido -->
       <a href="campanhas.html"><span class="icone">📋</span> Campanhas</a>
       <a href="#"><span class="icone">📷</span> Fotografias</a>
       <a href="#"><span class="icone">📡</span> Dispositivos IoT</a>
@@ -168,16 +168,16 @@
         <div class="kpi-valor" id="kpiTalhoes">--</div>
         <div class="kpi-detalhe">Divisões de área</div>
       </div>
-      <!-- KPI de Campanhas adicionado -->
       <div class="kpi">
         <div class="kpi-label">Campanhas</div>
         <div class="kpi-valor" id="kpiCampanhas">--</div>
         <div class="kpi-detalhe">Coletas organizadas</div>
       </div>
+      <!-- KPI de Amostras -->
       <div class="kpi">
-        <div class="kpi-label">Dispositivos IoT</div>
-        <div class="kpi-valor">--</div>
-        <div class="kpi-detalhe">Aguardando módulo</div>
+        <div class="kpi-label">Amostras</div>
+        <div class="kpi-valor" id="kpiAmostras">--</div>
+        <div class="kpi-detalhe">Pontos registrados</div>
       </div>
     </section>
 
@@ -213,10 +213,10 @@
           <strong>Campanhas</strong>
           <span>Organizar coletas de solo</span>
         </a>
-        <a class="atalho" href="#">
-          <div class="atalho-icone">📈</div>
-          <strong>Relatórios</strong>
-          <span>Históricos e indicadores</span>
+        <a class="atalho" href="amostras.html">
+          <div class="atalho-icone">🧪</div>
+          <strong>Amostras</strong>
+          <span>Registrar coletas do solo</span>
         </a>
       </div>
     </section>
@@ -260,7 +260,7 @@
           document.getElementById("kpiTalhoes").textContent = ativos.length;
         }
 
-        // Campanhas (Novo KPI)
+        // Campanhas
         const payloadCamp = { action: "listarCampanhas", idToken: idToken };
         const resCamp = await fetch(SoloSmart.URL_API, { method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payloadCamp) });
         const dadosCamp = await resCamp.json();
@@ -268,6 +268,16 @@
         if (dadosCamp.sucesso && dadosCamp.resultado) {
           const ativas = dadosCamp.resultado.filter(c => c.status !== "inativa");
           document.getElementById("kpiCampanhas").textContent = ativas.length;
+        }
+
+        // Amostras (Novo KPI)
+        const payloadAmostra = { action: "listarAmostras", idToken: idToken };
+        const resAmostra = await fetch(SoloSmart.URL_API, { method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payloadAmostra) });
+        const dadosAmostra = await resAmostra.json();
+        
+        if (dadosAmostra.sucesso && dadosAmostra.resultado) {
+          const ativas = dadosAmostra.resultado.filter(a => a.status !== "inativa");
+          document.getElementById("kpiAmostras").textContent = ativas.length;
         }
 
       } catch (e) {
