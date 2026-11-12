@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fotografias | SoloSmart</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --verde: #236b45; --verde-escuro: #174b31; --verde-claro: #e9f5ed;
+      --fundo: #f3f7f3; --texto: #203229; --cinza: #66756c; --borda: #dce6de;
+      --branco: #ffffff; --sidebar-w: 260px; --header-h: 64px;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: var(--fundo); color: var(--texto); font-family: 'DM Sans', Arial, sans-serif; }
+    
+    /* Layout Base */
+    .topbar { position: fixed; top: 0; left: 0; right: 0; height: var(--header-h); background: #fff; border-bottom: 1px solid var(--borda); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 50; box-shadow: 0 2px 10px rgba(28,65,43,.04); }
+    .marca { display: flex; align-items: center; gap: 12px; font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 18px; color: var(--verde-escuro); }
+    .simbolo { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 10px; background: var(--verde); color: #fff; font-size: 20px; }
+    .menu-toggle { display: none; background: none; border: 0; font-size: 22px; color: var(--verde-escuro); cursor: pointer; padding: 6px; }
+    .topbar-acoes { display: flex; align-items: center; gap: 14px; }
+    .usuario-topo { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--cinza); }
+    .avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--verde-claro); color: var(--verde); display: grid; place-items: center; font-weight: 800; }
+    .botao-sair { background: #fff0f0; color: #8a2525; border: 1px solid #f5c2c2; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
+    
+    .sidebar { position: fixed; top: var(--header-h); left: 0; bottom: 0; width: var(--sidebar-w); background: #fff; border-right: 1px solid var(--borda); padding: 20px 0; overflow-y: auto; z-index: 40; transition: transform .25s ease; }
+    .sidebar-secao { padding: 0 20px; margin-bottom: 8px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; color: var(--cinza); }
+    .sidebar nav { display: flex; flex-direction: column; gap: 2px; margin-bottom: 18px; }
+    .sidebar a { display: flex; align-items: center; gap: 11px; padding: 10px 20px; color: var(--texto); text-decoration: none; font-size: 14px; font-weight: 600; border-left: 3px solid transparent; transition: .15s; }
+    .sidebar a:hover { background: var(--verde-claro); color: var(--verde-escuro); }
+    .sidebar a.ativo { background: var(--verde-claro); color: var(--verde-escuro); border-left-color: var(--verde); }
+    .sidebar a .icone { font-size: 17px; width: 22px; text-align: center; }
+    
+    /* Conteúdo Principal */
+    .conteudo { margin-left: var(--sidebar-w); margin-top: var(--header-h); padding: 32px 32px 60px; min-height: calc(100vh - var(--header-h)); }
+    .pagina-titulo { margin-bottom: 28px; }
+    .pagina-titulo h1 { font-family: 'Manrope', sans-serif; font-size: 26px; color: var(--verde-escuro); margin: 0 0 6px; letter-spacing: -.5px; }
+    .pagina-titulo p { color: var(--cinza); font-size: 14px; margin: 0; }
+    
+    /* Formulário */
+    .cartao { background: #fff; border: 1px solid var(--borda); border-radius: 14px; padding: 24px; box-shadow: 0 6px 18px rgba(28,65,43,.05); margin-bottom: 24px; }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; align-items: end; }
+    .campo { display: flex; flex-direction: column; gap: 6px; }
+    .campo label { font-size: 12px; font-weight: 700; color: var(--texto); }
+    .campo input[type="text"], .campo select { padding: 12px 14px; border: 1px solid var(--borda); border-radius: 8px; font-family: inherit; font-size: 14px; outline: none; background: #fff; }
+    .campo input[type="file"] { padding: 9px; border: 1px dashed var(--verde); border-radius: 8px; background: var(--verde-claro); cursor: pointer; font-size: 13px; }
+    .btn { padding: 12px 20px; border: 0; border-radius: 8px; background: var(--verde); color: #fff; font-weight: 700; font-size: 14px; cursor: pointer; transition: .15s; font-family: inherit; display: inline-flex; justify-content: center; align-items: center; gap: 6px; width: 100%; }
+    .btn:hover { background: var(--verde-escuro); }
+    .btn:disabled { opacity: .6; cursor: wait; }
+    
+    /* Galeria de Fotos */
+    .galeria { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+    .foto-card { background: #fff; border: 1px solid var(--borda); border-radius: 14px; overflow: hidden; box-shadow: 0 4px 12px rgba(28,65,43,.05); display: flex; flex-direction: column; }
+    .foto-img { width: 100%; height: 160px; object-fit: cover; background: #e5e5e5; }
+    .foto-info { padding: 14px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+    .foto-info strong { font-size: 14px; color: var(--verde-escuro); }
+    .foto-info span { font-size: 11px; color: var(--cinza); }
+    .foto-acoes { padding: 10px 14px; border-top: 1px solid var(--borda); display: flex; gap: 8px; }
+    .btn-acao { flex: 1; padding: 8px; text-align: center; border-radius: 6px; font-size: 12px; font-weight: 700; text-decoration: none; cursor: pointer; border: none; }
+    .btn-abrir { background: var(--verde-claro); color: var(--verde-escuro); }
+    .btn-excluir { background: #fff0f0; color: #8a2525; }
+    
+    .mensagem { display: none; padding: 14px; margin-bottom: 20px; border-radius: 8px; font-size: 14px; }
+    .mensagem.sucesso { display: block; background: #edf8ef; color: #205d38; }
+    .mensagem.erro { display: block; background: #fff0f0; color: #8a2525; }
+    .loading { text-align: center; color: var(--cinza); padding: 20px; }
+    
+    .overlay { display: none; position: fixed; inset: var(--header-h) 0 0 0; background: rgba(0,0,0,.35); z-index: 39; }
+    @media (max-width: 900px) {
+      .menu-toggle { display: block; }
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.aberta { transform: translateX(0); }
+      .conteudo { margin-left: 0; padding: 24px 20px 60px; }
+      .overlay.ativo { display: block; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="marca">
+      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">☰</button>
+      <div class="simbolo">🌱</div>
+      <span>SoloSmart</span>
+    </div>
+    <div class="topbar-acoes">
+      <div class="usuario-topo">
+        <div class="avatar" id="avatarTopo">?</div>
+        <span class="nome-topo" id="nomeTopo">Carregando...</span>
+      </div>
+      <button id="botaoSair" class="botao-sair">Sair</button>
+    </div>
+  </header>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-secao">Principal</div>
+    <nav>
+      <a href="painel.html"><span class="icone">📊</span> Visão geral</a>
+      <a href="propriedades.html"><span class="icone">🌾</span> Propriedades</a>
+      <a href="talhoes.html"><span class="icone">🔲</span> Talhões</a>
+      <a href="amostras.html"><span class="icone">🧪</span> Amostras</a>
+      <a href="mapas.html"><span class="icone">🗺️</span> Mapas</a>
+    </nav>
+    <div class="sidebar-secao">Gestão</div>
+    <nav>
+      <a href="campanhas.html"><span class="icone">📋</span> Campanhas</a>
+      <a href="fotografias.html" class="ativo"><span class="icone">📷</span> Fotografias</a>
+      <a href="#"><span class="icone">📡</span> Dispositivos IoT</a>
+      <a href="#"><span class="icone">📈</span> Relatórios</a>
+    </nav>
+    <div class="sidebar-secao">Conta</div>
+    <nav>
+      <a href="#"><span class="icone">👤</span> Meu perfil</a>
+      <a href="#"><span class="icone">🏢</span> Empresa</a>
+      <a href="#"><span class="icone">⚙️</span> Configurações</a>
+    </nav>
+  </aside>
+
+  <div class="overlay" id="overlay"></div>
+
+  <main class="conteudo">
+    <div class="pagina-titulo">
+      <h1>Fotografias</h1>
+      <p>Registre imagens do solo e das culturas vinculadas às amostras.</p>
+    </div>
+
+    <div id="mensagem" class="mensagem"></div>
+
+    <!-- Formulário -->
+    <div class="cartao">
+      <h2 style="font-family: 'Manrope', sans-serif; font-size: 18px; color: var(--verde-escuro); margin: 0 0 20px;">Nova Fotografia</h2>
+      <form id="formFoto" class="form-grid">
+        
+        <div class="campo" style="grid-column: 1 / -1;">
+          <label for="amostra">Amostra Vinculada *</label>
+          <select id="amostra" required>
+            <option value="">Carregando amostras...</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="foto">Selecionar Imagem *</label>
+          <input id="foto" type="file" accept="image/png, image/jpeg" required>
+        </div>
+
+        <div class="campo">
+          <label for="observacoes">Observações</label>
+          <input id="observacoes" type="text" placeholder="Ex: Perfil do solo">
+        </div>
+
+        <div class="campo">
+          <button type="submit" id="btnSalvar" class="btn">Enviar Fotografia</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Galeria -->
+    <h2 style="font-family: 'Manrope', sans-serif; font-size: 18px; color: var(--verde-escuro); margin: 30px 0 16px;">Galeria de Fotos</h2>
+    
+    <div id="loadingGaleria" class="loading">Carregando galeria...</div>
+    
+    <div id="galeria" class="galeria" style="display: none;">
+      <!-- Os cartões de foto serão inseridos aqui pelo JS -->
+    </div>
+    <div id="vazioGaleria" style="display: none; text-align: center; color: var(--cinza); padding: 20px;">
+      Nenhuma fotografia cadastrada ainda.
+    </div>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="auth.js"></script>
+
+  <script>
+    let idTokenAtual = "";
+    let listaAmostras = [];
+
+    function mostrarMensagem(texto, tipo) {
+      const el = document.getElementById("mensagem");
+      el.textContent = texto;
+      el.className = "mensagem " + tipo;
+      setTimeout(() => { el.className = "mensagem"; }, 5000);
+    }
+
+    function formatarData(iso) {
+      if (!iso) return "-";
+      const d = new Date(iso);
+      return isNaN(d) ? iso : d.toLocaleDateString('pt-BR');
+    }
+
+    // Inicialização
+    (async function () {
+      try {
+        const usuario = await SoloSmart.protegerPagina({ paginaLogin: "login.html" });
+        
+        const nome = usuario.nome || usuario.email || "?";
+        document.getElementById("nomeTopo").textContent = nome;
+        document.getElementById("avatarTopo").textContent = nome.charAt(0).toUpperCase();
+
+        idTokenAtual = await firebase.auth().currentUser.getIdToken(true);
+        
+        await carregarAmostrasSelect();
+        await carregarGaleria();
+
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+
+    // --- Funções de API ---
+    
+    async function carregarAmostrasSelect() {
+      const payload = { action: "listarAmostras", idToken: idTokenAtual };
+      try {
+        const resposta = await fetch(SoloSmart.URL_API, {
+          method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payload)
+        });
+        const dados = await resposta.json();
+        
+        if (dados.sucesso && dados.resultado) {
+          listaAmostras = dados.resultado.filter(a => a.status !== "inativa");
+          
+          const select = document.getElementById("amostra");
+          select.innerHTML = '<option value="">Selecione uma amostra</option>';
+          
+          listaAmostras.forEach(a => {
+            const opt = document.createElement("option");
+            opt.value = a.amostra_id;
+            // Mostra o ID curto da amostra + a data
+            opt.textContent = `#${a.amostra_id.substring(0,4)} - ${a.data_coleta ? formatarData(a.data_coleta) : 'Sem data'}`;
+            select.appendChild(opt);
+          });
+        }
+      } catch (e) {
+        console.error("Erro ao carregar amostras:", e);
+      }
+    }
+
+    async function carregarGaleria() {
+      const payload = { action: "listarFotografias", idToken: idTokenAtual };
+      
+      try {
+        const resposta = await fetch(SoloSmart.URL_API, {
+          method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payload)
+        });
+        const dados = await resposta.json();
+        
+        document.getElementById("loadingGaleria").style.display = "none";
+
+        if (!dados.sucesso) throw new Error(dados.mensagem || "Erro ao carregar galeria.");
+
+        renderizarGaleria(dados.resultado);
+
+      } catch (erro) {
+        document.getElementById("loadingGaleria").style.display = "none";
+        mostrarMensagem(erro.message, "erro");
+      }
+    }
+
+    function renderizarGaleria(fotos) {
+      const galeria = document.getElementById("galeria");
+      const vazia = document.getElementById("vazioGaleria");
+
+      galeria.innerHTML = "";
+
+      if (!fotos || fotos.length === 0) {
+        galeria.style.display = "none";
+        vazia.style.display = "block";
+        return;
+      }
+
+      galeria.style.display = "grid";
+      vazia.style.display = "none";
+
+      fotos.forEach(f => {
+        // Encontra a amostra vinculada para exibir no card
+        const amostra = listaAmostras.find(a => a.amostra_id === f.amostra_id);
+        const idCurto = amostra ? `#${amostra.amostra_id.substring(0,4)}` : "Desconhecida";
+
+        // O Google Drive fornece um link de visualização direta trocando o final do link
+        let urlImg = f.arquivo_url || "";
+        if (urlImg.includes("drive.google.com")) {
+          // Extrai o ID do arquivo e monta um link direto para imagem
+          const match = urlImg.match(/[-\w]{25,}/);
+          if (match) {
+            urlImg = `https://drive.google.com/thumbnail?id=${match[0]}&sz=w400`;
+          }
+        }
+
+        const div = document.createElement("div");
+        div.className = "foto-card";
+        div.innerHTML = `
+          <img src="${urlImg}" class="foto-img" alt="Foto da amostra" loading="lazy">
+          <div class="foto-info">
+            <strong>Amostra ${idCurto}</strong>
+            <span>Enviado em: ${formatarData(f.data_upload)}</span>
+            ${f.observacoes ? `<span>${f.observacoes}</span>` : ''}
+          </div>
+          <div class="foto-acoes">
+            <a href="${f.arquivo_url}" target="_blank" class="btn-acao btn-abrir">Abrir</a>
+            <button class="btn-acao btn-excluir" data-id="${f.foto_id}">Excluir</button>
+          </div>
+        `;
+        galeria.appendChild(div);
+      });
+
+      // Adiciona evento de excluir
+      document.querySelectorAll(".btn-excluir").forEach(btn => {
+        btn.addEventListener("click", function() {
+          const id = this.getAttribute("data-id");
+          excluirFoto(id, this);
+        });
+      });
+    }
+
+    // --- Excluir Fotografia ---
+    async function excluirFoto(id, botao) {
+      if (!confirm("Tem certeza que deseja excluir esta fotografia?")) return;
+
+      botao.disabled = true;
+      botao.textContent = "Excluindo...";
+
+      idTokenAtual = await firebase.auth().currentUser.getIdToken(true);
+
+      const payload = {
+        action: "excluirFotografia", 
+        idToken: idTokenAtual,
+        id: id
+      };
+
+      try {
+        const resposta = await fetch(SoloSmart.URL_API, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain" }, 
+          body: JSON.stringify(payload)
+        });
+
+        const dados = await resposta.json();
+
+        if (!dados.sucesso) throw new Error(dados.mensagem || "Erro ao excluir.");
+
+        mostrarMensagem("Fotografia excluída com sucesso!", "sucesso");
+        await carregarGaleria();
+
+      } catch (erro) {
+        mostrarMensagem(erro.message, "erro");
+        botao.disabled = false;
+        botao.textContent = "Excluir";
+      }
+    }
+
+    // --- Upload da Nova Foto ---
+    document.getElementById("formFoto").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const btn = document.getElementById("btnSalvar");
+      const fileInput = document.getElementById("foto");
+      
+      if (fileInput.files.length === 0) {
+        mostrarMensagem("Selecione uma imagem.", "erro");
+        return;
+      }
+
+      const arquivo = fileInput.files[0];
+      // Limite de segurança do Apps Script (aprox 5MB)
+      if (arquivo.size > 4 * 1024 * 1024) {
+        mostrarMensagem("A imagem é muito grande. Escolha uma foto com menos de 4MB.", "erro");
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "Enviando...";
+
+      // Lê o arquivo como Base64
+      const reader = new FileReader();
+      reader.onload = async function(event) {
+        const base64Data = event.target.result;
+
+        idTokenAtual = await firebase.auth().currentUser.getIdToken(true);
+
+        const novaFoto = {
+          amostra_id: document.getElementById("amostra").value,
+          observacoes: document.getElementById("observacoes").value.trim(),
+          nome_arquivo: arquivo.name,
+          mime_type: arquivo.type,
+          base64: base64Data
+        };
+
+        const payload = {
+          action: "criarFotografia", 
+          idToken: idTokenAtual,
+          dados: novaFoto
+        };
+
+        try {
+          const resposta = await fetch(SoloSmart.URL_API, {
+            method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payload)
+          });
+          const dados = await resposta.json();
+
+          if (!dados.sucesso) throw new Error(dados.mensagem || "Erro ao salvar.");
+
+          mostrarMensagem("Fotografia enviada com sucesso!", "sucesso");
+          document.getElementById("formFoto").reset();
+          await carregarGaleria();
+
+        } catch (erro) {
+          mostrarMensagem(erro.message, "erro");
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "Enviar Fotografia";
+        }
+      };
+      
+      reader.readAsDataURL(arquivo);
+    });
+
+    // Logout e Menu
+    document.getElementById("botaoSair").addEventListener("click", () => SoloSmart.sair());
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+    document.getElementById("menuToggle").addEventListener("click", () => {
+      sidebar.classList.toggle("aberta"); overlay.classList.toggle("ativo");
+    });
+    overlay.addEventListener("click", () => {
+      sidebar.classList.remove("aberta"); overlay.classList.remove("ativo");
+    });
+  </script>
+</body>
+</html>
