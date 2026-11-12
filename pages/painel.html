@@ -126,7 +126,8 @@
     </nav>
     <div class="sidebar-secao">Gestão</div>
     <nav>
-      <a href="#"><span class="icone">📋</span> Campanhas</a>
+      <!-- Link de Campanhas corrigido -->
+      <a href="campanhas.html"><span class="icone">📋</span> Campanhas</a>
       <a href="#"><span class="icone">📷</span> Fotografias</a>
       <a href="#"><span class="icone">📡</span> Dispositivos IoT</a>
       <a href="#"><span class="icone">📈</span> Relatórios</a>
@@ -167,10 +168,11 @@
         <div class="kpi-valor" id="kpiTalhoes">--</div>
         <div class="kpi-detalhe">Divisões de área</div>
       </div>
+      <!-- KPI de Campanhas adicionado -->
       <div class="kpi">
-        <div class="kpi-label">Amostras</div>
-        <div class="kpi-valor">--</div>
-        <div class="kpi-detalhe">Aguardando módulo</div>
+        <div class="kpi-label">Campanhas</div>
+        <div class="kpi-valor" id="kpiCampanhas">--</div>
+        <div class="kpi-detalhe">Coletas organizadas</div>
       </div>
       <div class="kpi">
         <div class="kpi-label">Dispositivos IoT</div>
@@ -206,10 +208,10 @@
           <strong>Talhões</strong>
           <span>Gerenciar áreas de manejo</span>
         </a>
-        <a class="atalho" href="#">
-          <div class="atalho-icone">🧪</div>
-          <strong>Amostras</strong>
-          <span>Registrar coletas do solo</span>
+        <a class="atalho" href="campanhas.html">
+          <div class="atalho-icone">📋</div>
+          <strong>Campanhas</strong>
+          <span>Organizar coletas de solo</span>
         </a>
         <a class="atalho" href="#">
           <div class="atalho-icone">📈</div>
@@ -234,34 +236,38 @@
       }, 300);
     }
 
-    // Busca as contagens (Propriedades e Talhões) via API
+    // Busca as contagens via API
     async function carregarKPIs(idToken) {
       try {
+        // Propriedades
         const payloadProp = { action: "listarPropriedades", idToken: idToken };
-        const resProp = await fetch(SoloSmart.URL_API, {
-          method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payloadProp)
-        });
+        const resProp = await fetch(SoloSmart.URL_API, { method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payloadProp) });
         const dadosProp = await resProp.json();
         
         if (dadosProp.sucesso && dadosProp.resultado) {
           const ativas = dadosProp.resultado.filter(p => p.status !== "inativa");
           document.getElementById("kpiPropriedades").textContent = ativas.length;
-          
-          // Se não tem propriedades, mostra o banner verde
-          if (ativas.length === 0) {
-            document.getElementById("bannerBoasVindas").style.display = "flex";
-          }
+          if (ativas.length === 0) document.getElementById("bannerBoasVindas").style.display = "flex";
         }
 
+        // Talhões
         const payloadTal = { action: "listarTalhoes", idToken: idToken };
-        const resTal = await fetch(SoloSmart.URL_API, {
-          method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payloadTal)
-        });
+        const resTal = await fetch(SoloSmart.URL_API, { method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payloadTal) });
         const dadosTal = await resTal.json();
         
         if (dadosTal.sucesso && dadosTal.resultado) {
           const ativos = dadosTal.resultado.filter(t => t.status !== "inativa");
           document.getElementById("kpiTalhoes").textContent = ativos.length;
+        }
+
+        // Campanhas (Novo KPI)
+        const payloadCamp = { action: "listarCampanhas", idToken: idToken };
+        const resCamp = await fetch(SoloSmart.URL_API, { method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payloadCamp) });
+        const dadosCamp = await resCamp.json();
+        
+        if (dadosCamp.sucesso && dadosCamp.resultado) {
+          const ativas = dadosCamp.resultado.filter(c => c.status !== "inativa");
+          document.getElementById("kpiCampanhas").textContent = ativas.length;
         }
 
       } catch (e) {
