@@ -1066,6 +1066,11 @@
     </footer>
 
     <script>
+        // ============================================================
+        // SOLOSMART API CLIENT
+        // Verificação de status e conexão da API Google Apps Script
+        // ============================================================
+
         // CONFIGURAÇÃO DA API SOLOSMART
 
         const API_URL =
@@ -1111,49 +1116,22 @@
                 '<span class="api-status-dot"></span>' + mensagem;
         }
 
-        // VERIFICAR CONEXÃO COM O BACKEND
+        // VERIFICAR CONEXÃO COM O BACKEND VIA FETCH
 
-        function verificarAPI() {
-            const callbackName =
-                "soloSmartCallback_" + Date.now() +
-                "_" + Math.floor(Math.random() * 100000);
-
-            const script = document.createElement("script");
-
-            let finalizado = false;
-
+        async function verificarAPI() {
             atualizarStatusAPI("", "Verificando conexão");
 
-            function limpar() {
-                clearTimeout(timeout);
+            try {
+                const response = await fetch(API_URL + "?_=" + Date.now(), {
+                    method: "GET",
+                    redirect: "follow"
+                });
 
-                if (script.parentNode) {
-                    script.parentNode.removeChild(script);
+                if (!response.ok) {
+                    throw new Error("Erro HTTP: " + response.status);
                 }
 
-                try {
-                    delete window[callbackName];
-                } catch (erro) {
-                    window[callbackName] = undefined;
-                }
-            }
-
-            const timeout = setTimeout(function () {
-                if (finalizado) return;
-
-                finalizado = true;
-                limpar();
-
-                atualizarStatusAPI(
-                    "offline",
-                    "API indisponível"
-                );
-            }, 12000);
-
-            window[callbackName] = function (resposta) {
-                if (finalizado) return;
-
-                finalizado = true;
+                const resposta = await response.json();
 
                 if (
                     resposta &&
@@ -1171,29 +1149,13 @@
                     );
                 }
 
-                limpar();
-            };
-
-            script.onerror = function () {
-                if (finalizado) return;
-
-                finalizado = true;
-                limpar();
-
+            } catch (erro) {
+                console.error("Erro na conexão com a API:", erro);
                 atualizarStatusAPI(
                     "offline",
                     "Falha na conexão"
                 );
-            };
-
-            script.src =
-                API_URL +
-                "?callback=" + encodeURIComponent(callbackName) +
-                "&_=" + Date.now();
-
-            script.async = true;
-
-            document.body.appendChild(script);
+            }
         }
 
         // EXECUTAR TESTE AO CARREGAR A PÁGINA
