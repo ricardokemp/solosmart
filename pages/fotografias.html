@@ -215,7 +215,9 @@
       const payload = { action: "listarAmostras", idToken: idTokenAtual };
       try {
         const resposta = await fetch(SoloSmart.URL_API, {
-          method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payload)
+          method: "POST", 
+          headers: { "Content-Type": "application/x-www-form-urlencoded" }, 
+          body: "payload=" + encodeURIComponent(JSON.stringify(payload))
         });
         const dados = await resposta.json();
         
@@ -228,7 +230,6 @@
           listaAmostras.forEach(a => {
             const opt = document.createElement("option");
             opt.value = a.amostra_id;
-            // Mostra o ID curto da amostra + a data
             opt.textContent = `#${a.amostra_id.substring(0,4)} - ${a.data_coleta ? formatarData(a.data_coleta) : 'Sem data'}`;
             select.appendChild(opt);
           });
@@ -243,7 +244,9 @@
       
       try {
         const resposta = await fetch(SoloSmart.URL_API, {
-          method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payload)
+          method: "POST", 
+          headers: { "Content-Type": "application/x-www-form-urlencoded" }, 
+          body: "payload=" + encodeURIComponent(JSON.stringify(payload))
         });
         const dados = await resposta.json();
         
@@ -275,17 +278,14 @@
       vazia.style.display = "none";
 
       fotos.forEach(f => {
-        // Encontra a amostra vinculada para exibir no card
         const amostra = listaAmostras.find(a => a.amostra_id === f.amostra_id);
         const idCurto = amostra ? `#${amostra.amostra_id.substring(0,4)}` : "Desconhecida";
 
-        // O Google Drive fornece um link de visualização direta trocando o final do link
         let urlImg = f.arquivo_url || "";
         if (urlImg.includes("drive.google.com")) {
-          // Extrai o ID do arquivo e monta um link direto para imagem
           const match = urlImg.match(/[-\w]{25,}/);
           if (match) {
-            urlImg = `https://drive.google.com/thumbnail?id=${match[0]}&sz=w400`;
+            urlImg = `https://drive.google.com/uc?export=view&id=${match[0]}`;
           }
         }
 
@@ -306,7 +306,6 @@
         galeria.appendChild(div);
       });
 
-      // Adiciona evento de excluir
       document.querySelectorAll(".btn-excluir").forEach(btn => {
         btn.addEventListener("click", function() {
           const id = this.getAttribute("data-id");
@@ -333,8 +332,8 @@
       try {
         const resposta = await fetch(SoloSmart.URL_API, {
           method: "POST",
-          headers: { "Content-Type": "text/plain" }, 
-          body: JSON.stringify(payload)
+          headers: { "Content-Type": "application/x-www-form-urlencoded" }, 
+          body: "payload=" + encodeURIComponent(JSON.stringify(payload))
         });
 
         const dados = await resposta.json();
@@ -364,7 +363,6 @@
       }
 
       const arquivo = fileInput.files[0];
-      // Limite de segurança do Apps Script (aprox 5MB)
       if (arquivo.size > 4 * 1024 * 1024) {
         mostrarMensagem("A imagem é muito grande. Escolha uma foto com menos de 4MB.", "erro");
         return;
@@ -373,7 +371,6 @@
       btn.disabled = true;
       btn.textContent = "Enviando...";
 
-      // Lê o arquivo como Base64
       const reader = new FileReader();
       reader.onload = async function(event) {
         const base64Data = event.target.result;
@@ -396,7 +393,9 @@
 
         try {
           const resposta = await fetch(SoloSmart.URL_API, {
-            method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payload)
+            method: "POST", 
+            headers: { "Content-Type": "application/x-www-form-urlencoded" }, 
+            body: "payload=" + encodeURIComponent(JSON.stringify(payload))
           });
           const dados = await resposta.json();
 
