@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Propriedades | SoloSmart</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --verde: #236b45; --verde-escuro: #174b31; --verde-claro: #e9f5ed;
+      --fundo: #f3f7f3; --texto: #203229; --cinza: #66756c; --borda: #dce6de;
+      --branco: #ffffff; --sidebar-w: 260px; --header-h: 64px;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: var(--fundo); color: var(--texto); font-family: 'DM Sans', Arial, sans-serif; }
+    
+    /* Layout Base (Header e Sidebar) */
+    .topbar { position: fixed; top: 0; left: 0; right: 0; height: var(--header-h); background: #fff; border-bottom: 1px solid var(--borda); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 50; box-shadow: 0 2px 10px rgba(28,65,43,.04); }
+    .marca { display: flex; align-items: center; gap: 12px; font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 18px; color: var(--verde-escuro); }
+    .simbolo { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 10px; background: var(--verde); color: #fff; font-size: 20px; }
+    .menu-toggle { display: none; background: none; border: 0; font-size: 22px; color: var(--verde-escuro); cursor: pointer; padding: 6px; }
+    .topbar-acoes { display: flex; align-items: center; gap: 14px; }
+    .usuario-topo { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--cinza); }
+    .avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--verde-claro); color: var(--verde); display: grid; place-items: center; font-weight: 800; }
+    .botao-sair { background: #fff0f0; color: #8a2525; border: 1px solid #f5c2c2; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
+    
+    .sidebar { position: fixed; top: var(--header-h); left: 0; bottom: 0; width: var(--sidebar-w); background: #fff; border-right: 1px solid var(--borda); padding: 20px 0; overflow-y: auto; z-index: 40; transition: transform .25s ease; }
+    .sidebar-secao { padding: 0 20px; margin-bottom: 8px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; color: var(--cinza); }
+    .sidebar nav { display: flex; flex-direction: column; gap: 2px; margin-bottom: 18px; }
+    .sidebar a { display: flex; align-items: center; gap: 11px; padding: 10px 20px; color: var(--texto); text-decoration: none; font-size: 14px; font-weight: 600; border-left: 3px solid transparent; transition: .15s; }
+    .sidebar a:hover { background: var(--verde-claro); color: var(--verde-escuro); }
+    .sidebar a.ativo { background: var(--verde-claro); color: var(--verde-escuro); border-left-color: var(--verde); }
+    .sidebar a .icone { font-size: 17px; width: 22px; text-align: center; }
+    
+    /* Conteúdo Principal */
+    .conteudo { margin-left: var(--sidebar-w); margin-top: var(--header-h); padding: 32px 32px 60px; min-height: calc(100vh - var(--header-h)); }
+    .pagina-titulo { margin-bottom: 28px; display: flex; justify-content: space-between; align-items: center; }
+    .pagina-titulo h1 { font-family: 'Manrope', sans-serif; font-size: 26px; color: var(--verde-escuro); margin: 0 0 6px; letter-spacing: -.5px; }
+    .pagina-titulo p { color: var(--cinza); font-size: 14px; margin: 0; }
+    
+    /* Formulário e Tabela */
+    .cartao { background: #fff; border: 1px solid var(--borda); border-radius: 14px; padding: 24px; box-shadow: 0 6px 18px rgba(28,65,43,.05); margin-bottom: 24px; }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; align-items: end; }
+    .campo { display: flex; flex-direction: column; gap: 6px; }
+    .campo label { font-size: 12px; font-weight: 700; color: var(--texto); }
+    .campo input { padding: 12px 14px; border: 1px solid var(--borda); border-radius: 8px; font-family: inherit; font-size: 14px; outline: none; transition: .15s; }
+    .campo input:focus { border-color: var(--verde); box-shadow: 0 0 0 3px rgba(35,107,69,.1); }
+    .btn { padding: 12px 20px; border: 0; border-radius: 8px; background: var(--verde); color: #fff; font-weight: 700; font-size: 14px; cursor: pointer; transition: .15s; font-family: inherit; display: inline-flex; justify-content: center; align-items: center; gap: 6px; width: 100%; }
+    .btn:hover { background: var(--verde-escuro); }
+    .btn:disabled { opacity: .6; cursor: wait; }
+    
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { padding: 14px; text-align: left; border-bottom: 1px solid var(--borda); }
+    th { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--cinza); font-weight: 800; background: var(--fundo); }
+    tr:hover td { background: #fafcfa; }
+    .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; background: var(--verde-claro); color: var(--verde-escuro); }
+    .badge.inativa { background: #fff0f0; color: #8a2525; }
+    
+    .mensagem { display: none; padding: 14px; margin-bottom: 20px; border-radius: 8px; font-size: 14px; }
+    .mensagem.sucesso { display: block; background: #edf8ef; color: #205d38; }
+    .mensagem.erro { display: block; background: #fff0f0; color: #8a2525; }
+    .loading { text-align: center; color: var(--cinza); padding: 20px; }
+    
+    .overlay { display: none; position: fixed; inset: var(--header-h) 0 0 0; background: rgba(0,0,0,.35); z-index: 39; }
+    
+    @media (max-width: 900px) {
+      .menu-toggle { display: block; }
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.aberta { transform: translateX(0); }
+      .conteudo { margin-left: 0; padding: 24px 20px 60px; }
+      .overlay.ativo { display: block; }
+      .pagina-titulo { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="marca">
+      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">☰</button>
+      <div class="simbolo">🌱</div>
+      <span>SoloSmart</span>
+    </div>
+    <div class="topbar-acoes">
+      <div class="usuario-topo">
+        <div class="avatar" id="avatarTopo">?</div>
+        <span class="nome-topo" id="nomeTopo">Carregando...</span>
+      </div>
+      <button id="botaoSair" class="botao-sair">Sair</button>
+    </div>
+  </header>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-secao">Principal</div>
+    <nav>
+      <a href="painel.html"><span class="icone">📊</span> Visão geral</a>
+      <a href="propriedades.html" class="ativo"><span class="icone">🌾</span> Propriedades</a>
+      <a href="#"><span class="icone">🧪</span> Amostras</a>
+      <a href="#"><span class="icone">🗺️</span> Mapas</a>
+    </nav>
+    <div class="sidebar-secao">Gestão</div>
+    <nav>
+      <a href="#"><span class="icone">📋</span> Campanhas</a>
+      <a href="#"><span class="icone">📷</span> Fotografias</a>
+      <a href="#"><span class="icone">📡</span> Dispositivos IoT</a>
+      <a href="#"><span class="icone">📈</span> Relatórios</a>
+    </nav>
+    <div class="sidebar-secao">Conta</div>
+    <nav>
+      <a href="#"><span class="icone">👤</span> Meu perfil</a>
+      <a href="#"><span class="icone">🏢</span> Empresa</a>
+      <a href="#"><span class="icone">⚙️</span> Configurações</a>
+    </nav>
+  </aside>
+
+  <div class="overlay" id="overlay"></div>
+
+  <main class="conteudo">
+    <div class="pagina-titulo">
+      <div>
+        <h1>Propriedades Rurais</h1>
+        <p>Gerencie as fazendas e áreas da sua empresa.</p>
+      </div>
+    </div>
+
+    <div id="mensagem" class="mensagem"></div>
+
+    <!-- Formulário de Cadastro -->
+    <div class="cartao">
+      <h2 style="font-family: 'Manrope', sans-serif; font-size: 18px; color: var(--verde-escuro); margin: 0 0 20px;">Nova Propriedade</h2>
+      <form id="formPropriedade" class="form-grid">
+        <div class="campo">
+          <label for="nome">Nome da Propriedade *</label>
+          <input id="nome" type="text" required placeholder="Ex: Fazenda Boa Vista">
+        </div>
+        <div class="campo">
+          <label for="area">Área (Hectares)</label>
+          <input id="area" type="number" step="0.01" placeholder="Ex: 150.5">
+        </div>
+        <div class="campo">
+          <label for="cidade">Endereço / Cidade</label>
+          <input id="cidade" type="text" placeholder="Ex: Ribeirão Preto - SP">
+        </div>
+        <div class="campo">
+          <button type="submit" id="btnSalvar" class="btn">Cadastrar Propriedade</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Tabela de Listagem -->
+    <div class="cartao">
+      <h2 style="font-family: 'Manrope', sans-serif; font-size: 18px; color: var(--verde-escuro); margin: 0 0 20px;">Minhas Propriedades</h2>
+      
+      <div id="loadingTabela" class="loading">Carregando propriedades...</div>
+      
+      <table id="tabelaPropriedades" style="display: none;">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Área (ha)</th>
+            <th>Endereço</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="corpoTabela">
+          <!-- Preenchido via JS -->
+        </tbody>
+      </table>
+      <div id="vazioTabela" style="display: none; text-align: center; color: var(--cinza); padding: 20px;">
+        Nenhuma propriedade cadastrada ainda.
+      </div>
+    </div>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="auth.js"></script>
+
+  <script>
+    let idTokenAtual = "";
+
+    function mostrarMensagem(texto, tipo) {
+      const el = document.getElementById("mensagem");
+      el.textContent = texto;
+      el.className = "mensagem " + tipo;
+      setTimeout(() => { el.className = "mensagem"; }, 5000);
+    }
+
+    // --- Inicialização ---
+    (async function () {
+      try {
+        const usuario = await SoloSmart.protegerPagina({ paginaLogin: "login.html" });
+        
+        const nome = usuario.nome || usuario.email || "?";
+        document.getElementById("nomeTopo").textContent = nome;
+        document.getElementById("avatarTopo").textContent = nome.charAt(0).toUpperCase();
+
+        idTokenAtual = await firebase.auth().currentUser.getIdToken(true);
+        await carregarPropriedades();
+
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+
+    // --- Funções de API ---
+    async function carregarPropriedades() {
+      // Requisição POST no formato que o seu API.gs espera
+      const payload = {
+        action: "listarPropriedades",
+        idToken: idTokenAtual
+      };
+      
+      try {
+        const resposta = await fetch(SoloSmart.URL_API, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain" }, // text/plain evita bloqueio CORS do Apps Script
+          body: JSON.stringify(payload)
+        });
+        
+        const dados = await resposta.json();
+        document.getElementById("loadingTabela").style.display = "none";
+
+        // O seu API.gs retorna { sucesso: true, resultado: [...] }
+        if (!dados.sucesso) {
+          throw new Error(dados.mensagem || "Erro ao carregar propriedades.");
+        }
+
+        renderizarTabela(dados.resultado);
+
+      } catch (erro) {
+        document.getElementById("loadingTabela").style.display = "none";
+        mostrarMensagem(erro.message, "erro");
+      }
+    }
+
+    function renderizarTabela(propriedades) {
+      const tabela = document.getElementById("tabelaPropriedades");
+      const vazio = document.getElementById("vazioTabela");
+      const corpo = document.getElementById("corpoTabela");
+
+      corpo.innerHTML = "";
+
+      if (!propriedades || propriedades.length === 0) {
+        tabela.style.display = "none";
+        vazio.style.display = "block";
+        return;
+      }
+
+      tabela.style.display = "table";
+      vazio.style.display = "none";
+
+      propriedades.forEach(p => {
+        const tr = document.createElement("tr");
+        const statusClass = p.status === "ativa" ? "" : "inativa";
+        
+        tr.innerHTML = `
+          <td><strong>${p.nome || '-'}</strong></td>
+          <td><span class="badge">${p.area_hectares || 0}</span></td>
+          <td>${p.endereco || '-'}</td>
+          <td><span class="badge ${statusClass}">${p.status || 'ativa'}</span></td>
+        `;
+        corpo.appendChild(tr);
+      });
+    }
+
+    // --- Submit do Formulário ---
+    document.getElementById("formPropriedade").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const btn = document.getElementById("btnSalvar");
+      btn.disabled = true;
+      btn.textContent = "Salvando...";
+
+      idTokenAtual = await firebase.auth().currentUser.getIdToken(true);
+
+      const novaPropriedade = {
+        nome: document.getElementById("nome").value.trim(),
+        area_hectares: document.getElementById("area").value,
+        endereco: document.getElementById("cidade").value.trim()
+      };
+
+      // Formato esperado pelo seu API.gs
+      const payload = {
+        action: "criarPropriedade", 
+        idToken: idTokenAtual,
+        dados: novaPropriedade // o seu API.gs espera os campos dentro de "dados"
+      };
+
+      try {
+        const resposta = await fetch(SoloSmart.URL_API, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain" }, 
+          body: JSON.stringify(payload)
+        });
+
+        const dados = await resposta.json();
+
+        if (!dados.sucesso) {
+          throw new Error(dados.mensagem || "Erro ao salvar.");
+        }
+
+        mostrarMensagem("Propriedade cadastrada com sucesso!", "sucesso");
+        this.reset();
+        
+        await carregarPropriedades();
+
+      } catch (erro) {
+        mostrarMensagem(erro.message, "erro");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Cadastrar Propriedade";
+      }
+    });
+
+    // --- Logout e Menu ---
+    document.getElementById("botaoSair").addEventListener("click", () => SoloSmart.sair());
+
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+    document.getElementById("menuToggle").addEventListener("click", () => {
+      sidebar.classList.toggle("aberta");
+      overlay.classList.toggle("ativo");
+    });
+    overlay.addEventListener("click", () => {
+      sidebar.classList.remove("aberta");
+      overlay.classList.remove("ativo");
+    });
+  </script>
+</body>
+</html>
