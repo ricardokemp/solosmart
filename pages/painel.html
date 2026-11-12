@@ -102,6 +102,7 @@
       font-weight: 700;
       cursor: pointer;
       font-family: inherit;
+      transition: .15s;
     }
 
     .botao-sair:hover { background: #ffe0e0; }
@@ -190,6 +191,47 @@
       margin: 0;
     }
 
+    /* Banner de boas-vindas */
+    .banner-boas-vindas {
+      background: linear-gradient(135deg, var(--verde-escuro), var(--verde));
+      color: white;
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 8px 24px rgba(23, 75, 49, 0.15);
+    }
+
+    .banner-boas-vindas h2 {
+      margin: 0 0 6px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 20px;
+    }
+
+    .banner-boas-vindas p {
+      margin: 0;
+      font-size: 14px;
+      color: #d1e6d7;
+    }
+
+    .banner-btn {
+      background: var(--lime);
+      color: var(--verde-escuro);
+      border: 0;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: .15s;
+      white-space: nowrap;
+    }
+
+    .banner-btn:hover { background: #a5d173; transform: translateY(-1px); }
+
     /* KPI cards */
     .kpis {
       display: grid;
@@ -204,7 +246,10 @@
       border-radius: 14px;
       padding: 20px;
       box-shadow: 0 6px 18px rgba(28, 65, 43, .05);
+      transition: transform .2s;
     }
+
+    .kpi:hover { transform: translateY(-2px); border-color: #c9e3cf; }
 
     .kpi-label {
       font-size: 12px;
@@ -329,30 +374,47 @@
       z-index: 39;
     }
 
+    /* Loading Spinner */
+    #loadingOverlay {
+      position: fixed;
+      inset: 0;
+      background: #f8faf8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.3s;
+    }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 4px solid #dce6de;
+      border-top-color: var(--verde);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
     /* ---------- RESPONSIVO ---------- */
     @media (max-width: 900px) {
       .menu-toggle { display: block; }
-
-      .sidebar {
-        transform: translateX(-100%);
-      }
-
-      .sidebar.aberta {
-        transform: translateX(0);
-      }
-
-      .conteudo {
-        margin-left: 0;
-        padding: 24px 20px 60px;
-      }
-
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.aberta { transform: translateX(0); }
+      .conteudo { margin-left: 0; padding: 24px 20px 60px; }
       .usuario-topo .nome-topo { display: none; }
-
       .overlay.ativo { display: block; }
+      .banner-boas-vindas { flex-direction: column; text-align: center; gap: 16px; }
     }
   </style>
 </head>
 <body>
+
+  <!-- Tela de carregamento -->
+  <div id="loadingOverlay">
+    <div class="spinner"></div>
+    <p style="color: #66756c; font-size: 14px; font-weight: 600;">Verificando sessão segura...</p>
+  </div>
 
   <!-- HEADER -->
   <header class="topbar">
@@ -376,7 +438,7 @@
     <div class="sidebar-secao">Principal</div>
     <nav>
       <a href="painel.html" class="ativo"><span class="icone">📊</span> Visão geral</a>
-      <a href="#"><span class="icone">🌾</span> Propriedades</a>
+      <a href="propriedades.html"><span class="icone">🌾</span> Propriedades</a>
       <a href="#"><span class="icone">🧪</span> Amostras</a>
       <a href="#"><span class="icone">🗺️</span> Mapas</a>
     </nav>
@@ -400,18 +462,28 @@
   <div class="overlay" id="overlay"></div>
 
   <!-- CONTEÚDO -->
-  <main class="conteudo">
+  <main class="conteudo" id="conteudoPrincipal" style="display: none;">
+    
     <div class="pagina-titulo">
       <h1 id="saudacao">Bem-vindo</h1>
       <p id="subtitulo">Gestão e monitoramento da sua operação rural.</p>
     </div>
 
+    <!-- Banner de Boas-Vindas -->
+    <section class="banner-boas-vindas">
+      <div>
+        <h2>Pronto para começar?</h2>
+        <p>Cadastre sua primeira propriedade rural para começar a gerenciar seus dados no SoloSmart.</p>
+      </div>
+      <a href="propriedades.html" class="banner-btn">Cadastrar Propriedade →</a>
+    </section>
+
     <!-- KPIs -->
     <section class="kpis">
       <div class="kpi">
         <div class="kpi-label">Propriedades</div>
-        <div class="kpi-valor">--</div>
-        <div class="kpi-detalhe">Aguardando módulo</div>
+        <div class="kpi-valor" id="kpiPropriedades">--</div>
+        <div class="kpi-detalhe">Áreas cadastradas</div>
       </div>
       <div class="kpi">
         <div class="kpi-label">Amostras</div>
@@ -469,7 +541,7 @@
       <p class="sub">Acesso rápido aos principais módulos da plataforma.</p>
 
       <div class="atalhos">
-        <a class="atalho" href="#">
+        <a class="atalho" href="propriedades.html">
           <div class="atalho-icone">🌾</div>
           <strong>Propriedades</strong>
           <span>Cadastrar e gerenciar fazendas</span>
@@ -499,13 +571,49 @@
   <script src="auth.js"></script>
 
   <script>
+    // --- UI Helpers ---
+    function esconderLoading() {
+      const overlay = document.getElementById("loadingOverlay");
+      overlay.style.opacity = "0";
+      setTimeout(() => {
+        overlay.style.display = "none";
+        document.getElementById("conteudoPrincipal").style.display = "block";
+      }, 300);
+    }
+
+    // Busca a contagem de propriedades via API
+    async function carregarKPIs(idToken) {
+      const payload = {
+        action: "listarPropriedades",
+        idToken: idToken
+      };
+
+      try {
+        const resposta = await fetch(SoloSmart.URL_API, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain" },
+          body: JSON.stringify(payload)
+        });
+        
+        const dados = await resposta.json();
+        
+        if (dados.sucesso && dados.resultado) {
+          // Conta apenas as que não estão inativas
+          const ativas = dados.resultado.filter(p => p.status !== "inativa");
+          document.getElementById("kpiPropriedades").textContent = ativas.length;
+        }
+      } catch (e) {
+        console.warn("Não foi possível carregar o KPI de propriedades:", e);
+      }
+    }
+
+    // --- Inicialização da Página ---
     (async function () {
       try {
-        const usuario = await SoloSmart.protegerPagina({
-          paginaLogin: "login.html"
-        });
+        // Protege a página (redireciona se não estiver logado)
+        const usuario = await SoloSmart.protegerPagina({ paginaLogin: "login.html" });
 
-        // Preenche dados do usuário
+        // Preenche dados do usuário no layout
         document.getElementById("saudacao").textContent = "Olá, " + (usuario.nome || "usuário");
         document.getElementById("valNome").textContent = usuario.nome || "-";
         document.getElementById("valEmail").textContent = usuario.email || "-";
@@ -517,18 +625,26 @@
         const nome = usuario.nome || usuario.email || "?";
         document.getElementById("nomeTopo").textContent = nome;
         document.getElementById("avatarTopo").textContent = nome.charAt(0).toUpperCase();
+
+        // Mostra a tela
+        esconderLoading();
+
+        // Busca o token e carrega os KPIs reais
+        const token = await firebase.auth().currentUser.getIdToken(true);
+        await carregarKPIs(token);
+
       } catch (e) {
-        // protegerPagina já redireciona; aqui é só fallback
-        console.error(e);
+        // A função protegerPagina já redireciona se der erro, mas por segurança:
+        console.error("Erro na inicialização do painel:", e);
       }
     })();
 
-    // Logout
+    // --- Logout ---
     document.getElementById("botaoSair").addEventListener("click", function () {
       SoloSmart.sair();
     });
 
-    // Menu mobile
+    // --- Menu Mobile ---
     const sidebar = document.getElementById("sidebar");
     const overlay = document.getElementById("overlay");
     const menuToggle = document.getElementById("menuToggle");
