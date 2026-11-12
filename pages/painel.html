@@ -6,146 +6,434 @@
   <title>Painel | SoloSmart</title>
   <meta name="description" content="Painel de gestão rural do SoloSmart.">
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+
   <style>
     :root {
       --verde: #236b45;
       --verde-escuro: #174b31;
+      --verde-claro: #e9f5ed;
+      --lime: #b7df87;
       --fundo: #f3f7f3;
       --texto: #203229;
       --cinza: #66756c;
       --borda: #dce6de;
+      --branco: #ffffff;
+      --sidebar-w: 260px;
+      --header-h: 64px;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      background: linear-gradient(145deg, #edf5ee, #f8faf8);
+      background: var(--fundo);
       color: var(--texto);
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: 'DM Sans', Arial, sans-serif;
     }
 
-    header {
+    /* ---------- HEADER ---------- */
+    .topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--header-h);
       background: #fff;
       border-bottom: 1px solid var(--borda);
-      padding: 16px 24px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 50;
       box-shadow: 0 2px 10px rgba(28, 65, 43, .04);
     }
 
-    .marca-container {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+    .marca {
+      display: flex; align-items: center; gap: 12px;
+      font-family: 'Manrope', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--verde-escuro);
     }
 
     .simbolo {
-      width: 40px;
-      height: 40px;
-      display: grid;
-      place-items: center;
-      border-radius: 12px;
+      width: 38px; height: 38px;
+      display: grid; place-items: center;
+      border-radius: 10px;
       background: var(--verde);
-      color: white;
+      color: #fff;
       font-size: 20px;
-      font-weight: bold;
     }
 
-    h1 {
-      margin: 0;
-      font-size: 20px;
-      color: var(--verde-escuro);
+    .menu-toggle {
+      display: none;
+      background: none; border: 0;
+      font-size: 22px; color: var(--verde-escuro);
+      cursor: pointer;
+      padding: 6px;
+    }
+
+    .topbar-acoes {
+      display: flex; align-items: center; gap: 14px;
+    }
+
+    .usuario-topo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 13px; color: var(--cinza);
+    }
+
+    .avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: var(--verde-claro);
+      color: var(--verde);
+      display: grid; place-items: center;
+      font-weight: 800;
     }
 
     .botao-sair {
       background: #fff0f0;
       color: #8a2525;
       border: 1px solid #f5c2c2;
-      padding: 8px 16px;
+      padding: 8px 14px;
       border-radius: 8px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700;
       cursor: pointer;
+      font-family: inherit;
     }
 
-    .botao-sair:hover {
-      background: #ffe0e0;
+    .botao-sair:hover { background: #ffe0e0; }
+
+    /* ---------- SIDEBAR ---------- */
+    .sidebar {
+      position: fixed;
+      top: var(--header-h);
+      left: 0; bottom: 0;
+      width: var(--sidebar-w);
+      background: #fff;
+      border-right: 1px solid var(--borda);
+      padding: 20px 0;
+      overflow-y: auto;
+      z-index: 40;
+      transition: transform .25s ease;
     }
 
-    main {
-      flex: 1;
-      max-width: 900px;
-      width: 100%;
-      margin: 32px auto;
-      padding: 0 24px;
+    .sidebar-secao {
+      padding: 0 20px;
+      margin-bottom: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      color: var(--cinza);
     }
 
+    .sidebar nav {
+      display: flex; flex-direction: column;
+      gap: 2px;
+      margin-bottom: 18px;
+    }
+
+    .sidebar a {
+      display: flex; align-items: center; gap: 11px;
+      padding: 10px 20px;
+      color: var(--texto);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      border-left: 3px solid transparent;
+      transition: .15s;
+    }
+
+    .sidebar a:hover {
+      background: var(--verde-claro);
+      color: var(--verde-escuro);
+    }
+
+    .sidebar a.ativo {
+      background: var(--verde-claro);
+      color: var(--verde-escuro);
+      border-left-color: var(--verde);
+    }
+
+    .sidebar a .icone {
+      font-size: 17px;
+      width: 22px;
+      text-align: center;
+    }
+
+    /* ---------- CONTEÚDO ---------- */
+    .conteudo {
+      margin-left: var(--sidebar-w);
+      margin-top: var(--header-h);
+      padding: 32px 32px 60px;
+      min-height: calc(100vh - var(--header-h));
+    }
+
+    .pagina-titulo {
+      margin-bottom: 28px;
+    }
+
+    .pagina-titulo h1 {
+      font-family: 'Manrope', sans-serif;
+      font-size: 26px;
+      color: var(--verde-escuro);
+      margin: 0 0 6px;
+      letter-spacing: -.5px;
+    }
+
+    .pagina-titulo p {
+      color: var(--cinza);
+      font-size: 14px;
+      margin: 0;
+    }
+
+    /* KPI cards */
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .kpi {
+      background: #fff;
+      border: 1px solid var(--borda);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 6px 18px rgba(28, 65, 43, .05);
+    }
+
+    .kpi-label {
+      font-size: 12px;
+      color: var(--cinza);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+
+    .kpi-valor {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--verde-escuro);
+      margin: 6px 0 4px;
+    }
+
+    .kpi-detalhe {
+      font-size: 12px;
+      color: var(--verde);
+      font-weight: 600;
+    }
+
+    /* Cartões */
     .cartao {
       background: #fff;
       border: 1px solid var(--borda);
-      border-radius: 18px;
-      padding: 28px;
-      box-shadow: 0 16px 45px rgba(28, 65, 43, .09);
-      margin-bottom: 24px;
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: 0 6px 18px rgba(28, 65, 43, .05);
+      margin-bottom: 20px;
     }
 
-    h2 {
-      margin-top: 0;
-      font-size: 22px;
+    .cartao h2 {
+      margin: 0 0 4px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 18px;
       color: var(--verde-escuro);
+    }
+
+    .cartao p.sub {
+      margin: 0 0 18px;
+      color: var(--cinza);
+      font-size: 13px;
     }
 
     .info-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 16px;
-      margin-top: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
     }
 
     .info-item {
       background: var(--fundo);
-      padding: 16px;
+      padding: 14px 16px;
       border-radius: 10px;
       border: 1px solid var(--borda);
     }
 
     .info-label {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--cinza);
       text-transform: uppercase;
       font-weight: 700;
       margin-bottom: 6px;
+      letter-spacing: .5px;
     }
 
     .info-valor {
-      font-size: 16px;
-      font-weight: bold;
+      font-size: 15px;
+      font-weight: 700;
       color: var(--texto);
+    }
+
+    /* Atalhos rápidos */
+    .atalhos {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+    }
+
+    .atalho {
+      display: flex; flex-direction: column; gap: 8px;
+      padding: 18px;
+      border-radius: 12px;
+      border: 1px solid var(--borda);
+      background: var(--branco);
+      color: var(--texto);
+      text-decoration: none;
+      transition: .2s;
+    }
+
+    .atalho:hover {
+      border-color: var(--verde);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(35, 107, 69, .08);
+    }
+
+    .atalho .atalho-icone {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background: var(--verde-claro);
+      display: grid; place-items: center;
+      font-size: 20px;
+    }
+
+    .atalho strong {
+      font-size: 14px;
+      color: var(--verde-escuro);
+    }
+
+    .atalho span {
+      font-size: 12px;
+      color: var(--cinza);
+    }
+
+    /* Overlay mobile */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: var(--header-h) 0 0 0;
+      background: rgba(0,0,0,.35);
+      z-index: 39;
+    }
+
+    /* ---------- RESPONSIVO ---------- */
+    @media (max-width: 900px) {
+      .menu-toggle { display: block; }
+
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.aberta {
+        transform: translateX(0);
+      }
+
+      .conteudo {
+        margin-left: 0;
+        padding: 24px 20px 60px;
+      }
+
+      .usuario-topo .nome-topo { display: none; }
+
+      .overlay.ativo { display: block; }
     }
   </style>
 </head>
-
 <body>
 
-  <header>
-    <div class="marca-container">
-      <div class="simbolo">S</div>
-      <h1>SoloSmart</h1>
+  <!-- HEADER -->
+  <header class="topbar">
+    <div class="marca">
+      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">☰</button>
+      <div class="simbolo">🌱</div>
+      <span>SoloSmart</span>
     </div>
-    <button id="botaoSair" class="botao-sair">Sair</button>
+
+    <div class="topbar-acoes">
+      <div class="usuario-topo">
+        <div class="avatar" id="avatarTopo">?</div>
+        <span class="nome-topo" id="nomeTopo">Carregando...</span>
+      </div>
+      <button id="botaoSair" class="botao-sair">Sair</button>
+    </div>
   </header>
 
-  <main>
-    <div class="cartao">
-      <h2 id="saudacao">Bem-vindo ao Painel</h2>
-      <p style="color: var(--cinza); margin-top: 6px;">Gestão e monitoramento da sua operação rural.</p>
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-secao">Principal</div>
+    <nav>
+      <a href="painel.html" class="ativo"><span class="icone">📊</span> Visão geral</a>
+      <a href="#"><span class="icone">🌾</span> Propriedades</a>
+      <a href="#"><span class="icone">🧪</span> Amostras</a>
+      <a href="#"><span class="icone">🗺️</span> Mapas</a>
+    </nav>
+
+    <div class="sidebar-secao">Gestão</div>
+    <nav>
+      <a href="#"><span class="icone">📋</span> Campanhas</a>
+      <a href="#"><span class="icone">📷</span> Fotografias</a>
+      <a href="#"><span class="icone">📡</span> Dispositivos IoT</a>
+      <a href="#"><span class="icone">📈</span> Relatórios</a>
+    </nav>
+
+    <div class="sidebar-secao">Conta</div>
+    <nav>
+      <a href="#"><span class="icone">👤</span> Meu perfil</a>
+      <a href="#"><span class="icone">🏢</span> Empresa</a>
+      <a href="#"><span class="icone">⚙️</span> Configurações</a>
+    </nav>
+  </aside>
+
+  <div class="overlay" id="overlay"></div>
+
+  <!-- CONTEÚDO -->
+  <main class="conteudo">
+    <div class="pagina-titulo">
+      <h1 id="saudacao">Bem-vindo</h1>
+      <p id="subtitulo">Gestão e monitoramento da sua operação rural.</p>
+    </div>
+
+    <!-- KPIs -->
+    <section class="kpis">
+      <div class="kpi">
+        <div class="kpi-label">Propriedades</div>
+        <div class="kpi-valor">--</div>
+        <div class="kpi-detalhe">Aguardando módulo</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Amostras</div>
+        <div class="kpi-valor">--</div>
+        <div class="kpi-detalhe">Aguardando módulo</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Campanhas</div>
+        <div class="kpi-valor">--</div>
+        <div class="kpi-detalhe">Aguardando módulo</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Dispositivos IoT</div>
+        <div class="kpi-valor">--</div>
+        <div class="kpi-detalhe">Aguardando módulo</div>
+      </div>
+    </section>
+
+    <!-- Dados da conta -->
+    <section class="cartao">
+      <h2>Sua conta</h2>
+      <p class="sub">Informações da sessão atual, vindas do Firebase + SoloSmart.</p>
 
       <div class="info-grid">
         <div class="info-item">
@@ -161,56 +449,104 @@
           <div id="valEmpresa" class="info-valor">-</div>
         </div>
         <div class="info-item">
-          <div class="info-label">Perfil de Acesso</div>
+          <div class="info-label">Perfil</div>
           <div id="valPerfil" class="info-valor">-</div>
         </div>
+        <div class="info-item">
+          <div class="info-label">Status</div>
+          <div id="valStatus" class="info-valor">-</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">E-mail verificado</div>
+          <div id="valVerificado" class="info-valor">-</div>
+        </div>
       </div>
-    </div>
+    </section>
+
+    <!-- Atalhos -->
+    <section class="cartao">
+      <h2>Atalhos</h2>
+      <p class="sub">Acesso rápido aos principais módulos da plataforma.</p>
+
+      <div class="atalhos">
+        <a class="atalho" href="#">
+          <div class="atalho-icone">🌾</div>
+          <strong>Propriedades</strong>
+          <span>Cadastrar e gerenciar fazendas</span>
+        </a>
+        <a class="atalho" href="#">
+          <div class="atalho-icone">🧪</div>
+          <strong>Amostras</strong>
+          <span>Registrar coletas do solo</span>
+        </a>
+        <a class="atalho" href="#">
+          <div class="atalho-icone">🗺️</div>
+          <strong>Mapas</strong>
+          <span>Visualizar geolocalização</span>
+        </a>
+        <a class="atalho" href="#">
+          <div class="atalho-icone">📈</div>
+          <strong>Relatórios</strong>
+          <span>Históricos e indicadores</span>
+        </a>
+      </div>
+    </section>
   </main>
 
+  <!-- FIREBASE + MÓDULO DE AUTH -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="auth.js"></script>
 
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBzt9NrZaX24HP9husP9iwTjUHsUEtBrWc",
-      authDomain: "solosmart.firebaseapp.com",
-      projectId: "solosmart",
-      storageBucket: "solosmart.firebasestorage.app",
-      messagingSenderId: "684064638812",
-      appId: "1:684064638812:web:e3e038664a47a5701b2399",
-      measurementId: "G-9G79YVZ2XM"
-    };
+    (async function () {
+      try {
+        const usuario = await SoloSmart.protegerPagina({
+          paginaLogin: "login.html"
+        });
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+        // Preenche dados do usuário
+        document.getElementById("saudacao").textContent = "Olá, " + (usuario.nome || "usuário");
+        document.getElementById("valNome").textContent = usuario.nome || "-";
+        document.getElementById("valEmail").textContent = usuario.email || "-";
+        document.getElementById("valEmpresa").textContent = usuario.empresa || "-";
+        document.getElementById("valPerfil").textContent = usuario.perfil || "-";
+        document.getElementById("valStatus").textContent = usuario.status || "-";
+        document.getElementById("valVerificado").textContent = usuario.email_verificado ? "Sim" : "Não";
 
-    // Recupera os dados salvos na sessão durante o login
-    const dadosUsuarioStr = sessionStorage.getItem("solosmart_usuario");
+        const nome = usuario.nome || usuario.email || "?";
+        document.getElementById("nomeTopo").textContent = nome;
+        document.getElementById("avatarTopo").textContent = nome.charAt(0).toUpperCase();
+      } catch (e) {
+        // protegerPagina já redireciona; aqui é só fallback
+        console.error(e);
+      }
+    })();
 
-    if (!dadosUsuarioStr) {
-      // Se não houver sessão ativa, redireciona de volta para o login
-      window.location.href = "login.html";
-    } else {
-      const usuario = JSON.parse(dadosUsuarioStr);
+    // Logout
+    document.getElementById("botaoSair").addEventListener("click", function () {
+      SoloSmart.sair();
+    });
 
-      // Preenche os dados na tela
-      document.getElementById("saudacao").textContent = "Olá, " + usuario.nome;
-      document.getElementById("valNome").textContent = usuario.nome;
-      document.getElementById("valEmail").textContent = usuario.email;
-      document.getElementById("valEmpresa").textContent = usuario.empresa;
-      document.getElementById("valPerfil").textContent = usuario.perfil;
+    // Menu mobile
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+    const menuToggle = document.getElementById("menuToggle");
+
+    function fecharMenu() {
+      sidebar.classList.remove("aberta");
+      overlay.classList.remove("ativo");
     }
 
-    // Ação do botão de logout
-    document.getElementById("botaoSair").addEventListener("click", async function() {
-      try {
-        await auth.signOut();
-      } catch (e) {
-        // Ignora erros do Firebase no logout
-      }
-      sessionStorage.removeItem("solosmart_usuario");
-      window.location.href = "login.html";
+    menuToggle.addEventListener("click", function () {
+      sidebar.classList.toggle("aberta");
+      overlay.classList.toggle("ativo");
+    });
+
+    overlay.addEventListener("click", fecharMenu);
+
+    window.addEventListener("resize", function () {
+      if (window.innerWidth > 900) fecharMenu();
     });
   </script>
 
