@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#123d2b">
-
     <title>Criar conta | SoloSmart</title>
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- BIBLIOTECA DE CONFETES -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -37,30 +38,17 @@
         .footer { text-align: center; margin-top: 22px; font-size: 13px; color: #718078; }
         .footer a { color: #176b45; font-weight: 700; text-decoration: none; }
         .notice { font-size: 12px; color: #718078; line-height: 1.6; margin-top: 18px; }
-        @media (max-width: 560px) {
-            .card { padding: 23px 18px; }
-            .grid { grid-template-columns: 1fr; gap: 0; }
-            .full { grid-column: auto; }
-            h1 { font-size: 25px; }
-        }
+        @media (max-width: 560px) { .card { padding: 23px 18px; } .grid { grid-template-columns: 1fr; gap: 0; } .full { grid-column: auto; } h1 { font-size: 25px; } }
     </style>
 </head>
-
 <body>
-
 <header>
-    <a class="logo" href="../index.html">
-        <span>🌱</span>SoloSmart
-    </a>
+    <a class="logo" href="../index.html"><span>🌱</span>SoloSmart</a>
 </header>
-
 <main class="container">
     <div class="card">
         <h1>Crie sua conta</h1>
-        <p class="intro">
-            Cadastre sua empresa e o responsável pela administração da conta no SoloSmart.
-        </p>
-
+        <p class="intro">Cadastre sua empresa e o responsável pela administração da conta no SoloSmart.</p>
         <form id="cadastroForm">
             <h2>Dados da empresa</h2>
             <div class="grid">
@@ -119,7 +107,6 @@
                     </select>
                 </div>
             </div>
-
             <h2>Responsável pela conta</h2>
             <div class="grid">
                 <div class="field full">
@@ -135,15 +122,10 @@
                     <input id="senhaResponsavel" type="password" minlength="6" required placeholder="Crie uma senha (mín. 6 caracteres)">
                 </div>
             </div>
-
             <button type="submit" id="btnEnviar">Criar Conta</button>
             <div id="mensagem" class="message" role="status" aria-live="polite"></div>
-            
-            <p class="notice">
-                Ao criar a conta, enviaremos um e-mail de confirmação. O acesso ao sistema será liberado após a aprovação pela administração do SoloSmart.
-            </p>
+            <p class="notice">Ao criar a conta, enviaremos um e-mail de confirmação. O acesso ao sistema será liberado após a aprovação pela administração do SoloSmart.</p>
         </form>
-
         <div class="footer">
             Já possui uma conta? <a href="login.html">Entrar</a>
             <br><br>
@@ -151,11 +133,8 @@
         </div>
     </div>
 </main>
-
 <script>
-    // URL ATUALIZADA DO APPS SCRIPT
     const API_URL = "https://script.google.com/macros/s/AKfycbwWuOUHwy_WpVM60F-AqRIR1oJhPbESTR4iAAUI7H0KnWY09zZe6FL0TYUP8tQXxeZP/exec";
-
     const formulario = document.getElementById("cadastroForm");
     const botao = document.getElementById("btnEnviar");
     const mensagem = document.getElementById("mensagem");
@@ -215,16 +194,29 @@
 
             if (!json.sucesso) throw new Error(json.mensagem || "Erro ao criar conta.");
 
-            mostrarMensagem("Conta criada com sucesso! Verifique seu e-mail para confirmar o cadastro. Após a confirmação e aprovação da administração, você poderá fazer login.", "success");
+            // 1. Dispara os confetes!
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#176b45', '#b7df87', '#ffffff']
+            });
+
+            // 2. Mostra mensagem de sucesso
+            mostrarMensagem("Conta criada com sucesso! Redirecionando para a página principal...", "success");
             formulario.reset();
+
+            // 3. Redireciona após 3 segundos
+            setTimeout(() => {
+                window.location.href = "../index.html";
+            }, 3000);
+
         } catch (erro) {
             mostrarMensagem(erro.message, "error");
-        } finally {
             botao.disabled = false;
             botao.textContent = "Criar Conta";
         }
     });
 </script>
-
 </body>
 </html>
