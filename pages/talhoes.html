@@ -100,12 +100,12 @@
       <a href="painel.html"><span class="icone">📊</span> Visão geral</a>
       <a href="propriedades.html"><span class="icone">🌾</span> Propriedades</a>
       <a href="talhoes.html" class="ativo"><span class="icone">🔲</span> Talhões</a>
-      <a href="#"><span class="icone">🧪</span> Amostras</a>
+      <!-- Link de Amostras corrigido -->
+      <a href="amostras.html"><span class="icone">🧪</span> Amostras</a>
       <a href="#"><span class="icone">🗺️</span> Mapas</a>
     </nav>
     <div class="sidebar-secao">Gestão</div>
     <nav>
-      <!-- Link de Campanhas adicionado -->
       <a href="campanhas.html"><span class="icone">📋</span> Campanhas</a>
       <a href="#"><span class="icone">📷</span> Fotografias</a>
       <a href="#"><span class="icone">📡</span> Dispositivos IoT</a>
@@ -178,7 +178,7 @@
             <th>Área (ha)</th>
             <th>Cultura</th>
             <th>Status</th>
-            <th>Ações</th> <!-- Coluna de Ações adicionada -->
+            <th>Ações</th>
           </tr>
         </thead>
         <tbody id="corpoTabela"></tbody>
@@ -195,7 +195,7 @@
 
   <script>
     let idTokenAtual = "";
-    let listaPropriedades = []; // Guarda as propriedades para cruzar os nomes na tabela
+    let listaPropriedades = [];
 
     function mostrarMensagem(texto, tipo) {
       const el = document.getElementById("mensagem");
@@ -215,7 +215,6 @@
 
         idTokenAtual = await firebase.auth().currentUser.getIdToken(true);
         
-        // Carrega as propriedades primeiro (para o select), depois carrega os talhões
         await carregarSelectPropriedades();
         await carregarTalhoes();
 
@@ -292,7 +291,6 @@
       vazio.style.display = "none";
 
       ativos.forEach(t => {
-        // Descobre o nome da propriedade dona deste talhão
         const prop = listaPropriedades.find(p => p.propriedade_id === t.propriedade_id);
         const nomePropriedade = prop ? prop.nome : "Desconhecida";
 
@@ -310,7 +308,6 @@
         corpo.appendChild(tr);
       });
 
-      // Adiciona evento de clique nos botões de excluir gerados
       document.querySelectorAll(".btn-excluir").forEach(btn => {
         btn.addEventListener("click", function() {
           const id = this.getAttribute("data-id");
