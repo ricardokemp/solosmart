@@ -25,6 +25,7 @@
     .avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--verde-claro); color: var(--verde); display: grid; place-items: center; font-weight: 800; }
     .botao-sair { background: #fff0f0; color: #8a2525; border: 1px solid #f5c2c2; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
     
+    /* Sidebar */
     .sidebar { position: fixed; top: var(--header-h); left: 0; bottom: 0; width: var(--sidebar-w); background: #fff; border-right: 1px solid var(--borda); padding: 20px 0; overflow-y: auto; z-index: 40; transition: transform .25s ease; }
     .sidebar-secao { padding: 0 20px; margin-bottom: 8px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; color: var(--cinza); }
     .sidebar nav { display: flex; flex-direction: column; gap: 2px; margin-bottom: 18px; }
@@ -105,7 +106,8 @@
     </nav>
     <div class="sidebar-secao">Gestão</div>
     <nav>
-      <a href="#"><span class="icone">📋</span> Campanhas</a>
+      <!-- Link de Campanhas adicionado e corrigido -->
+      <a href="campanhas.html"><span class="icone">📋</span> Campanhas</a>
       <a href="#"><span class="icone">📷</span> Fotografias</a>
       <a href="#"><span class="icone">📡</span> Dispositivos IoT</a>
       <a href="#"><span class="icone">📈</span> Relatórios</a>
