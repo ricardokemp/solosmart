@@ -4,7 +4,7 @@
 https://ricardokemp.github.io/solosmart/
 
 # Página Administrativa
-https://script.google.com/macros/s/AKfycbzsolPc-o5-mjZLg-guTxHjcSE3loluehUiNk9LtUU2QdZD7ai70mEtHSiQSEm5wmxR/exec?pagina=admin
+https://script.google.com/macros/s/AKfycbwXCZdRvhw3-qyz_cEPk7ZZeQZTgsz0yDMId1qkQCIxksEmJeC1exPpRHxcnkqaWL1x/exec?pagina=admin
 
 ### Plataforma Inteligente de Gestão, Amostragem e Monitoramento do Solo
 
