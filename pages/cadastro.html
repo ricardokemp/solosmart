@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- BIBLIOTECA DE CONFETES -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
@@ -184,17 +183,17 @@
         };
 
         try {
+            // CORREÇÃO: envio como JSON puro para o Apps Script ler corretamente
             const resposta = await fetch(API_URL, {
                 method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: "payload=" + encodeURIComponent(JSON.stringify(payload))
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
             });
             
             const json = await resposta.json();
 
             if (!json.sucesso) throw new Error(json.mensagem || "Erro ao criar conta.");
 
-            // 1. Dispara os confetes!
             confetti({
                 particleCount: 150,
                 spread: 70,
@@ -202,11 +201,9 @@
                 colors: ['#176b45', '#b7df87', '#ffffff']
             });
 
-            // 2. Mostra mensagem de sucesso
             mostrarMensagem("Conta criada com sucesso! Redirecionando para a página principal...", "success");
             formulario.reset();
 
-            // 3. Redireciona após 3 segundos
             setTimeout(() => {
                 window.location.href = "../index.html";
             }, 3000);
