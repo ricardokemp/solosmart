@@ -133,8 +133,13 @@
         </div>
     </div>
 </main>
+
+<!-- Firebase e auth.js (para obter a URL da API) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="auth.js"></script>
+
 <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbwWuOUHwy_WpVM60F-AqRIR1oJhPbESTR4iAAUI7H0KnWY09zZe6FL0TYUP8tQXxeZP/exec";
     const formulario = document.getElementById("cadastroForm");
     const botao = document.getElementById("btnEnviar");
     const mensagem = document.getElementById("mensagem");
@@ -184,8 +189,9 @@
         };
 
         try {
-            // CORREÇÃO: text/plain evita o bloqueio de CORS do Apps Script
-            const resposta = await fetch(API_URL, {
+            // Usa a URL do auth.js (SoloSmart.URL_API)
+            // Formato text/plain evita bloqueio de CORS no Apps Script
+            const resposta = await fetch(SoloSmart.URL_API, {
                 method: "POST",
                 headers: { "Content-Type": "text/plain;charset=utf-8" },
                 body: JSON.stringify(payload)
@@ -195,7 +201,6 @@
 
             if (!json.sucesso) throw new Error(json.mensagem || "Erro ao criar conta.");
 
-            // 1. Dispara os confetes
             confetti({
                 particleCount: 150,
                 spread: 70,
@@ -203,11 +208,9 @@
                 colors: ['#176b45', '#b7df87', '#ffffff']
             });
 
-            // 2. Mostra mensagem de sucesso
             mostrarMensagem("Conta criada com sucesso! Redirecionando para a página principal...", "success");
             formulario.reset();
 
-            // 3. Redireciona após 3 segundos
             setTimeout(() => {
                 window.location.href = "../index.html";
             }, 3000);
