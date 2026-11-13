@@ -15,7 +15,6 @@
     * { box-sizing: border-box; }
     body { margin: 0; min-height: 100vh; background: var(--fundo); color: var(--texto); font-family: 'DM Sans', Arial, sans-serif; }
     
-    /* Layout Base */
     .topbar { position: fixed; top: 0; left: 0; right: 0; height: var(--header-h); background: #fff; border-bottom: 1px solid var(--borda); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 50; box-shadow: 0 2px 10px rgba(28,65,43,.04); }
     .marca { display: flex; align-items: center; gap: 12px; font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 18px; color: var(--verde-escuro); }
     .simbolo { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 10px; background: var(--verde); color: #fff; font-size: 20px; }
@@ -33,13 +32,11 @@
     .sidebar a.ativo { background: var(--verde-claro); color: var(--verde-escuro); border-left-color: var(--verde); }
     .sidebar a .icone { font-size: 17px; width: 22px; text-align: center; }
     
-    /* Conteúdo Principal */
     .conteudo { margin-left: var(--sidebar-w); margin-top: var(--header-h); padding: 32px 32px 60px; min-height: calc(100vh - var(--header-h)); }
     .pagina-titulo { margin-bottom: 28px; }
     .pagina-titulo h1 { font-family: 'Manrope', sans-serif; font-size: 26px; color: var(--verde-escuro); margin: 0 0 6px; letter-spacing: -.5px; }
     .pagina-titulo p { color: var(--cinza); font-size: 14px; margin: 0; }
     
-    /* Formulário */
     .cartao { background: #fff; border: 1px solid var(--borda); border-radius: 14px; padding: 24px; box-shadow: 0 6px 18px rgba(28,65,43,.05); margin-bottom: 24px; }
     .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; align-items: end; }
     .campo { display: flex; flex-direction: column; gap: 6px; }
@@ -50,7 +47,6 @@
     .btn:hover { background: var(--verde-escuro); }
     .btn:disabled { opacity: .6; cursor: wait; }
     
-    /* Galeria de Fotos */
     .galeria { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
     .foto-card { background: #fff; border: 1px solid var(--borda); border-radius: 14px; overflow: hidden; box-shadow: 0 4px 12px rgba(28,65,43,.05); display: flex; flex-direction: column; }
     .foto-img { width: 100%; height: 160px; object-fit: cover; background: #e5e5e5; }
@@ -128,7 +124,6 @@
 
     <div id="mensagem" class="mensagem"></div>
 
-    <!-- Formulário -->
     <div class="cartao">
       <h2 style="font-family: 'Manrope', sans-serif; font-size: 18px; color: var(--verde-escuro); margin: 0 0 20px;">Nova Fotografia</h2>
       <form id="formFoto" class="form-grid">
@@ -156,14 +151,11 @@
       </form>
     </div>
 
-    <!-- Galeria -->
     <h2 style="font-family: 'Manrope', sans-serif; font-size: 18px; color: var(--verde-escuro); margin: 30px 0 16px;">Galeria de Fotos</h2>
     
     <div id="loadingGaleria" class="loading">Carregando galeria...</div>
     
-    <div id="galeria" class="galeria" style="display: none;">
-      <!-- Os cartões de foto serão inseridos aqui pelo JS -->
-    </div>
+    <div id="galeria" class="galeria" style="display: none;"></div>
     <div id="vazioGaleria" style="display: none; text-align: center; color: var(--cinza); padding: 20px;">
       Nenhuma fotografia cadastrada ainda.
     </div>
@@ -190,74 +182,112 @@
       return isNaN(d) ? iso : d.toLocaleDateString('pt-BR');
     }
 
-    // Inicialização
+    // ============================================================
+    // BOOT
+    // ============================================================
     (async function () {
       try {
+        // DIAGNÓSTICO: qual URL o auth.js está usando?
+        console.log("🔍 [SoloSmart] URL_API em uso:", SoloSmart.URL_API);
+        console.log("🔍 [SoloSmart] É a URL nova (V27)?", SoloSmart.URL_API.includes("AKfycbzYwTGM"));
+        console.log("🔍 [SoloSmart] É a URL antiga (V25)?", SoloSmart.URL_API.includes("AKfycbxeU6am"));
+
         const usuario = await SoloSmart.protegerPagina({ paginaLogin: "login.html" });
-        
+        console.log("🔍 [SoloSmart] Usuário logado:", usuario.email, "| Empresa:", usuario.empresa_id);
+
         const nome = usuario.nome || usuario.email || "?";
         document.getElementById("nomeTopo").textContent = nome;
         document.getElementById("avatarTopo").textContent = nome.charAt(0).toUpperCase();
 
         idTokenAtual = await firebase.auth().currentUser.getIdToken(true);
-        
+
         await carregarAmostrasSelect();
         await carregarGaleria();
 
       } catch (e) {
-        console.error(e);
+        console.error("❌ [SoloSmart] Erro no boot:", e);
+        mostrarMensagem("Não foi possível carregar a página. " + (e.message || ""), "erro");
       }
     })();
 
-    // --- Funções de API ---
-    
+    // ============================================================
+    // AMOSTRAS (select)
+    // ============================================================
     async function carregarAmostrasSelect() {
       const payload = { action: "listarAmostras", idToken: idTokenAtual };
+
       try {
         const resposta = await fetch(SoloSmart.URL_API, {
-          method: "POST", 
-          headers: { "Content-Type": "application/x-www-form-urlencoded" }, 
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: "payload=" + encodeURIComponent(JSON.stringify(payload))
         });
         const dados = await resposta.json();
-        
+
+        console.log("🔍 [Amostras] Resposta do backend:", dados);
+
         if (dados.sucesso && dados.resultado) {
-          listaAmostras = dados.resultado.filter(a => a.status !== "inativa");
-          
+          listaAmostras = dados.resultado.filter(a => String(a.status || "").toLowerCase() !== "inativa");
+
+          console.log("🔍 [Amostras] Após filtro de inativas:", listaAmostras.length, "amostra(s)");
+          console.log("🔍 [Amostras] A amostra 9d15f965 está presente?", listaAmostras.some(a => a.amostra_id === "9d15f965-459d-4656-97ae-fdac71879324"));
+
           const select = document.getElementById("amostra");
           select.innerHTML = '<option value="">Selecione uma amostra</option>';
-          
+
           listaAmostras.forEach(a => {
             const opt = document.createElement("option");
             opt.value = a.amostra_id;
             opt.textContent = `#${a.amostra_id.substring(0,4)} - ${a.data_coleta ? formatarData(a.data_coleta) : 'Sem data'}`;
             select.appendChild(opt);
           });
+
+          if (listaAmostras.length === 0) {
+            select.innerHTML = '<option value="">Nenhuma amostra ativa encontrada</option>';
+          }
+        } else {
+          console.warn("⚠️ [Amostras] Backend não retornou sucesso:", dados.mensagem);
+          const select = document.getElementById("amostra");
+          select.innerHTML = '<option value="">Erro ao carregar amostras</option>';
+          mostrarMensagem("Não foi possível carregar as amostras. " + (dados.mensagem || ""), "erro");
         }
       } catch (e) {
-        console.error("Erro ao carregar amostras:", e);
+        console.error("❌ [Amostras] Erro:", e);
+        const select = document.getElementById("amostra");
+        select.innerHTML = '<option value="">Erro ao carregar amostras</option>';
+        mostrarMensagem("Erro ao carregar amostras. Tente novamente.", "erro");
       }
     }
 
+    // ============================================================
+    // GALERIA
+    // ============================================================
     async function carregarGaleria() {
       const payload = { action: "listarFotografias", idToken: idTokenAtual };
-      
+
       try {
         const resposta = await fetch(SoloSmart.URL_API, {
-          method: "POST", 
-          headers: { "Content-Type": "application/x-www-form-urlencoded" }, 
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: "payload=" + encodeURIComponent(JSON.stringify(payload))
         });
         const dados = await resposta.json();
-        
+
         document.getElementById("loadingGaleria").style.display = "none";
+
+        console.log("🔍 [Galeria] Resposta do backend:", dados);
+        console.log("🔍 [Galeria] Total de fotos retornadas:", (dados.resultado || []).length);
 
         if (!dados.sucesso) throw new Error(dados.mensagem || "Erro ao carregar galeria.");
 
-        renderizarGaleria(dados.resultado);
+        const fotos = Array.isArray(dados.resultado) ? dados.resultado : [];
+        renderizarGaleria(fotos);
 
       } catch (erro) {
+        console.error("❌ [Galeria] Erro:", erro);
         document.getElementById("loadingGaleria").style.display = "none";
+        document.getElementById("vazioGaleria").style.display = "block";
+        document.getElementById("vazioGaleria").textContent = "Erro ao carregar galeria: " + (erro.message || "desconhecido");
         mostrarMensagem(erro.message, "erro");
       }
     }
@@ -271,6 +301,7 @@
       if (!fotos || fotos.length === 0) {
         galeria.style.display = "none";
         vazia.style.display = "block";
+        vazia.textContent = "Nenhuma fotografia cadastrada ainda.";
         return;
       }
 
@@ -292,14 +323,15 @@
         const div = document.createElement("div");
         div.className = "foto-card";
         div.innerHTML = `
-          <img src="${urlImg}" class="foto-img" alt="Foto da amostra" loading="lazy">
+          <img src="${urlImg}" class="foto-img" alt="Foto da amostra" loading="lazy"
+               onerror="this.style.background='#f0f0f0';this.alt='Imagem indisponível';this.removeAttribute('src')">
           <div class="foto-info">
             <strong>Amostra ${idCurto}</strong>
             <span>Enviado em: ${formatarData(f.data_upload)}</span>
             ${f.observacoes ? `<span>${f.observacoes}</span>` : ''}
           </div>
           <div class="foto-acoes">
-            <a href="${f.arquivo_url}" target="_blank" class="btn-acao btn-abrir">Abrir</a>
+            <a href="${f.arquivo_url}" target="_blank" rel="noopener" class="btn-acao btn-abrir">Abrir</a>
             <button class="btn-acao btn-excluir" data-id="${f.foto_id}">Excluir</button>
           </div>
         `;
@@ -314,7 +346,9 @@
       });
     }
 
-    // --- Excluir Fotografia ---
+    // ============================================================
+    // EXCLUIR
+    // ============================================================
     async function excluirFoto(id, botao) {
       if (!confirm("Tem certeza que deseja excluir esta fotografia?")) return;
 
@@ -323,20 +357,17 @@
 
       idTokenAtual = await firebase.auth().currentUser.getIdToken(true);
 
-      const payload = {
-        action: "excluirFotografia", 
-        idToken: idTokenAtual,
-        id: id
-      };
+      const payload = { action: "excluirFotografia", idToken: idTokenAtual, id: id };
 
       try {
         const resposta = await fetch(SoloSmart.URL_API, {
           method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" }, 
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: "payload=" + encodeURIComponent(JSON.stringify(payload))
         });
 
         const dados = await resposta.json();
+        console.log("🔍 [Excluir] Resposta:", dados);
 
         if (!dados.sucesso) throw new Error(dados.mensagem || "Erro ao excluir.");
 
@@ -344,19 +375,29 @@
         await carregarGaleria();
 
       } catch (erro) {
+        console.error("❌ [Excluir] Erro:", erro);
         mostrarMensagem(erro.message, "erro");
         botao.disabled = false;
         botao.textContent = "Excluir";
       }
     }
 
-    // --- Upload da Nova Foto ---
+    // ============================================================
+    // UPLOAD
+    // ============================================================
     document.getElementById("formFoto").addEventListener("submit", async function (e) {
       e.preventDefault();
 
       const btn = document.getElementById("btnSalvar");
       const fileInput = document.getElementById("foto");
-      
+      const amostraId = document.getElementById("amostra").value;
+
+      // CORREÇÃO 4: valida amostra ANTES de ler o arquivo (evita carregar 4MB à toa)
+      if (!amostraId) {
+        mostrarMensagem("Selecione uma amostra antes de enviar.", "erro");
+        return;
+      }
+
       if (fileInput.files.length === 0) {
         mostrarMensagem("Selecione uma imagem.", "erro");
         return;
@@ -378,26 +419,23 @@
         idTokenAtual = await firebase.auth().currentUser.getIdToken(true);
 
         const novaFoto = {
-          amostra_id: document.getElementById("amostra").value,
+          amostra_id: amostraId,
           observacoes: document.getElementById("observacoes").value.trim(),
           nome_arquivo: arquivo.name,
           mime_type: arquivo.type,
           base64: base64Data
         };
 
-        const payload = {
-          action: "criarFotografia", 
-          idToken: idTokenAtual,
-          dados: novaFoto
-        };
+        const payload = { action: "criarFotografia", idToken: idTokenAtual, dados: novaFoto };
 
         try {
           const resposta = await fetch(SoloSmart.URL_API, {
-            method: "POST", 
-            headers: { "Content-Type": "application/x-www-form-urlencoded" }, 
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
             body: "payload=" + encodeURIComponent(JSON.stringify(payload))
           });
           const dados = await resposta.json();
+          console.log("🔍 [Upload] Resposta:", dados);
 
           if (!dados.sucesso) throw new Error(dados.mensagem || "Erro ao salvar.");
 
@@ -406,17 +444,18 @@
           await carregarGaleria();
 
         } catch (erro) {
+          console.error("❌ [Upload] Erro:", erro);
           mostrarMensagem(erro.message, "erro");
         } finally {
           btn.disabled = false;
           btn.textContent = "Enviar Fotografia";
         }
       };
-      
+
       reader.readAsDataURL(arquivo);
     });
 
-    // Logout e Menu
+    // Logout e menu
     document.getElementById("botaoSair").addEventListener("click", () => SoloSmart.sair());
     const sidebar = document.getElementById("sidebar");
     const overlay = document.getElementById("overlay");
