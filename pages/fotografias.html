@@ -189,8 +189,9 @@
       try {
         // DIAGNÓSTICO: qual URL o auth.js está usando?
         console.log("🔍 [SoloSmart] URL_API em uso:", SoloSmart.URL_API);
-        console.log("🔍 [SoloSmart] É a URL nova (V27)?", SoloSmart.URL_API.includes("AKfycbzYwTGM"));
-        console.log("🔍 [SoloSmart] É a URL antiga (V25)?", SoloSmart.URL_API.includes("AKfycbxeU6am"));
+        console.log("🔍 [SoloSmart] É a URL V28?", SoloSmart.URL_API.includes("AKfycbzsolPc"));
+        console.log("🔍 [SoloSmart] É a URL V27?", SoloSmart.URL_API.includes("AKfycbzYwTGM"));
+        console.log("🔍 [SoloSmart] É a URL V25?", SoloSmart.URL_API.includes("AKfycbxeU6am"));
 
         const usuario = await SoloSmart.protegerPagina({ paginaLogin: "login.html" });
         console.log("🔍 [SoloSmart] Usuário logado:", usuario.email, "| Empresa:", usuario.empresa_id);
@@ -312,11 +313,12 @@
         const amostra = listaAmostras.find(a => a.amostra_id === f.amostra_id);
         const idCurto = amostra ? `#${amostra.amostra_id.substring(0,4)}` : "Desconhecida";
 
+        // 🔧 CORREÇÃO: usa thumbnail do Drive (mais confiável que uc?export=view)
         let urlImg = f.arquivo_url || "";
-        if (urlImg.includes("drive.google.com")) {
+        if (urlImg.includes("drive.google.com") || urlImg.includes("docs.google.com")) {
           const match = urlImg.match(/[-\w]{25,}/);
           if (match) {
-            urlImg = `https://drive.google.com/uc?export=view&id=${match[0]}`;
+            urlImg = `https://drive.google.com/thumbnail?id=${match[0]}&sz=w400`;
           }
         }
 
@@ -324,7 +326,7 @@
         div.className = "foto-card";
         div.innerHTML = `
           <img src="${urlImg}" class="foto-img" alt="Foto da amostra" loading="lazy"
-               onerror="this.style.background='#f0f0f0';this.alt='Imagem indisponível';this.removeAttribute('src')">
+               onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 160%22><rect fill=%22%23f0f0f0%22 width=%22400%22 height=%22160%22/><text x=%2250%25%22 y=%2250%25%22 font-family=%22Arial%22 font-size=%2214%22 fill=%22%23999%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22>Imagem indisponível</text></svg>'">
           <div class="foto-info">
             <strong>Amostra ${idCurto}</strong>
             <span>Enviado em: ${formatarData(f.data_upload)}</span>
@@ -392,7 +394,7 @@
       const fileInput = document.getElementById("foto");
       const amostraId = document.getElementById("amostra").value;
 
-      // CORREÇÃO 4: valida amostra ANTES de ler o arquivo (evita carregar 4MB à toa)
+      // Valida amostra ANTES de ler o arquivo (evita carregar 4MB à toa)
       if (!amostraId) {
         mostrarMensagem("Selecione uma amostra antes de enviar.", "erro");
         return;
