@@ -14,7 +14,7 @@ const firebaseConfig = {
 };
 
 // URL DEFINITIVA DO APPS SCRIPT (Com permissão de Drive)
-const URL_API = "https://script.google.com/macros/s/AKfycbwNhHU08T8SktixCq3UjVtQH_H515442xVxTBb5wZBcnJxrWVo_xmob5o0EnutmKm8p/exec";
+const URL_API = "https://script.google.com/macros/s/AKfycbyqj-z3R_x6Bt-LBZaABgFDpWMkiUVei8ZHnTR8MqOiabgpssiI7BejnAsy7bDCDiV6/exec";
 
 if (typeof firebase !== "undefined") {
   if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
