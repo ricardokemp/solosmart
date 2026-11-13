@@ -1100,8 +1100,8 @@
             atualizarStatusAPI("", "Verificando conexão");
 
             try {
-                // Usa a URL definida no auth.js (SoloSmart.URL_API)
-                const response = await fetch(SoloSmart.URL_API + "?_=" + Date.now(), {
+                // CORREÇÃO: ?action=status evita o bloqueio CORS no Apps Script
+                const response = await fetch(SoloSmart.URL_API + "?action=status&_=" + Date.now(), {
                     method: "GET",
                     redirect: "follow"
                 });
