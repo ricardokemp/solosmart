@@ -60,7 +60,6 @@
         }
 
         /* HEADER */
-
         header {
             position: sticky;
             top: 0;
@@ -160,7 +159,6 @@
         }
 
         /* STATUS DA API */
-
         .api-status {
             display: inline-flex;
             align-items: center;
@@ -197,7 +195,6 @@
         }
 
         /* HERO */
-
         .hero {
             padding: 85px 0 90px;
             background:
@@ -265,7 +262,6 @@
         }
 
         /* DASHBOARD PREVIEW */
-
         .preview {
             position: relative;
             background: white;
@@ -412,7 +408,6 @@
         }
 
         /* SECTIONS */
-
         section {
             padding: 85px 0;
         }
@@ -442,7 +437,6 @@
         }
 
         /* FEATURES */
-
         .features {
             background: white;
         }
@@ -491,7 +485,6 @@
         }
 
         /* HOW IT WORKS */
-
         .how {
             background: #f2f7f2;
         }
@@ -532,7 +525,6 @@
         }
 
         /* CTA */
-
         .cta {
             background: var(--green-dark);
             color: white;
@@ -564,7 +556,6 @@
         }
 
         /* FOOTER */
-
         footer {
             padding: 35px 0;
             background: #0d3021;
@@ -601,7 +592,6 @@
         }
 
         /* RESPONSIVE */
-
         @media (max-width: 900px) {
             .hero-grid {
                 grid-template-columns: 1fr;
@@ -1065,30 +1055,23 @@
 
     </footer>
 
+    <!-- Firebase e Módulo de Autenticação (para obter a URL da API) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="pages/auth.js"></script>
+
     <script>
         // ============================================================
-        // SOLOSMART API CLIENT
-        // Verificação de status e conexão da API Google Apps Script
-        // ============================================================
-
-        // CONFIGURAÇÃO DA API SOLOSMART
-
-        const API_URL =
-            "https://script.google.com/macros/s/AKfycbwWuOUHwy_WpVM60F-AqRIR1oJhPbESTR4iAAUI7H0KnWY09zZe6FL0TYUP8tQXxeZP/exec";
-
         // MENU RESPONSIVO
-
+        // ============================================================
         const menuToggle = document.getElementById("menuToggle");
         const navLinks = document.getElementById("navLinks");
 
         menuToggle.addEventListener("click", function () {
             const aberto = navLinks.classList.toggle("active");
-
             menuToggle.setAttribute("aria-expanded", aberto);
             menuToggle.textContent = aberto ? "✕" : "☰";
         });
-
-        // FECHAR MENU APÓS SELECIONAR UMA SEÇÃO
 
         document.querySelectorAll("#navLinks a").forEach(link => {
             link.addEventListener("click", function () {
@@ -1098,67 +1081,46 @@
             });
         });
 
-        // ANO AUTOMÁTICO NO RODAPÉ
+        // ============================================================
+        // ANO AUTOMÁTICO
+        // ============================================================
+        document.getElementById("year").textContent = new Date().getFullYear();
 
-        document.getElementById("year").textContent =
-            new Date().getFullYear();
-
-        // ATUALIZAR INDICADOR DA API
-
+        // ============================================================
+        // STATUS DA API
+        // ============================================================
         function atualizarStatusAPI(status, mensagem) {
             const indicador = document.getElementById("apiStatus");
-
             if (!indicador) return;
-
             indicador.className = "api-status " + status;
-
-            indicador.innerHTML =
-                '<span class="api-status-dot"></span>' + mensagem;
+            indicador.innerHTML = '<span class="api-status-dot"></span>' + mensagem;
         }
-
-        // VERIFICAR CONEXÃO COM O BACKEND VIA FETCH
 
         async function verificarAPI() {
             atualizarStatusAPI("", "Verificando conexão");
 
             try {
-                const response = await fetch(API_URL + "?_=" + Date.now(), {
+                // Usa a URL definida no auth.js (SoloSmart.URL_API)
+                const response = await fetch(SoloSmart.URL_API + "?_=" + Date.now(), {
                     method: "GET",
                     redirect: "follow"
                 });
 
-                if (!response.ok) {
-                    throw new Error("Erro HTTP: " + response.status);
-                }
+                if (!response.ok) throw new Error("Erro HTTP: " + response.status);
 
                 const resposta = await response.json();
 
-                if (
-                    resposta &&
-                    resposta.sistema === "SoloSmart" &&
-                    resposta.status === "online"
-                ) {
-                    atualizarStatusAPI(
-                        "online",
-                        "Sistema online"
-                    );
+                if (resposta && resposta.sistema === "SoloSmart" && resposta.status === "online") {
+                    atualizarStatusAPI("online", "Sistema online");
                 } else {
-                    atualizarStatusAPI(
-                        "offline",
-                        "Resposta inválida"
-                    );
+                    atualizarStatusAPI("offline", "Resposta inválida");
                 }
 
             } catch (erro) {
                 console.error("Erro na conexão com a API:", erro);
-                atualizarStatusAPI(
-                    "offline",
-                    "Falha na conexão"
-                );
+                atualizarStatusAPI("offline", "Falha na conexão");
             }
         }
-
-        // EXECUTAR TESTE AO CARREGAR A PÁGINA
 
         verificarAPI();
     </script>
