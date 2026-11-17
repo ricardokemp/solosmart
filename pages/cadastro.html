@@ -3,80 +3,958 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#123d2b">
+    <meta name="theme-color" content="#102d24">
+    <meta name="description" content="Crie sua conta no SoloSmart e gerencie propriedades, amostragens e dados do solo em uma única plataforma.">
     <title>Criar conta | SoloSmart</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- BIBLIOTECA DE CONFETES -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'DM Sans', sans-serif; background: #f4f8f4; color: #1c2c23; min-height: 100vh; }
-        header { background: #fff; border-bottom: 1px solid #e6ede7; padding: 18px 5%; }
-        .logo { color: #123d2b; font-family: 'Manrope', sans-serif; font-size: 23px; font-weight: 800; text-decoration: none; }
-        .logo span { margin-right: 8px; }
-        .container { width: min(680px, 92%); margin: 45px auto; }
-        .card { background: #fff; padding: 35px; border-radius: 18px; border: 1px solid #e6ede7; box-shadow: 0 12px 35px rgba(18,61,43,.07); }
-        h1 { font-family: 'Manrope', sans-serif; color: #123d2b; font-size: 30px; margin-bottom: 8px; }
-        .intro { color: #718078; font-size: 14px; margin-bottom: 30px; line-height: 1.7; }
-        h2 { color: #176b45; font-size: 16px; margin: 25px 0 15px; padding-bottom: 10px; border-bottom: 1px solid #e6ede7; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 15px; }
-        .full { grid-column: 1 / -1; }
-        label { font-size: 13px; font-weight: 700; color: #34483b; }
-        input, select { width: 100%; padding: 13px 14px; border: 1px solid #dce6dd; border-radius: 9px; background: #fff; font: inherit; font-size: 14px; outline: none; }
-        input:focus, select:focus { border-color: #176b45; box-shadow: 0 0 0 3px rgba(23,107,69,.09); }
-        .hint { font-size: 11px; color: #718078; }
-        button { width: 100%; padding: 15px; background: #176b45; color: white; border: none; border-radius: 9px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 15px; transition: 0.2s; }
-        button:hover { background: #123d2b; }
-        button:disabled { opacity: .6; cursor: wait; }
-        .message { display: none; padding: 14px; margin-top: 18px; border-radius: 9px; font-size: 13px; line-height: 1.6; }
-        .message.success { display: block; background: #e9f5ed; color: #176b45; }
-        .message.error { display: block; background: #fff0ef; color: #a52c25; }
-        .footer { text-align: center; margin-top: 22px; font-size: 13px; color: #718078; }
-        .footer a { color: #176b45; font-weight: 700; text-decoration: none; }
-        .notice { font-size: 12px; color: #718078; line-height: 1.6; margin-top: 18px; }
-        @media (max-width: 560px) { .card { padding: 23px 18px; } .grid { grid-template-columns: 1fr; gap: 0; } .full { grid-column: auto; } h1 { font-size: 25px; } }
+        :root {
+            --forest: #102d24;
+            --forest-light: #174b37;
+            --green: #24734c;
+            --jade: #398b60;
+            --lime: #b5d76a;
+            --lime-light: #e8f2d5;
+            --background: #f5f7f3;
+            --surface: #ffffff;
+            --text: #1b2d23;
+            --muted: #77857c;
+            --border: #e4eae3;
+            --danger: #b43c36;
+            --shadow: 0 18px 55px rgba(16, 45, 36, .08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: 'DM Sans', sans-serif;
+            background: var(--background);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        button, input, select {
+            font: inherit;
+        }
+
+        button:focus-visible,
+        a:focus-visible,
+        input:focus-visible,
+        select:focus-visible {
+            outline: 3px solid rgba(181, 215, 106, .8);
+            outline-offset: 3px;
+        }
+
+        /* HEADER */
+
+        .topbar {
+            min-height: 76px;
+            padding: 0 6%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, .94);
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            z-index: 5;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--forest);
+            text-decoration: none;
+            font-family: 'Manrope', sans-serif;
+            font-size: 23px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 11px;
+            background: var(--forest);
+            color: var(--lime);
+            display: grid;
+            place-items: center;
+            font-size: 20px;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .topbar-right a {
+            color: var(--green);
+            text-decoration: none;
+            font-weight: 700;
+            margin-left: 5px;
+        }
+
+        .topbar-right a:hover {
+            color: var(--forest);
+        }
+
+        /* LAYOUT */
+
+        .page {
+            width: min(1180px, 92%);
+            min-height: calc(100vh - 76px);
+            margin: 0 auto;
+            padding: 48px 0;
+            display: grid;
+            grid-template-columns: .88fr 1.12fr;
+            align-items: stretch;
+            gap: 26px;
+        }
+
+        /* PAINEL VISUAL */
+
+        .visual-panel {
+            background:
+                radial-gradient(circle at 85% 12%, rgba(181, 215, 106, .15), transparent 28%),
+                linear-gradient(150deg, #163e30, #102d24 70%);
+            color: white;
+            border-radius: 24px;
+            padding: 42px 36px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 660px;
+            isolation: isolate;
+        }
+
+        .visual-panel::before,
+        .visual-panel::after {
+            content: "";
+            position: absolute;
+            border: 1px solid rgba(255, 255, 255, .07);
+            border-radius: 50%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .visual-panel::before {
+            width: 460px;
+            height: 460px;
+            right: -220px;
+            top: 130px;
+        }
+
+        .visual-panel::after {
+            width: 340px;
+            height: 340px;
+            right: -160px;
+            top: 190px;
+        }
+
+        .panel-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            color: var(--lime);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+        }
+
+        .panel-label::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--lime);
+            box-shadow: 0 0 12px rgba(181, 215, 106, .6);
+        }
+
+        .panel-content {
+            margin-top: 48px;
+        }
+
+        .panel-content h1 {
+            font-family: 'Manrope', sans-serif;
+            font-size: clamp(31px, 3.4vw, 43px);
+            line-height: 1.17;
+            letter-spacing: -1.7px;
+            max-width: 440px;
+            margin-bottom: 19px;
+        }
+
+        .panel-content h1 span {
+            color: var(--lime);
+        }
+
+        .panel-content p {
+            max-width: 390px;
+            color: #c1d2c8;
+            font-size: 14px;
+            line-height: 1.85;
+        }
+
+        /* DASHBOARD ILUSTRATIVO */
+
+        .preview {
+            margin-top: 44px;
+            padding: 19px;
+            background: rgba(255, 255, 255, .075);
+            border: 1px solid rgba(255, 255, 255, .13);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .preview-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 17px;
+        }
+
+        .preview-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .preview-tag {
+            font-size: 9px;
+            color: var(--lime);
+            letter-spacing: .8px;
+            font-weight: 700;
+        }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .preview-item {
+            padding: 13px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, .07);
+        }
+
+        .preview-item span {
+            display: block;
+            font-size: 10px;
+            color: #c0d0c6;
+            margin-bottom: 7px;
+        }
+
+        .preview-item strong {
+            font-family: 'Manrope', sans-serif;
+            font-size: 22px;
+            color: white;
+            font-weight: 700;
+        }
+
+        .preview-bottom {
+            margin-top: 12px;
+            padding: 13px;
+            background: rgba(255, 255, 255, .055);
+            border-radius: 10px;
+        }
+
+        .preview-bottom span {
+            font-size: 10px;
+            color: #c0d0c6;
+        }
+
+        .chart {
+            height: 52px;
+            display: flex;
+            align-items: end;
+            gap: 6px;
+            margin-top: 12px;
+        }
+
+        .chart-bar {
+            flex: 1;
+            min-width: 0;
+            border-radius: 4px 4px 1px 1px;
+            background: linear-gradient(to top, #80ad50, #c5df8b);
+            opacity: .85;
+            transform-origin: bottom;
+            animation: grow 1.2s ease both;
+        }
+
+        .panel-footer {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #c1d2c8;
+            font-size: 11px;
+            line-height: 1.6;
+            margin-top: 35px;
+        }
+
+        .panel-footer-icon {
+            width: 34px;
+            height: 34px;
+            flex-shrink: 0;
+            border: 1px solid rgba(181, 215, 106, .35);
+            color: var(--lime);
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            font-size: 16px;
+        }
+
+        /* FORMULÁRIO */
+
+        .form-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 39px;
+            box-shadow: var(--shadow);
+        }
+
+        .form-heading {
+            margin-bottom: 30px;
+        }
+
+        .eyebrow {
+            color: var(--green);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: 10px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .form-heading h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 29px;
+            letter-spacing: -1px;
+            color: var(--forest);
+            margin-bottom: 9px;
+        }
+
+        .form-heading p {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        /* SEÇÕES */
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            margin: 27px 0 17px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-icon {
+            width: 33px;
+            height: 33px;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            color: var(--green);
+            background: #edf5ed;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .section-heading h3 {
+            color: var(--forest);
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .section-heading p {
+            color: var(--muted);
+            font-size: 10px;
+            margin-top: 3px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0 14px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            margin-bottom: 16px;
+            min-width: 0;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #34483b;
+        }
+
+        .required {
+            color: var(--green);
+        }
+
+        input,
+        select {
+            width: 100%;
+            height: 45px;
+            padding: 0 13px;
+            color: var(--text);
+            border: 1px solid #dfe7df;
+            border-radius: 9px;
+            background: #fbfcfa;
+            font-size: 12px;
+            transition: border .2s, box-shadow .2s, background .2s;
+        }
+
+        input::placeholder {
+            color: #a0aaa2;
+        }
+
+        input:hover,
+        select:hover {
+            border-color: #b7c9ba;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            background: white;
+            border-color: var(--green);
+            box-shadow: 0 0 0 3px rgba(36, 115, 76, .09);
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        .hint {
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        /* SENHA */
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper input {
+            padding-right: 48px;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 9px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            margin: 0;
+            border: 0;
+            background: transparent;
+            color: var(--muted);
+            cursor: pointer;
+            border-radius: 7px;
+            display: grid;
+            place-items: center;
+            font-size: 15px;
+        }
+
+        .password-toggle:hover {
+            background: #edf5ed;
+            color: var(--green);
+        }
+
+        /* BOTÃO */
+
+        .submit-button {
+            width: 100%;
+            min-height: 49px;
+            padding: 13px 18px;
+            margin-top: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border: 0;
+            border-radius: 10px;
+            background: var(--forest);
+            color: white;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: background .2s, transform .2s, box-shadow .2s;
+        }
+
+        .submit-button:hover:not(:disabled) {
+            background: var(--green);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 45, 36, .17);
+        }
+
+        .submit-button:disabled {
+            opacity: .65;
+            cursor: wait;
+            transform: none;
+        }
+
+        .submit-arrow {
+            color: var(--lime);
+            font-size: 17px;
+        }
+
+        /* MENSAGENS */
+
+        .message {
+            display: none;
+            padding: 13px 15px;
+            margin-top: 15px;
+            border-radius: 9px;
+            font-size: 12px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .message.success {
+            display: block;
+            color: #176b45;
+            background: #eaf5ec;
+            border: 1px solid #d5ead9;
+        }
+
+        .message.error {
+            display: block;
+            color: #a52c25;
+            background: #fff0ef;
+            border: 1px solid #f5d6d3;
+        }
+
+        .notice {
+            margin-top: 17px;
+            padding: 13px;
+            border-radius: 9px;
+            background: #f6f8f4;
+            color: #738077;
+            font-size: 10px;
+            line-height: 1.75;
+        }
+
+        .notice strong {
+            color: var(--forest);
+        }
+
+        /* RODAPÉ */
+
+        .form-footer {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 2;
+        }
+
+        .form-footer a {
+            color: var(--green);
+            font-weight: 800;
+            text-decoration: none;
+            transition: color .2s;
+        }
+
+        .form-footer a:hover {
+            color: var(--forest);
+            text-decoration: underline;
+        }
+
+        .security-note {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            margin-top: 12px;
+            font-size: 10px;
+            color: #89958c;
+        }
+
+        /* ANIMAÇÕES */
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-6px);
+            }
+        }
+
+        @keyframes grow {
+            from {
+                transform: scaleY(.15);
+            }
+            to {
+                transform: scaleY(1);
+            }
+        }
+
+        .animate-in {
+            animation: appear .65s ease both;
+        }
+
+        @keyframes appear {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* RESPONSIVIDADE */
+
+        @media (max-width: 900px) {
+            .page {
+                grid-template-columns: 1fr;
+                max-width: 680px;
+                gap: 20px;
+            }
+
+            .visual-panel {
+                min-height: auto;
+                padding: 32px;
+            }
+
+            .panel-content {
+                margin-top: 35px;
+            }
+
+            .panel-content h1 {
+                max-width: 550px;
+            }
+
+            .preview {
+                max-width: 440px;
+            }
+
+            .panel-footer {
+                margin-top: 25px;
+            }
+
+            .form-panel {
+                padding: 35px;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .topbar {
+                min-height: 65px;
+                padding: 0 5%;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .topbar-right {
+                font-size: 11px;
+            }
+
+            .page {
+                width: 94%;
+                padding: 20px 0 35px;
+                gap: 15px;
+            }
+
+            .visual-panel {
+                border-radius: 17px;
+                padding: 26px 23px;
+            }
+
+            .panel-content {
+                margin-top: 28px;
+            }
+
+            .panel-content h1 {
+                font-size: 31px;
+            }
+
+            .panel-content p {
+                font-size: 12px;
+            }
+
+            .preview {
+                margin-top: 28px;
+                padding: 14px;
+            }
+
+            .form-panel {
+                padding: 27px 20px;
+                border-radius: 17px;
+            }
+
+            .form-heading h2 {
+                font-size: 25px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .full {
+                grid-column: auto;
+            }
+
+            .section-heading {
+                margin-top: 23px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .01ms !important;
+            }
+        }
     </style>
 </head>
+
 <body>
-<header>
-    <a class="logo" href="../index.html"><span>🌱</span>SoloSmart</a>
+
+<header class="topbar">
+    <a class="logo" href="../index.html" aria-label="SoloSmart, página inicial">
+        <span class="logo-icon" aria-hidden="true">🌱</span>
+        SoloSmart
+    </a>
+
+    <div class="topbar-right">
+        Já possui uma conta?
+        <a href="login.html">Entrar</a>
+    </div>
 </header>
-<main class="container">
-    <div class="card">
-        <h1>Crie sua conta</h1>
-        <p class="intro">Cadastre sua empresa e o responsável pela administração da conta no SoloSmart.</p>
-        <form id="cadastroForm">
-            <h2>Dados da empresa</h2>
-            <div class="grid">
-                <div class="field full">
-                    <label for="nomeEmpresa">Nome da empresa *</label>
-                    <input id="nomeEmpresa" type="text" maxlength="150" required placeholder="Nome da empresa">
+
+<main class="page">
+
+    <!-- PAINEL DE APRESENTAÇÃO -->
+
+    <aside class="visual-panel animate-in">
+
+        <div>
+            <div class="panel-label">Tecnologia para o agronegócio</div>
+
+            <div class="panel-content">
+                <h1>
+                    O futuro da gestão do solo começa com
+                    <span>dados inteligentes.</span>
+                </h1>
+
+                <p>
+                    Centralize informações das suas propriedades, organize
+                    amostragens georreferenciadas e acompanhe dados em uma
+                    plataforma integrada.
+                </p>
+            </div>
+
+            <div class="preview">
+
+                <div class="preview-header">
+                    <span class="preview-title">Visão geral da plataforma</span>
+                    <span class="preview-tag">PRÉVIA ILUSTRATIVA</span>
                 </div>
+
+                <div class="preview-grid">
+                    <div class="preview-item">
+                        <span>Propriedades</span>
+                        <strong>--</strong>
+                    </div>
+
+                    <div class="preview-item">
+                        <span>Amostras</span>
+                        <strong>--</strong>
+                    </div>
+
+                    <div class="preview-item">
+                        <span>Dispositivos IoT</span>
+                        <strong>--</strong>
+                    </div>
+
+                    <div class="preview-item">
+                        <span>Campanhas</span>
+                        <strong>--</strong>
+                    </div>
+                </div>
+
+                <div class="preview-bottom">
+                    <span>Acompanhamento e análise de dados</span>
+
+                    <div class="chart" aria-hidden="true">
+                        <div class="chart-bar" style="height:35%"></div>
+                        <div class="chart-bar" style="height:55%"></div>
+                        <div class="chart-bar" style="height:43%"></div>
+                        <div class="chart-bar" style="height:70%"></div>
+                        <div class="chart-bar" style="height:50%"></div>
+                        <div class="chart-bar" style="height:85%"></div>
+                        <div class="chart-bar" style="height:65%"></div>
+                        <div class="chart-bar" style="height:95%"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="panel-footer">
+            <span class="panel-footer-icon" aria-hidden="true">✦</span>
+            <span>
+                Gestão, geolocalização e monitoramento do solo em um único ambiente.
+            </span>
+        </div>
+
+    </aside>
+
+    <!-- FORMULÁRIO DE CADASTRO -->
+
+    <section class="form-panel animate-in">
+
+        <div class="form-heading">
+            <div class="eyebrow">Comece sua jornada</div>
+
+            <h2>Crie sua conta</h2>
+
+            <p>
+                Cadastre sua empresa e o responsável pela administração
+                da conta no SoloSmart.
+            </p>
+        </div>
+
+        <form id="cadastroForm" autocomplete="on">
+
+            <!-- DADOS DA EMPRESA -->
+
+            <div class="section-heading">
+                <span class="section-icon" aria-hidden="true">▦</span>
+                <div>
+                    <h3>Dados da empresa</h3>
+                    <p>Informações da organização</p>
+                </div>
+            </div>
+
+            <div class="grid">
+
+                <div class="field full">
+                    <label for="nomeEmpresa">
+                        Nome da empresa <span class="required">*</span>
+                    </label>
+                    <input
+                        id="nomeEmpresa"
+                        name="nomeEmpresa"
+                        type="text"
+                        maxlength="150"
+                        required
+                        autocomplete="organization"
+                        placeholder="Nome da empresa">
+                </div>
+
                 <div class="field">
                     <label for="cnpj">CNPJ</label>
-                    <input id="cnpj" type="text" inputmode="numeric" maxlength="18" placeholder="00.000.000/0000-00">
+                    <input
+                        id="cnpj"
+                        name="cnpj"
+                        type="text"
+                        inputmode="numeric"
+                        maxlength="18"
+                        autocomplete="off"
+                        placeholder="00.000.000/0000-00">
                     <span class="hint">Opcional nesta etapa.</span>
                 </div>
+
                 <div class="field">
-                    <label for="emailEmpresa">E-mail da empresa *</label>
-                    <input id="emailEmpresa" type="email" maxlength="150" required placeholder="contato@empresa.com.br">
+                    <label for="emailEmpresa">
+                        E-mail da empresa <span class="required">*</span>
+                    </label>
+                    <input
+                        id="emailEmpresa"
+                        name="emailEmpresa"
+                        type="email"
+                        maxlength="150"
+                        required
+                        autocomplete="email"
+                        placeholder="contato@empresa.com.br">
                 </div>
+
                 <div class="field">
                     <label for="telefone">Telefone</label>
-                    <input id="telefone" type="tel" maxlength="30" placeholder="(00) 00000-0000">
+                    <input
+                        id="telefone"
+                        name="telefone"
+                        type="tel"
+                        maxlength="30"
+                        autocomplete="tel"
+                        placeholder="(00) 00000-0000">
                 </div>
+
                 <div class="field">
                     <label for="cidade">Cidade</label>
-                    <input id="cidade" type="text" maxlength="100" placeholder="Cidade">
+                    <input
+                        id="cidade"
+                        name="cidade"
+                        type="text"
+                        maxlength="100"
+                        autocomplete="address-level2"
+                        placeholder="Cidade">
                 </div>
-                <div class="field">
+
+                <div class="field full">
                     <label for="estado">Estado</label>
-                    <select id="estado">
-                        <option value="">Selecione</option>
+                    <select
+                        id="estado"
+                        name="estado"
+                        autocomplete="address-level1">
+
+                        <option value="">Selecione o estado</option>
                         <option value="AC">Acre</option>
                         <option value="AL">Alagoas</option>
                         <option value="AP">Amapá</option>
@@ -106,35 +984,120 @@
                         <option value="TO">Tocantins</option>
                     </select>
                 </div>
+
             </div>
-            <h2>Responsável pela conta</h2>
+
+            <!-- RESPONSÁVEL -->
+
+            <div class="section-heading">
+                <span class="section-icon" aria-hidden="true">♙</span>
+                <div>
+                    <h3>Responsável pela conta</h3>
+                    <p>Dados de acesso do administrador</p>
+                </div>
+            </div>
+
             <div class="grid">
+
                 <div class="field full">
-                    <label for="nomeResponsavel">Nome completo *</label>
-                    <input id="nomeResponsavel" type="text" maxlength="150" required placeholder="Nome do responsável">
+                    <label for="nomeResponsavel">
+                        Nome completo <span class="required">*</span>
+                    </label>
+                    <input
+                        id="nomeResponsavel"
+                        name="nomeResponsavel"
+                        type="text"
+                        maxlength="150"
+                        required
+                        autocomplete="name"
+                        placeholder="Nome do responsável">
                 </div>
+
                 <div class="field full">
-                    <label for="emailResponsavel">E-mail do responsável *</label>
-                    <input id="emailResponsavel" type="email" maxlength="150" required placeholder="seuemail@exemplo.com">
+                    <label for="emailResponsavel">
+                        E-mail do responsável <span class="required">*</span>
+                    </label>
+                    <input
+                        id="emailResponsavel"
+                        name="emailResponsavel"
+                        type="email"
+                        maxlength="150"
+                        required
+                        autocomplete="username"
+                        placeholder="seuemail@exemplo.com">
                 </div>
+
                 <div class="field full">
-                    <label for="senhaResponsavel">Senha de acesso *</label>
-                    <input id="senhaResponsavel" type="password" minlength="6" required placeholder="Crie uma senha (mín. 6 caracteres)">
+                    <label for="senhaResponsavel">
+                        Senha de acesso <span class="required">*</span>
+                    </label>
+
+                    <div class="password-wrapper">
+                        <input
+                            id="senhaResponsavel"
+                            name="senhaResponsavel"
+                            type="password"
+                            minlength="6"
+                            maxlength="128"
+                            required
+                            autocomplete="new-password"
+                            placeholder="Crie uma senha com no mínimo 6 caracteres">
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            id="toggleSenha"
+                            aria-label="Mostrar senha"
+                            aria-pressed="false">
+                            ◉
+                        </button>
+                    </div>
+
+                    <span class="hint">
+                        Utilize uma senha segura e de uso exclusivo.
+                    </span>
                 </div>
+
             </div>
-            <button type="submit" id="btnEnviar">Criar Conta</button>
-            <div id="mensagem" class="message" role="status" aria-live="polite"></div>
-            <p class="notice">Ao criar a conta, enviaremos um e-mail de confirmação. O acesso ao sistema será liberado após a aprovação pela administração do SoloSmart.</p>
+
+            <button type="submit" id="btnEnviar" class="submit-button">
+                <span id="textoBotao">Criar minha conta</span>
+                <span class="submit-arrow" aria-hidden="true">→</span>
+            </button>
+
+            <div
+                id="mensagem"
+                class="message"
+                role="status"
+                aria-live="polite">
+            </div>
+
+            <p class="notice">
+                <strong>Importante:</strong> ao criar sua conta, o SoloSmart
+                enviará um e-mail de confirmação. O acesso ao sistema será
+                liberado após a aprovação pela administração da plataforma.
+            </p>
+
         </form>
-        <div class="footer">
-            Já possui uma conta? <a href="login.html">Entrar</a>
-            <br><br>
-            <a href="../index.html">Voltar para o início</a>
+
+        <div class="form-footer">
+            Já possui uma conta?
+            <a href="login.html">Entrar na plataforma</a>
+            <br>
+            <a href="../index.html">← Voltar para a página inicial</a>
+
+            <div class="security-note">
+                <span aria-hidden="true">♢</span>
+                Cadastro protegido e integrado ao SoloSmart
+            </div>
         </div>
-    </div>
+
+    </section>
+
 </main>
 
-<!-- Firebase e auth.js (para obter a URL da API) -->
+<!-- FIREBASE E AUTENTICAÇÃO -->
+
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="auth.js"></script>
@@ -142,6 +1105,7 @@
 <script>
     const formulario = document.getElementById("cadastroForm");
     const botao = document.getElementById("btnEnviar");
+    const textoBotao = document.getElementById("textoBotao");
     const mensagem = document.getElementById("mensagem");
 
     function mostrarMensagem(texto, tipo) {
@@ -149,21 +1113,48 @@
         mensagem.className = "message " + tipo;
     }
 
+    // VISUALIZAÇÃO DA SENHA
+
+    document.getElementById("toggleSenha").addEventListener("click", function () {
+        const campoSenha = document.getElementById("senhaResponsavel");
+        const mostrar = campoSenha.type === "password";
+
+        campoSenha.type = mostrar ? "text" : "password";
+
+        this.setAttribute(
+            "aria-label",
+            mostrar ? "Ocultar senha" : "Mostrar senha"
+        );
+
+        this.setAttribute("aria-pressed", String(mostrar));
+        this.textContent = mostrar ? "◎" : "◉";
+    });
+
+    // MÁSCARA DO CNPJ
+
     document.getElementById("cnpj").addEventListener("input", function () {
         let valor = this.value.replace(/\D/g, "").slice(0, 14);
+
         valor = valor.replace(/^(\d{2})(\d)/, "$1.$2");
         valor = valor.replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3");
         valor = valor.replace(/\.(\d{3})(\d)/, ".$1/$2");
         valor = valor.replace(/(\d{4})(\d)/, "$1-$2");
+
         this.value = valor;
     });
 
+    // ENVIO DO CADASTRO
+
     formulario.addEventListener("submit", async function (event) {
         event.preventDefault();
-        if (!formulario.reportValidity()) return;
+
+        if (!formulario.reportValidity()) {
+            return;
+        }
 
         botao.disabled = true;
-        botao.textContent = "Criando conta...";
+        textoBotao.textContent = "Criando sua conta...";
+
         mensagem.className = "message";
         mensagem.textContent = "";
 
@@ -176,6 +1167,7 @@
                 cidade: document.getElementById("cidade").value.trim(),
                 estado: document.getElementById("estado").value
             },
+
             responsavel: {
                 nome: document.getElementById("nomeResponsavel").value.trim(),
                 email: document.getElementById("emailResponsavel").value.trim(),
@@ -189,38 +1181,80 @@
         };
 
         try {
-            // Usa a URL do auth.js (SoloSmart.URL_API)
-            // Formato text/plain evita bloqueio de CORS no Apps Script
+            // Verifica se auth.js disponibilizou a URL da API.
+
+            if (
+                typeof SoloSmart === "undefined" ||
+                !SoloSmart.URL_API
+            ) {
+                throw new Error(
+                    "Não foi possível localizar o endereço da API. Atualize a página e tente novamente."
+                );
+            }
+
+            // Mantém o formato de envio original para o Apps Script.
+
             const resposta = await fetch(SoloSmart.URL_API, {
                 method: "POST",
-                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                headers: {
+                    "Content-Type": "text/plain;charset=utf-8"
+                },
                 body: JSON.stringify(payload)
             });
-            
+
+            if (!resposta.ok) {
+                throw new Error(
+                    "Não foi possível concluir a solicitação. Código HTTP: " +
+                    resposta.status
+                );
+            }
+
             const json = await resposta.json();
 
-            if (!json.sucesso) throw new Error(json.mensagem || "Erro ao criar conta.");
+            if (!json || !json.sucesso) {
+                throw new Error(
+                    json && json.mensagem
+                        ? json.mensagem
+                        : "Erro ao criar conta."
+                );
+            }
 
-            confetti({
-                particleCount: 150,
-                spread: 70,
-                origin: { y: 0.6 },
-                colors: ['#176b45', '#b7df87', '#ffffff']
-            });
+            // CONFETES DE SUCESSO
 
-            mostrarMensagem("Conta criada com sucesso! Redirecionando para a página principal...", "success");
+            if (typeof confetti === "function") {
+                confetti({
+                    particleCount: 130,
+                    spread: 75,
+                    origin: { y: 0.6 },
+                    colors: ["#24734c", "#b5d76a", "#ffffff"]
+                });
+            }
+
+            mostrarMensagem(
+                "Conta criada com sucesso! Redirecionando para a página principal...",
+                "success"
+            );
+
             formulario.reset();
 
-            setTimeout(() => {
+            // Evita novo envio durante o redirecionamento.
+
+            setTimeout(function () {
                 window.location.href = "../index.html";
             }, 3000);
 
         } catch (erro) {
-            mostrarMensagem(erro.message, "error");
+            mostrarMensagem(
+                erro.message ||
+                "Ocorreu um erro inesperado ao criar sua conta.",
+                "error"
+            );
+
             botao.disabled = false;
-            botao.textContent = "Criar Conta";
+            textoBotao.textContent = "Criar minha conta";
         }
     });
 </script>
+
 </body>
 </html>
