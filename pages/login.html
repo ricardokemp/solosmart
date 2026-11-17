@@ -3,131 +3,732 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#123c2b">
+
   <title>Entrar | SoloSmart</title>
-  <meta name="description" content="Acesse sua conta SoloSmart.">
+  <meta name="description" content="Acesse sua conta SoloSmart e acompanhe a gestão inteligente da sua propriedade rural.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <style>
-    :root{
-      --verde:#236b45;
-      --verde-escuro:#174b31;
-      --texto:#203229;
-      --cinza:#66756c;
-      --borda:#dce6de;
+    :root {
+      --verde: #236b45;
+      --verde-escuro: #123c2b;
+      --verde-profundo: #0d3022;
+      --jade: #36865b;
+      --lima: #a8c96a;
+
+      --texto: #203229;
+      --cinza: #718078;
+      --borda: #e2eae3;
+
+      --fundo: #f5f8f5;
+      --branco: #ffffff;
+
+      --sombra:
+        0 24px 70px rgba(18, 60, 43, 0.11),
+        0 4px 14px rgba(18, 60, 43, 0.04);
     }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      min-height:100vh;
-      display:grid;
-      place-items:center;
-      padding:24px;
-      background:linear-gradient(145deg,#edf5ee,#f8faf8);
-      color:var(--texto);
-      font-family:Arial,Helvetica,sans-serif;
+
+    * {
+      box-sizing: border-box;
     }
-    .container{
-      width:100%;
-      max-width:430px;
-      background:#fff;
-      border:1px solid var(--borda);
-      border-radius:18px;
-      padding:34px;
-      box-shadow:0 16px 45px rgba(28,65,43,.09);
+
+    html {
+      min-height: 100%;
     }
-    .marca{text-align:center;margin-bottom:28px}
-    .simbolo{
-      width:54px;height:54px;margin:0 auto 12px;
-      display:grid;place-items:center;border-radius:16px;
-      background:var(--verde);color:white;font-size:27px;font-weight:bold;
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 20px;
+
+      background:
+        radial-gradient(circle at 10% 10%, rgba(168, 201, 106, 0.13), transparent 30%),
+        radial-gradient(circle at 90% 90%, rgba(54, 134, 91, 0.09), transparent 32%),
+        var(--fundo);
+
+      color: var(--texto);
+      font-family: "DM Sans", Arial, sans-serif;
     }
-    h1{margin:0;font-size:27px;color:var(--verde-escuro)}
-    .subtitulo{margin:9px 0 0;color:var(--cinza);font-size:14px}
-    label{display:block;margin:18px 0 7px;font-size:14px;font-weight:700}
-    input{
-      width:100%;padding:13px 14px;border:1px solid var(--borda);
-      border-radius:9px;font-size:15px;outline:none;
-      transition:border-color .15s, box-shadow .15s;
+
+    button,
+    input {
+      font: inherit;
     }
-    input:focus{
-      border-color:var(--verde);
-      box-shadow:0 0 0 3px rgba(35,107,69,.10);
+
+    .pagina {
+      width: 100%;
+      max-width: 1060px;
+      display: grid;
+      grid-template-columns: 1fr 0.88fr;
+      min-height: 620px;
+
+      overflow: hidden;
+      border: 1px solid rgba(220, 232, 222, 0.9);
+      border-radius: 24px;
+      background: var(--branco);
+      box-shadow: var(--sombra);
     }
-    button{
-      width:100%;margin-top:14px;padding:14px;border:0;border-radius:9px;
-      background:var(--verde);color:white;font-size:15px;font-weight:700;cursor:pointer;
-      transition:background .15s;
+
+    /* Painel institucional */
+
+    .painel-visual {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      padding: 42px;
+
+      background:
+        linear-gradient(155deg, rgba(22, 76, 49, 0.97), rgba(11, 47, 32, 0.99));
+
+      color: white;
     }
-    button:hover{background:var(--verde-escuro)}
-    button:disabled{opacity:.65;cursor:wait}
-    button.secundario{
-      margin-top:10px;color:var(--verde-escuro);
-      background:#edf5ee;border:1px solid var(--borda);
+
+    .painel-visual::before,
+    .painel-visual::after {
+      content: "";
+      position: absolute;
+      pointer-events: none;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 50%;
     }
-    button.secundario:hover{background:#e2eee4}
-    .mensagem{
-      display:none;margin-top:17px;padding:12px;border-radius:8px;
-      font-size:14px;line-height:1.45;
+
+    .painel-visual::before {
+      width: 480px;
+      height: 480px;
+      right: -230px;
+      top: 100px;
     }
-    .erro{display:block;color:#8a2525;background:#fff0f0}
-    .sucesso{display:block;color:#205d38;background:#edf8ef}
-    .info{display:block;color:#765313;background:#fff8e8}
-    .rodape{margin-top:22px;text-align:center;color:var(--cinza);font-size:13px}
-    .rodape a{color:var(--verde);text-decoration:none;font-weight:700}
-    .aviso{margin-top:14px;color:var(--cinza);font-size:12px;text-align:center;line-height:1.5}
-    [hidden]{display:none!important}
+
+    .painel-visual::after {
+      width: 350px;
+      height: 350px;
+      right: -165px;
+      top: 165px;
+    }
+
+    .marca {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .simbolo {
+      width: 43px;
+      height: 43px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 13px;
+
+      background: rgba(255, 255, 255, 0.12);
+      color: #d6edb0;
+
+      font-family: "Manrope", sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .marca-nome {
+      font-family: "Manrope", sans-serif;
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+    }
+
+    .marca-descricao {
+      margin-top: 2px;
+      color: rgba(255, 255, 255, 0.58);
+      font-size: 11px;
+      letter-spacing: 1.1px;
+      text-transform: uppercase;
+    }
+
+    .conteudo-visual {
+      position: relative;
+      z-index: 1;
+      max-width: 390px;
+      margin-top: 40px;
+      margin-bottom: 30px;
+    }
+
+    .etiqueta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+
+      border: 1px solid rgba(191, 226, 151, 0.22);
+      border-radius: 30px;
+      background: rgba(168, 201, 106, 0.10);
+
+      color: #c9e6a1;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .etiqueta-ponto {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--lima);
+      box-shadow: 0 0 10px rgba(168, 201, 106, 0.6);
+    }
+
+    .conteudo-visual h2 {
+      margin: 25px 0 17px;
+      font-family: "Manrope", sans-serif;
+      font-size: clamp(31px, 4vw, 43px);
+      line-height: 1.17;
+      letter-spacing: -1.8px;
+      font-weight: 800;
+    }
+
+    .conteudo-visual h2 span {
+      color: #b9d98a;
+    }
+
+    .conteudo-visual p {
+      max-width: 350px;
+      margin: 0;
+      color: rgba(255, 255, 255, 0.69);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    /* Ilustração conceitual */
+
+    .ilustracao {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 370px;
+      height: 145px;
+      margin: 0 auto 25px;
+    }
+
+    .linha-campo {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 55px;
+      border: 1px solid rgba(187, 221, 151, 0.25);
+      border-radius: 50%;
+      transform: rotate(-10deg);
+    }
+
+    .linha-campo:nth-child(1) {
+      top: 8px;
+      width: 100%;
+    }
+
+    .linha-campo:nth-child(2) {
+      top: 31px;
+      left: 7%;
+      width: 86%;
+    }
+
+    .linha-campo:nth-child(3) {
+      top: 54px;
+      left: 15%;
+      width: 70%;
+    }
+
+    .ponto-campo {
+      position: absolute;
+      top: 48px;
+      left: 48%;
+      width: 13px;
+      height: 13px;
+      border: 3px solid #d7efae;
+      border-radius: 50%;
+      background: #76a94c;
+      box-shadow: 0 0 0 7px rgba(168, 201, 106, 0.13);
+    }
+
+    .rodape-visual {
+      position: relative;
+      z-index: 1;
+      color: rgba(255, 255, 255, 0.48);
+      font-size: 11px;
+      letter-spacing: 0.3px;
+    }
+
+    /* Painel de login */
+
+    .painel-login {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 55px 48px;
+      background: #fff;
+    }
+
+    .cabecalho-login {
+      margin-bottom: 35px;
+    }
+
+    .cabecalho-login .identificador {
+      margin-bottom: 12px;
+      color: var(--verde);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .cabecalho-login h1 {
+      margin: 0;
+      color: var(--verde-escuro);
+      font-family: "Manrope", sans-serif;
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -1.1px;
+    }
+
+    .subtitulo {
+      margin: 10px 0 0;
+      color: var(--cinza);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .campo {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 9px;
+      color: #34473c;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    input {
+      width: 100%;
+      height: 49px;
+      padding: 0 15px;
+
+      border: 1px solid var(--borda);
+      border-radius: 10px;
+      outline: none;
+
+      background: #fbfdfb;
+      color: var(--texto);
+
+      font-size: 14px;
+      transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+    }
+
+    input::placeholder {
+      color: #a4afa8;
+    }
+
+    input:hover {
+      border-color: #c4d7c8;
+    }
+
+    input:focus {
+      border-color: var(--verde);
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(35, 107, 69, 0.09);
+    }
+
+    button {
+      width: 100%;
+      min-height: 49px;
+      margin-top: 8px;
+      padding: 13px 18px;
+
+      border: 1px solid transparent;
+      border-radius: 10px;
+
+      background: var(--verde);
+      color: white;
+
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+
+      transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+
+    button:hover:not(:disabled) {
+      background: var(--verde-escuro);
+      box-shadow: 0 7px 18px rgba(35, 107, 69, 0.18);
+      transform: translateY(-1px);
+    }
+
+    button:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      opacity: 0.65;
+      cursor: wait;
+    }
+
+    button:focus-visible,
+    a:focus-visible {
+      outline: 3px solid rgba(168, 201, 106, 0.8);
+      outline-offset: 3px;
+    }
+
+    button.secundario {
+      margin-top: 10px;
+      border-color: var(--borda);
+      background: #f1f7f1;
+      color: var(--verde-escuro);
+    }
+
+    button.secundario:hover:not(:disabled) {
+      border-color: #c8ddcc;
+      background: #e7f1e8;
+      box-shadow: none;
+    }
+
+    /* Mensagens */
+
+    .mensagem {
+      display: none;
+      margin-top: 20px;
+      padding: 13px 15px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .mensagem.erro {
+      display: block;
+      border-color: #f2d3d3;
+      background: #fff5f5;
+      color: #922f2f;
+    }
+
+    .mensagem.sucesso {
+      display: block;
+      border-color: #d2e9d7;
+      background: #f0f8f1;
+      color: #25613a;
+    }
+
+    .mensagem.info {
+      display: block;
+      border-color: #f0e2bd;
+      background: #fff9ec;
+      color: #795b1d;
+    }
+
+    /* Ações de confirmação */
+
+    #acoesEmail {
+      margin-top: 5px;
+    }
+
+    /* Rodapé */
+
+    .rodape-login {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid #edf1ed;
+      text-align: center;
+    }
+
+    .rodape-login p {
+      margin: 0;
+      color: var(--cinza);
+      font-size: 13px;
+    }
+
+    .rodape-login a {
+      color: var(--verde);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .rodape-login a:hover {
+      color: var(--verde-escuro);
+      text-decoration: underline;
+    }
+
+    .aviso {
+      max-width: 330px;
+      margin: 15px auto 0;
+      color: #929e96;
+      font-size: 11px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    /* Responsividade */
+
+    @media (max-width: 820px) {
+      .pagina {
+        max-width: 490px;
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+
+      .painel-visual {
+        min-height: 245px;
+        padding: 28px 32px;
+      }
+
+      .conteudo-visual {
+        margin-top: 30px;
+        margin-bottom: 0;
+      }
+
+      .conteudo-visual h2 {
+        max-width: 390px;
+        margin-top: 18px;
+        font-size: 30px;
+      }
+
+      .conteudo-visual p {
+        font-size: 13px;
+      }
+
+      .ilustracao {
+        display: none;
+      }
+
+      .rodape-visual {
+        margin-top: 28px;
+      }
+
+      .painel-login {
+        padding: 38px 35px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 15px;
+      }
+
+      .pagina {
+        border-radius: 18px;
+      }
+
+      .painel-visual {
+        min-height: 215px;
+        padding: 24px;
+      }
+
+      .marca-nome {
+        font-size: 19px;
+      }
+
+      .conteudo-visual h2 {
+        font-size: 27px;
+      }
+
+      .conteudo-visual p {
+        font-size: 12px;
+      }
+
+      .painel-login {
+        padding: 32px 24px;
+      }
+
+      .cabecalho-login {
+        margin-bottom: 27px;
+      }
+
+      .cabecalho-login h1 {
+        font-size: 27px;
+      }
+
+      .rodape-login {
+        margin-top: 25px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
   </style>
 </head>
+
 <body>
-  <main class="container">
-    <header class="marca">
-      <div class="simbolo">S</div>
-      <h1>SoloSmart</h1>
-      <p class="subtitulo">Entre para acessar sua gestão rural</p>
-    </header>
 
-    <form id="formLogin" novalidate>
-      <label for="email">E-mail</label>
-      <input
-        id="email"
-        type="email"
-        autocomplete="username"
-        required
-        placeholder="seu@email.com"
-      >
+  <main class="pagina">
 
-      <label for="senha">Senha</label>
-      <input
-        id="senha"
-        type="password"
-        autocomplete="current-password"
-        required
-        placeholder="Digite sua senha"
-      >
+    <!-- Painel institucional -->
+    <section class="painel-visual">
 
-      <button id="botaoEntrar" type="submit">Entrar</button>
+      <header class="marca">
+        <div class="simbolo" aria-hidden="true">S</div>
 
-      <div id="mensagem" class="mensagem" role="status" aria-live="polite"></div>
+        <div>
+          <div class="marca-nome">SoloSmart</div>
+          <div class="marca-descricao">Inteligência para o campo</div>
+        </div>
+      </header>
 
-      <div id="acoesEmail" hidden>
-        <button id="botaoReenviar" class="secundario" type="button">
-          Reenviar e-mail de confirmação
-        </button>
-        <button id="botaoVerificar" class="secundario" type="button">
-          Já confirmei meu e-mail
-        </button>
+      <div class="conteudo-visual">
+
+        <div class="etiqueta">
+          <span class="etiqueta-ponto"></span>
+          Gestão rural inteligente
+        </div>
+
+        <h2>
+          Conhecimento que transforma o <span>solo.</span>
+        </h2>
+
+        <p>
+          Tecnologia, dados e inteligência geográfica para uma gestão
+          mais eficiente da sua propriedade rural.
+        </p>
+
       </div>
-    </form>
 
-    <div class="rodape">
-      Ainda não tem cadastro?
-      <a href="cadastro.html">Solicitar acesso</a>
-    </div>
-    <p class="aviso">
-      O acesso depende da aprovação da empresa e do usuário
-      pela administração do SoloSmart.
-    </p>
+      <div class="ilustracao" aria-hidden="true">
+        <div class="linha-campo"></div>
+        <div class="linha-campo"></div>
+        <div class="linha-campo"></div>
+        <div class="ponto-campo"></div>
+      </div>
+
+      <footer class="rodape-visual">
+        SoloSmart | Tecnologia aplicada ao agronegócio
+      </footer>
+
+    </section>
+
+    <!-- Área de autenticação -->
+    <section class="painel-login">
+
+      <header class="cabecalho-login">
+        <div class="identificador">Acesso à plataforma</div>
+
+        <h1>Bem-vindo de volta</h1>
+
+        <p class="subtitulo">
+          Entre com suas credenciais para acessar sua gestão rural.
+        </p>
+      </header>
+
+      <form id="formLogin" novalidate>
+
+        <div class="campo">
+          <label for="email">E-mail</label>
+
+          <div class="input-wrapper">
+            <input
+              id="email"
+              type="email"
+              autocomplete="username"
+              required
+              placeholder="seu@email.com"
+            >
+          </div>
+        </div>
+
+        <div class="campo">
+          <label for="senha">Senha</label>
+
+          <div class="input-wrapper">
+            <input
+              id="senha"
+              type="password"
+              autocomplete="current-password"
+              required
+              placeholder="Digite sua senha"
+            >
+          </div>
+        </div>
+
+        <button id="botaoEntrar" type="submit">
+          Entrar na plataforma
+        </button>
+
+        <div
+          id="mensagem"
+          class="mensagem"
+          role="status"
+          aria-live="polite"
+        ></div>
+
+        <div id="acoesEmail" hidden>
+
+          <button
+            id="botaoReenviar"
+            class="secundario"
+            type="button"
+          >
+            Reenviar e-mail de confirmação
+          </button>
+
+          <button
+            id="botaoVerificar"
+            class="secundario"
+            type="button"
+          >
+            Já confirmei meu e-mail
+          </button>
+
+        </div>
+
+      </form>
+
+      <footer class="rodape-login">
+
+        <p>
+          Ainda não tem cadastro?
+          <a href="cadastro.html">Solicitar acesso</a>
+        </p>
+
+        <p class="aviso">
+          O acesso depende da aprovação da empresa e do usuário
+          pela administração do SoloSmart.
+        </p>
+
+      </footer>
+
+    </section>
+
   </main>
 
-  <!-- Firebase + módulo de auth -->
+  <!-- Firebase + módulo de autenticação -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="auth.js"></script>
@@ -147,8 +748,9 @@
     let usuarioPendente = null;
 
     // ------------------------------------------------------------
-    // Helpers de UI
+    // Helpers de interface
     // ------------------------------------------------------------
+
     function mostrarMensagem(texto, tipo) {
       mensagem.textContent = texto;
       mensagem.className = "mensagem " + tipo;
@@ -161,7 +763,9 @@
 
     function bloquearEntrar(bloquear) {
       botaoEntrar.disabled = bloquear;
-      botaoEntrar.textContent = bloquear ? "Verificando..." : "Entrar";
+      botaoEntrar.textContent = bloquear
+        ? "Verificando..."
+        : "Entrar na plataforma";
     }
 
     function bloquearAcoesEmail(bloquear) {
@@ -183,33 +787,51 @@
 
     // ------------------------------------------------------------
     // Mensagem de erro vinda da URL (?erro=...)
-    // (ex.: protegerPagina do painel redireciona pra cá)
     // ------------------------------------------------------------
+
     (function () {
       const params = new URLSearchParams(window.location.search);
       const motivo = params.get("erro");
+
       if (motivo) {
-        mostrarMensagem(decodeURIComponent(motivo), "erro");
-        // limpa a query string sem recarregar
-        window.history.replaceState({}, "", window.location.pathname);
+        mostrarMensagem(motivo, "erro");
+
+        // Limpa a query string sem recarregar a página.
+        window.history.replaceState(
+          {},
+          "",
+          window.location.pathname
+        );
       }
     })();
 
     // ------------------------------------------------------------
     // Validação no backend + redirecionamento
     // ------------------------------------------------------------
+
     async function validarAcessoNoSoloSmart(usuarioFirebase) {
-      const usuario = await SoloSmart.validarAcessoNoBackend(usuarioFirebase);
+      const usuario = await SoloSmart.validarAcessoNoBackend(
+        usuarioFirebase
+      );
+
       SoloSmart.salvarUsuarioLocal(usuario);
 
-      mostrarMensagem("Acesso autorizado. Entrando...", "sucesso");
-      setTimeout(() => { window.location.href = "painel.html"; }, 700);
+      mostrarMensagem(
+        "Acesso autorizado. Entrando...",
+        "sucesso"
+      );
+
+      setTimeout(() => {
+        window.location.href = "painel.html";
+      }, 700);
+
       return true;
     }
 
     // ------------------------------------------------------------
     // Submit do login
     // ------------------------------------------------------------
+
     formLogin.addEventListener("submit", async function (evento) {
       evento.preventDefault();
 
@@ -219,7 +841,10 @@
       const senha = document.getElementById("senha").value;
 
       if (!email || !senha) {
-        mostrarMensagem("Informe o e-mail e a senha.", "erro");
+        mostrarMensagem(
+          "Informe o e-mail e a senha.",
+          "erro"
+        );
         return;
       }
 
@@ -229,11 +854,14 @@
       bloquearEntrar(true);
 
       try {
-        const credencial = await auth.signInWithEmailAndPassword(email, senha);
+        const credencial = await auth.signInWithEmailAndPassword(
+          email,
+          senha
+        );
+
         const usuarioFirebase = credencial.user;
 
-        // Garante que o estado mais recente (emailVerified, disabled, etc.)
-        // está em memória antes de checar.
+        // Atualiza o estado do usuário antes das verificações.
         await usuarioFirebase.reload();
 
         if (!usuarioFirebase.emailVerified) {
@@ -241,6 +869,7 @@
             "Sua senha está correta, mas seu endereço de e-mail ainda não foi confirmado. Use uma das opções abaixo.",
             "info"
           );
+
           mostrarAcoesEmail(usuarioFirebase);
           return;
         }
@@ -257,14 +886,29 @@
         processando = false;
 
         const mensagens = {
-          "auth/invalid-email":        "O formato do e-mail é inválido.",
-          "auth/user-disabled":        "Esta conta está desativada.",
-          "auth/user-not-found":       "Não existe uma conta com esse e-mail.",
-          "auth/wrong-password":       "E-mail ou senha incorretos.",
-          "auth/invalid-credential":   "E-mail ou senha incorretos.",
-          "auth/invalid-login-credentials": "E-mail ou senha incorretos.",
-          "auth/too-many-requests":    "Muitas tentativas. Aguarde e tente novamente.",
-          "auth/network-request-failed":"Falha de conexão. Verifique sua internet."
+          "auth/invalid-email":
+            "O formato do e-mail é inválido.",
+
+          "auth/user-disabled":
+            "Esta conta está desativada.",
+
+          "auth/user-not-found":
+            "Não existe uma conta com esse e-mail.",
+
+          "auth/wrong-password":
+            "E-mail ou senha incorretos.",
+
+          "auth/invalid-credential":
+            "E-mail ou senha incorretos.",
+
+          "auth/invalid-login-credentials":
+            "E-mail ou senha incorretos.",
+
+          "auth/too-many-requests":
+            "Muitas tentativas. Aguarde e tente novamente.",
+
+          "auth/network-request-failed":
+            "Falha de conexão. Verifique sua internet."
         };
 
         const texto = mensagens[erro.code]
@@ -278,6 +922,7 @@
     // ------------------------------------------------------------
     // Reenviar e-mail de confirmação
     // ------------------------------------------------------------
+
     botaoReenviar.addEventListener("click", async function () {
       if (!usuarioPendente || botaoReenviar.disabled) return;
 
@@ -285,23 +930,33 @@
 
       try {
         await usuarioPendente.sendEmailVerification();
+
         mostrarMensagem(
           "Enviamos um novo e-mail de confirmação para " +
             usuarioPendente.email +
             ". Verifique também as pastas Spam e Promoções.",
           "sucesso"
         );
+
       } catch (erro) {
         const mensagens = {
-          "auth/too-many-requests":       "Muitos pedidos de envio. Aguarde alguns minutos e tente novamente.",
-          "auth/network-request-failed":  "Falha de conexão. Verifique sua internet.",
-          "auth/operation-not-allowed":   "O envio de confirmação não está habilitado no Firebase."
+          "auth/too-many-requests":
+            "Muitos pedidos de envio. Aguarde alguns minutos e tente novamente.",
+
+          "auth/network-request-failed":
+            "Falha de conexão. Verifique sua internet.",
+
+          "auth/operation-not-allowed":
+            "O envio de confirmação não está habilitado no Firebase."
         };
+
         mostrarMensagem(
-          mensagens[erro.code] || erro.message ||
-            "Não foi possível enviar o e-mail de confirmação.",
+          mensagens[erro.code]
+            || erro.message
+            || "Não foi possível enviar o e-mail de confirmação.",
           "erro"
         );
+
       } finally {
         bloquearAcoesEmail(false);
       }
@@ -310,6 +965,7 @@
     // ------------------------------------------------------------
     // Já confirmei meu e-mail
     // ------------------------------------------------------------
+
     botaoVerificar.addEventListener("click", async function () {
       if (!usuarioPendente || processando) return;
 
@@ -318,6 +974,7 @@
 
       try {
         await usuarioPendente.reload();
+
         const usuarioAtual = auth.currentUser;
 
         if (!usuarioAtual || !usuarioAtual.emailVerified) {
@@ -325,21 +982,26 @@
             "Ainda não identificamos a confirmação. Abra o link recebido por e-mail e tente novamente.",
             "info"
           );
+
           return;
         }
 
         ocultarAcoesEmail();
+
         mostrarMensagem(
           "E-mail confirmado. Verificando sua autorização no SoloSmart...",
           "sucesso"
         );
+
         await validarAcessoNoSoloSmart(usuarioAtual);
 
       } catch (erro) {
         mostrarMensagem(
-          erro.message || "Não foi possível verificar o e-mail. Tente novamente.",
+          erro.message
+            || "Não foi possível verificar o e-mail. Tente novamente.",
           "erro"
         );
+
       } finally {
         processando = false;
         bloquearEntrar(false);
@@ -347,5 +1009,6 @@
       }
     });
   </script>
+
 </body>
 </html>
