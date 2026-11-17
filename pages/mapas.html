@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -444,7 +445,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-  <!-- AUTENTICAÇÃO DO SOlOSMART -->
+  <!-- AUTENTICAÇÃO DO SOLOSМART -->
 
   <script src="auth.js"></script>
 
@@ -568,21 +569,15 @@
         throw new Error("Biblioteca Leaflet não foi carregada.");
       }
 
-      // Evita inicialização duplicada
-
       if (mapa) {
         mapa.remove();
         mapa = null;
       }
 
-      // Centro inicial do mapa: Brasil
-
       mapa = L.map("map", {
         zoomControl: true,
         scrollWheelZoom: true
       }).setView([-15.7801, -47.9292], 4);
-
-      // Camada de mapa OpenStreetMap
 
       L.tileLayer(
         "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -592,11 +587,11 @@
         }
       ).addTo(mapa);
 
-      // Recalcula dimensões após renderização
-
       setTimeout(() => {
 
-        mapa.invalidateSize(true);
+        if (mapa) {
+          mapa.invalidateSize(true);
+        }
 
         console.log("[4] Dimensões do mapa recalculadas.");
 
@@ -607,17 +602,47 @@
     }
 
     // =====================================================
-    // VALIDAÇÃO DE COORDENADAS
+    // CONVERSÃO E VALIDAÇÃO DE COORDENADAS
     // =====================================================
 
-    function coordenadaValida(valor) {
+    function normalizarCoordenada(valor, tipo) {
 
-      return (
-        valor !== null &&
-        valor !== undefined &&
-        String(valor).trim() !== "" &&
-        Number.isFinite(Number(valor))
-      );
+      if (
+        valor === null ||
+        valor === undefined ||
+        String(valor).trim() === ""
+      ) {
+        return null;
+      }
+
+      let numero = Number(valor);
+
+      if (!Number.isFinite(numero)) {
+        return null;
+      }
+
+      const limite = tipo === "latitude" ? 90 : 180;
+
+      const limiteMicros =
+        tipo === "latitude" ? 90000000 : 180000000;
+
+      // Detecta coordenadas armazenadas em microsgraus.
+      // Exemplo: -23550520 passa a ser -23.55052.
+
+      if (
+        Math.abs(numero) > limite &&
+        Math.abs(numero) <= limiteMicros
+      ) {
+        numero = numero / 1000000;
+      }
+
+      // Confirma os limites geográficos.
+
+      if (Math.abs(numero) > limite) {
+        return null;
+      }
+
+      return numero;
 
     }
 
@@ -719,30 +744,32 @@
 
         const dados = await resposta.json();
 
+        // 3. Diagnóstico da resposta
+
         console.log("========== DIAGNÓSTICO API SOLOSMART ==========");
-console.log("Resposta completa:", dados);
-console.log("Sucesso:", dados.sucesso);
-console.log("Resultado é array:", Array.isArray(dados.resultado));
-console.log("Total de amostras:", dados.resultado?.length);
+        console.log("Resposta completa:", dados);
+        console.log("Sucesso:", dados.sucesso);
+        console.log("Resultado é array:", Array.isArray(dados.resultado));
+        console.log("Total de amostras:", dados.resultado?.length);
 
-if (Array.isArray(dados.resultado) && dados.resultado.length > 0) {
-  const primeira = dados.resultado[0];
+        if (Array.isArray(dados.resultado) && dados.resultado.length > 0) {
 
-  console.log("Primeira amostra:", primeira);
-  console.log("Campos recebidos:", Object.keys(primeira));
+          const primeira = dados.resultado[0];
 
-  console.log("Latitude:", primeira.latitude);
-  console.log("Longitude:", primeira.longitude);
+          console.log("Primeira amostra:", primeira);
+          console.log("Campos recebidos:", Object.keys(primeira));
+          console.log("Latitude original:", primeira.latitude);
+          console.log("Longitude original:", primeira.longitude);
+          console.log("Tipo da latitude:", typeof primeira.latitude);
+          console.log("Tipo da longitude:", typeof primeira.longitude);
 
-  console.log("Tipo da latitude:", typeof primeira.latitude);
-  console.log("Tipo da longitude:", typeof primeira.longitude);
-}
+        }
 
-console.log("===============================================");
+        console.log("===============================================");
 
         console.log("[API] Resposta recebida:", dados);
 
-        // 3. Valida resposta
+        // 4. Valida resposta
 
         if (!dados.sucesso) {
 
@@ -767,7 +794,7 @@ console.log("===============================================");
           todasAmostras.length
         );
 
-        // 4. Filtra amostras ativas
+        // 5. Filtra amostras ativas
 
         const amostras = todasAmostras.filter(amostra => {
 
@@ -780,7 +807,7 @@ console.log("===============================================");
           amostras.length
         );
 
-        // 5. Verifica se existem amostras
+        // 6. Verifica se existem amostras
 
         if (amostras.length === 0) {
 
@@ -792,7 +819,7 @@ console.log("===============================================");
 
         }
 
-        // 6. Prepara ícone
+        // 7. Prepara ícone e variáveis
 
         const iconeVerde = criarIconeVerde();
 
@@ -801,7 +828,7 @@ console.log("===============================================");
         let totalMarcadores = 0;
         let coordenadasInvalidas = 0;
 
-        // 7. Percorre amostras
+        // 8. Percorre amostras
 
         amostras.forEach((amostra, indice) => {
 
@@ -810,12 +837,29 @@ console.log("===============================================");
             amostra
           );
 
-          // Valida existência das coordenadas
+          // Normaliza as coordenadas recebidas da API.
 
-          if (
-            !coordenadaValida(amostra.latitude) ||
-            !coordenadaValida(amostra.longitude)
-          ) {
+          const lat = normalizarCoordenada(
+            amostra.latitude,
+            "latitude"
+          );
+
+          const lng = normalizarCoordenada(
+            amostra.longitude,
+            "longitude"
+          );
+
+          console.log("[COORDENADAS NORMALIZADAS]", {
+            amostraId: amostra.amostra_id,
+            latitudeOriginal: amostra.latitude,
+            longitudeOriginal: amostra.longitude,
+            latitudeFinal: lat,
+            longitudeFinal: lng
+          });
+
+          // Verifica se as coordenadas são válidas.
+
+          if (lat === null || lng === null) {
 
             console.warn(
               "[COORDENADA INVÁLIDA]",
@@ -830,32 +874,7 @@ console.log("===============================================");
 
           }
 
-          const lat = Number(amostra.latitude);
-          const lng = Number(amostra.longitude);
-
-          // Valida limites geográficos
-
-          if (
-            lat < -90 ||
-            lat > 90 ||
-            lng < -180 ||
-            lng > 180
-          ) {
-
-            console.warn(
-              "[COORDENADA FORA DOS LIMITES]",
-              amostra.amostra_id,
-              lat,
-              lng
-            );
-
-            coordenadasInvalidas++;
-
-            return;
-
-          }
-
-          // Cria marcador
+          // Cria marcador.
 
           const marker = L.marker(
             [lat, lng],
@@ -864,10 +883,10 @@ console.log("===============================================");
             }
           ).addTo(mapa);
 
-          // Informações do popup
+          // Informações do popup.
 
           const identificador = escaparHTML(
-            (amostra.amostra_id || "Sem ID").substring(0, 8)
+            String(amostra.amostra_id || "Sem ID").substring(0, 8)
           );
 
           const dataFormatada = amostra.data_coleta
@@ -920,7 +939,7 @@ console.log("===============================================");
 
         });
 
-        // 8. Resultado do processamento
+        // 9. Resultado do processamento
 
         console.log("==================================");
         console.log("RESULTADO DO MAPA");
@@ -931,16 +950,13 @@ console.log("===============================================");
         console.log("Marcadores criados:", totalMarcadores);
         console.log("Coordenadas inválidas:", coordenadasInvalidas);
 
-        // 9. Ajusta enquadramento
+        // 10. Ajusta enquadramento do mapa
 
         if (limites.length > 0) {
 
           mapa.fitBounds(limites, {
-
             padding: [50, 50],
-
             maxZoom: 16
-
           });
 
           console.log("[MAPA] Zoom ajustado para os marcadores.");
@@ -959,11 +975,13 @@ console.log("===============================================");
 
         }
 
-        // 10. Atualiza dimensões novamente
+        // 11. Atualiza dimensões novamente
 
         setTimeout(() => {
 
-          mapa.invalidateSize(true);
+          if (mapa) {
+            mapa.invalidateSize(true);
+          }
 
         }, 300);
 
