@@ -45,9 +45,7 @@
       font-family: 'DM Sans', Arial, sans-serif;
     }
 
-    button,
-    input,
-    select {
+    button, input, select {
       font: inherit;
     }
 
@@ -58,8 +56,6 @@
       outline: 3px solid rgba(35, 107, 69, .25);
       outline-offset: 2px;
     }
-
-    /* Cabeçalho */
 
     .topbar {
       position: fixed;
@@ -148,8 +144,6 @@
       background: #ffe2e2;
     }
 
-    /* Menu lateral */
-
     .sidebar {
       position: fixed;
       top: var(--header-h);
@@ -219,8 +213,6 @@
       z-index: 39;
     }
 
-    /* Conteúdo */
-
     .conteudo {
       min-height: calc(100vh - var(--header-h));
       margin-left: var(--sidebar-w);
@@ -247,8 +239,6 @@
       font-size: 14px;
     }
 
-    /* Mensagens */
-
     .mensagem {
       display: none;
       padding: 14px 16px;
@@ -273,8 +263,6 @@
       border-color: #f1cccc;
       color: var(--vermelho);
     }
-
-    /* Cartões */
 
     .cartao {
       padding: 25px;
@@ -306,8 +294,6 @@
       color: var(--cinza);
       font-size: 12px;
     }
-
-    /* Formulário */
 
     .form-grid {
       display: grid;
@@ -349,7 +335,8 @@
       box-shadow: 0 0 0 3px rgba(35, 107, 69, .09);
     }
 
-    .campo select:disabled {
+    .campo select:disabled,
+    .campo input:disabled {
       background: #f3f5f3;
       color: #929d95;
       cursor: not-allowed;
@@ -365,6 +352,11 @@
       color: var(--texto);
       font-size: 12px;
       cursor: pointer;
+    }
+
+    .campo input[type="file"]:disabled {
+      opacity: .65;
+      cursor: not-allowed;
     }
 
     .campo-amostra {
@@ -401,7 +393,7 @@
 
     .btn:disabled {
       opacity: .65;
-      cursor: wait;
+      cursor: not-allowed;
     }
 
     .ajuda-campo {
@@ -410,8 +402,6 @@
       font-size: 11px;
       line-height: 1.5;
     }
-
-    /* Galeria */
 
     .galeria-secao {
       margin-top: 30px;
@@ -548,10 +538,8 @@
 
     .btn-excluir:disabled {
       opacity: .6;
-      cursor: wait;
+      cursor: not-allowed;
     }
-
-    /* Estados */
 
     .loading,
     .estado-vazio {
@@ -580,11 +568,25 @@
       font-size: 11px;
     }
 
+    .btn-tentar-novamente {
+      margin-top: 14px;
+      padding: 9px 15px;
+      border: 1px solid var(--borda);
+      border-radius: 8px;
+      background: var(--branco);
+      color: var(--verde-escuro);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-tentar-novamente:hover {
+      background: var(--verde-claro);
+    }
+
     [hidden] {
       display: none !important;
     }
-
-    /* Responsividade */
 
     @media (max-width: 1100px) {
       .galeria {
@@ -843,8 +845,6 @@
       aria-live="polite"
     ></div>
 
-    <!-- Cadastro de fotografia -->
-
     <section class="cartao" aria-labelledby="tituloNovaFoto">
       <div class="cartao-cabecalho">
         <div>
@@ -860,7 +860,7 @@
       <form id="formFoto" class="form-grid">
         <div class="campo campo-amostra">
           <label for="amostra">Amostra Vinculada *</label>
-          <select id="amostra" required>
+          <select id="amostra" required disabled>
             <option value="">Carregando amostras...</option>
           </select>
         </div>
@@ -872,6 +872,7 @@
             type="file"
             accept="image/png,image/jpeg"
             required
+            disabled
           >
           <p class="ajuda-campo">
             Formatos aceitos: JPG e PNG. Tamanho máximo: 4 MB.
@@ -885,19 +886,18 @@
             type="text"
             maxlength="500"
             placeholder="Ex.: Perfil do solo"
+            disabled
           >
         </div>
 
         <div class="campo-botao">
-          <button type="submit" id="btnSalvar" class="btn">
+          <button type="submit" id="btnSalvar" class="btn" disabled>
             <span>＋</span>
             Enviar Fotografia
           </button>
         </div>
       </form>
     </section>
-
-    <!-- Galeria -->
 
     <section class="galeria-secao" aria-labelledby="tituloGaleria">
       <div class="cartao-cabecalho">
@@ -935,12 +935,19 @@
     let idTokenAtual = "";
     let listaAmostras = [];
     let timerMensagem = null;
+    let enviandoFoto = false;
 
     const elementoMensagem = document.getElementById("mensagem");
     const elementoGaleria = document.getElementById("galeria");
     const elementoVazio = document.getElementById("vazioGaleria");
     const elementoLoading = document.getElementById("loadingGaleria");
     const contadorFotos = document.getElementById("contadorFotos");
+
+    const selectAmostra = document.getElementById("amostra");
+    const inputFoto = document.getElementById("foto");
+    const inputObservacoes = document.getElementById("observacoes");
+    const botaoSalvar = document.getElementById("btnSalvar");
+    const formulario = document.getElementById("formFoto");
 
     /* Mensagens */
 
@@ -963,7 +970,7 @@
         return "";
       }
 
-      return String(valor);
+      return String(valor).trim();
     }
 
     function formatarData(valor) {
@@ -973,19 +980,27 @@
 
       if (!texto) return "-";
 
-      let data;
-
       const somenteData = texto.match(/^(\d{4})-(\d{2})-(\d{2})$/);
 
       if (somenteData) {
-        data = new Date(
-          Number(somenteData[1]),
-          Number(somenteData[2]) - 1,
-          Number(somenteData[3])
-        );
-      } else {
-        data = new Date(texto);
+        const ano = Number(somenteData[1]);
+        const mes = Number(somenteData[2]);
+        const dia = Number(somenteData[3]);
+
+        const dataLocal = new Date(ano, mes - 1, dia);
+
+        if (
+          dataLocal.getFullYear() !== ano ||
+          dataLocal.getMonth() !== mes - 1 ||
+          dataLocal.getDate() !== dia
+        ) {
+          return texto;
+        }
+
+        return dataLocal.toLocaleDateString("pt-BR");
       }
+
+      const data = new Date(texto);
 
       if (Number.isNaN(data.getTime())) {
         return texto;
@@ -1008,6 +1023,18 @@
       return elemento;
     }
 
+    function validarRespostaObjeto(dados) {
+      if (
+        !dados ||
+        typeof dados !== "object" ||
+        Array.isArray(dados)
+      ) {
+        throw new Error("O servidor retornou uma resposta inválida.");
+      }
+
+      return dados;
+    }
+
     async function obterTokenAtual() {
       const usuario = firebase.auth().currentUser;
 
@@ -1026,6 +1053,13 @@
     */
 
     async function enviarRequisicao(payload) {
+      if (
+        typeof SoloSmart === "undefined" ||
+        !SoloSmart.URL_API
+      ) {
+        throw new Error("O endereço da API não está configurado.");
+      }
+
       const resposta = await fetch(SoloSmart.URL_API, {
         method: "POST",
         headers: {
@@ -1035,23 +1069,40 @@
       });
 
       if (!resposta.ok) {
-        throw new Error("Não foi possível comunicar com o servidor.");
+        throw new Error(
+          "Não foi possível comunicar com o servidor. Código: " +
+          resposta.status
+        );
       }
 
-      return await resposta.json();
+      let dados;
+
+      try {
+        dados = await resposta.json();
+      } catch {
+        throw new Error("O servidor retornou uma resposta que não é JSON válido.");
+      }
+
+      return validarRespostaObjeto(dados);
     }
 
     /* URLs das imagens */
 
     function obterUrlImagem(urlOriginal) {
-      if (!urlOriginal || typeof urlOriginal !== "string") {
+      if (
+        !urlOriginal ||
+        typeof urlOriginal !== "string"
+      ) {
         return "";
       }
 
       try {
-        const url = new URL(urlOriginal);
+        const url = new URL(urlOriginal.trim());
 
-        if (url.protocol !== "https:" && url.protocol !== "http:") {
+        if (
+          url.protocol !== "https:" &&
+          url.protocol !== "http:"
+        ) {
           return "";
         }
 
@@ -1063,35 +1114,83 @@
 
         if (ehGoogleDrive) {
           const match = url.pathname.match(/\/d\/([a-zA-Z0-9_-]+)/);
+
           const idArquivo =
             url.searchParams.get("id") ||
             (match ? match[1] : "");
 
           if (idArquivo) {
-            return "https://drive.google.com/thumbnail?id=" +
+            return (
+              "https://drive.google.com/thumbnail?id=" +
               encodeURIComponent(idArquivo) +
-              "&sz=w600";
+              "&sz=w600"
+            );
           }
         }
 
         return url.href;
 
-      } catch (erro) {
+      } catch {
         return "";
       }
+    }
+
+    function mostrarErroImagem(containerImagem) {
+      const estadoErro = criarElemento("div", "foto-imagem-erro");
+
+      estadoErro.append(
+        criarElemento("span", "", "🖼️"),
+        criarElemento("strong", "", "Imagem indisponível")
+      );
+
+      containerImagem.replaceChildren(estadoErro);
+    }
+
+    function atualizarEstadoFormulario() {
+      const possuiAmostras = listaAmostras.length > 0;
+
+      selectAmostra.disabled = !possuiAmostras || enviandoFoto;
+      inputFoto.disabled = !possuiAmostras || enviandoFoto;
+      inputObservacoes.disabled = !possuiAmostras || enviandoFoto;
+
+      botaoSalvar.disabled = !possuiAmostras || enviandoFoto;
+    }
+
+    function definirEstadoBotaoSalvamento(carregando) {
+      enviandoFoto = carregando;
+
+      botaoSalvar.replaceChildren();
+
+      if (carregando) {
+        botaoSalvar.textContent = "Enviando...";
+      } else {
+        botaoSalvar.append(
+          criarElemento("span", "", "＋"),
+          document.createTextNode(" Enviar Fotografia")
+        );
+      }
+
+      atualizarEstadoFormulario();
     }
 
     /* Inicialização */
 
     async function inicializarPagina() {
       try {
-        if (typeof SoloSmart === "undefined") {
+        if (
+          typeof SoloSmart === "undefined" ||
+          typeof SoloSmart.protegerPagina !== "function"
+        ) {
           throw new Error("Não foi possível inicializar o sistema.");
         }
 
         const usuario = await SoloSmart.protegerPagina({
           paginaLogin: "login.html"
         });
+
+        if (!usuario) {
+          throw new Error("Não foi possível identificar o usuário autenticado.");
+        }
 
         const nome = usuario.nome || usuario.email || "?";
 
@@ -1109,8 +1208,7 @@
         elementoLoading.hidden = true;
 
         mostrarMensagem(
-          "Não foi possível carregar a página. " +
-          (erro.message || "Verifique sua conexão."),
+          erro.message || "Não foi possível carregar a página. Verifique sua conexão.",
           "erro"
         );
       }
@@ -1119,7 +1217,10 @@
     /* Carregar amostras */
 
     async function carregarAmostrasSelect() {
-      const select = document.getElementById("amostra");
+      selectAmostra.disabled = true;
+      selectAmostra.replaceChildren(
+        criarElemento("option", "", "Carregando amostras...")
+      );
 
       try {
         const payload = {
@@ -1139,61 +1240,65 @@
           throw new Error("A lista de amostras recebida é inválida.");
         }
 
-        listaAmostras = dados.resultado.filter(
-          amostra =>
-            String(amostra.status || "").toLowerCase() !== "inativa"
-        );
+        listaAmostras = dados.resultado.filter(amostra => {
+          return (
+            amostra &&
+            String(amostra.status || "").toLowerCase() !== "inativa" &&
+            normalizarId(amostra.amostra_id) !== ""
+          );
+        });
 
-        select.replaceChildren();
+        selectAmostra.replaceChildren();
 
         const opcaoInicial = document.createElement("option");
         opcaoInicial.value = "";
         opcaoInicial.textContent = "Selecione uma amostra";
 
-        select.appendChild(opcaoInicial);
+        selectAmostra.appendChild(opcaoInicial);
 
         listaAmostras.forEach(amostra => {
           const opcao = document.createElement("option");
-
           const id = normalizarId(amostra.amostra_id);
-          const idCurto = id ? id.substring(0, 4) : "----";
 
           opcao.value = id;
+
           opcao.textContent =
-            `#${idCurto} | ${amostra.data_coleta
+            `Amostra ${id} | ${amostra.data_coleta
               ? formatarData(amostra.data_coleta)
               : "Sem data"}`;
 
-          select.appendChild(opcao);
+          selectAmostra.appendChild(opcao);
         });
 
+        atualizarEstadoFormulario();
+
         if (listaAmostras.length === 0) {
-          select.replaceChildren();
+          selectAmostra.replaceChildren();
 
           const opcao = document.createElement("option");
           opcao.value = "";
           opcao.textContent = "Nenhuma amostra ativa encontrada";
 
-          select.appendChild(opcao);
-          select.disabled = true;
+          selectAmostra.appendChild(opcao);
 
           mostrarMensagem(
             "Cadastre uma amostra ativa antes de enviar fotografias.",
             "erro"
           );
-        } else {
-          select.disabled = false;
         }
 
       } catch (erro) {
-        select.replaceChildren();
+        listaAmostras = [];
+
+        selectAmostra.replaceChildren();
 
         const opcao = document.createElement("option");
         opcao.value = "";
         opcao.textContent = "Erro ao carregar amostras";
 
-        select.appendChild(opcao);
-        select.disabled = true;
+        selectAmostra.appendChild(opcao);
+
+        atualizarEstadoFormulario();
 
         mostrarMensagem(
           erro.message || "Não foi possível carregar as amostras.",
@@ -1202,6 +1307,53 @@
 
         throw erro;
       }
+    }
+
+    /* Estados da galeria */
+
+    function mostrarEstadoVazio() {
+      elementoGaleria.hidden = true;
+      elementoVazio.hidden = false;
+
+      elementoVazio.replaceChildren(
+        criarElemento("span", "estado-vazio-icone", "📷"),
+        criarElemento("strong", "", "Nenhuma fotografia cadastrada"),
+        criarElemento("span", "", "As imagens enviadas aparecerão aqui.")
+      );
+
+      contadorFotos.textContent = "";
+    }
+
+    function mostrarEstadoErroGaleria(mensagem) {
+      elementoGaleria.hidden = true;
+      elementoVazio.hidden = false;
+
+      const textoErro = criarElemento(
+        "span",
+        "",
+        mensagem || "Verifique sua conexão e tente novamente."
+      );
+
+      const botaoTentar = criarElemento(
+        "button",
+        "btn-tentar-novamente",
+        "Tentar novamente"
+      );
+
+      botaoTentar.type = "button";
+
+      botaoTentar.addEventListener("click", () => {
+        carregarGaleria();
+      });
+
+      elementoVazio.replaceChildren(
+        criarElemento("span", "estado-vazio-icone", "⚠️"),
+        criarElemento("strong", "", "Não foi possível carregar a galeria"),
+        textoErro,
+        botaoTentar
+      );
+
+      contadorFotos.textContent = "";
     }
 
     /* Carregar galeria */
@@ -1235,11 +1387,8 @@
         renderizarGaleria(dados.resultado);
 
       } catch (erro) {
-        elementoVazio.hidden = false;
-        elementoVazio.replaceChildren(
-          criarElemento("span", "estado-vazio-icone", "⚠️"),
-          criarElemento("strong", "", "Não foi possível carregar a galeria"),
-          criarElemento("span", "", erro.message || "Tente novamente.")
+        mostrarEstadoErroGaleria(
+          erro.message || "Tente novamente."
         );
 
         mostrarMensagem(
@@ -1258,16 +1407,7 @@
       elementoGaleria.replaceChildren();
 
       if (!fotos || fotos.length === 0) {
-        elementoGaleria.hidden = true;
-        elementoVazio.hidden = false;
-
-        elementoVazio.replaceChildren(
-          criarElemento("span", "estado-vazio-icone", "📷"),
-          criarElemento("strong", "", "Nenhuma fotografia cadastrada"),
-          criarElemento("span", "", "As imagens enviadas aparecerão aqui.")
-        );
-
-        contadorFotos.textContent = "";
+        mostrarEstadoVazio();
         return;
       }
 
@@ -1275,23 +1415,24 @@
       elementoVazio.hidden = true;
 
       fotos.forEach(foto => {
+        if (!foto || typeof foto !== "object") {
+          return;
+        }
+
         const card = criarElemento("article", "foto-card");
 
-        const amostra = listaAmostras.find(
-          item =>
+        const amostra = listaAmostras.find(item => {
+          return (
             normalizarId(item.amostra_id) ===
             normalizarId(foto.amostra_id)
-        );
+          );
+        });
 
-        const idAmostra = amostra
-          ? normalizarId(amostra.amostra_id)
-          : "";
+        const idAmostra = normalizarId(foto.amostra_id);
 
-        const idCurto = idAmostra
-          ? "#" + idAmostra.substring(0, 4)
+        const identificacaoAmostra = idAmostra
+          ? "Amostra " + idAmostra
           : "Amostra não identificada";
-
-        /* Imagem */
 
         const containerImagem = criarElemento(
           "div",
@@ -1304,50 +1445,30 @@
           const imagem = document.createElement("img");
 
           imagem.className = "foto-img";
-          imagem.alt = "Fotografia vinculada à amostra " + idCurto;
+          imagem.alt = "Fotografia vinculada à " + identificacaoAmostra;
           imagem.loading = "lazy";
           imagem.decoding = "async";
+          imagem.referrerPolicy = "no-referrer";
           imagem.src = urlImagem;
 
           imagem.addEventListener("error", () => {
-            containerImagem.replaceChildren(
-              criarElemento(
-                "div",
-                "foto-imagem-erro",
-                null
-              )
-            );
-
-            const estadoErro = containerImagem.firstElementChild;
-
-            estadoErro.append(
-              criarElemento("span", "", "🖼️"),
-              criarElemento("strong", "", "Imagem indisponível")
-            );
+            mostrarErroImagem(containerImagem);
           }, { once: true });
 
           containerImagem.appendChild(imagem);
 
         } else {
-          const erroImagem = criarElemento(
-            "div",
-            "foto-imagem-erro"
-          );
-
-          erroImagem.append(
-            criarElemento("span", "", "🖼️"),
-            criarElemento("strong", "", "Imagem indisponível")
-          );
-
-          containerImagem.appendChild(erroImagem);
+          mostrarErroImagem(containerImagem);
         }
-
-        /* Informações */
 
         const informacoes = criarElemento("div", "foto-info");
 
         informacoes.appendChild(
-          criarElemento("strong", "", "Amostra " + idCurto)
+          criarElemento(
+            "strong",
+            "",
+            amostra ? identificacaoAmostra : identificacaoAmostra
+          )
         );
 
         informacoes.appendChild(
@@ -1368,33 +1489,17 @@
           );
         }
 
-        /* Ações */
-
         const acoes = criarElemento("div", "foto-acoes");
 
-        if (foto.arquivo_url) {
+        if (urlImagem) {
           const linkAbrir = document.createElement("a");
 
           linkAbrir.className = "btn-acao btn-abrir";
           linkAbrir.textContent = "Abrir";
-          linkAbrir.href = foto.arquivo_url;
+          linkAbrir.href = urlImagem;
           linkAbrir.target = "_blank";
           linkAbrir.rel = "noopener noreferrer";
-
-          linkAbrir.addEventListener("click", evento => {
-            const urlSegura = obterUrlImagem(foto.arquivo_url);
-
-            if (!urlSegura) {
-              evento.preventDefault();
-              mostrarMensagem(
-                "O endereço desta imagem não é válido.",
-                "erro"
-              );
-              return;
-            }
-
-            linkAbrir.href = foto.arquivo_url;
-          });
+          linkAbrir.referrerPolicy = "no-referrer";
 
           acoes.appendChild(linkAbrir);
         }
@@ -1404,6 +1509,10 @@
         botaoExcluir.type = "button";
         botaoExcluir.className = "btn-acao btn-excluir";
         botaoExcluir.textContent = "Excluir";
+        botaoExcluir.setAttribute(
+          "aria-label",
+          "Excluir fotografia da " + identificacaoAmostra
+        );
 
         botaoExcluir.addEventListener("click", () => {
           excluirFoto(foto.foto_id, botaoExcluir);
@@ -1420,10 +1529,17 @@
         elementoGaleria.appendChild(card);
       });
 
+      const totalFotos = elementoGaleria.children.length;
+
+      if (totalFotos === 0) {
+        mostrarEstadoVazio();
+        return;
+      }
+
       contadorFotos.textContent =
-        fotos.length === 1
+        totalFotos === 1
           ? "1 fotografia cadastrada"
-          : `${fotos.length} fotografias cadastradas`;
+          : `${totalFotos} fotografias cadastradas`;
     }
 
     /* Excluir fotografia */
@@ -1485,140 +1601,158 @@
 
     /* Upload */
 
-    document
-      .getElementById("formFoto")
-      .addEventListener("submit", async function (evento) {
-        evento.preventDefault();
+    formulario.addEventListener("submit", async function(evento) {
+      evento.preventDefault();
 
-        const formulario = this;
-        const botao = document.getElementById("btnSalvar");
-        const fileInput = document.getElementById("foto");
-        const amostraId = document.getElementById("amostra").value;
+      if (enviandoFoto) {
+        return;
+      }
 
-        if (!amostraId) {
-          mostrarMensagem(
-            "Selecione uma amostra antes de enviar.",
-            "erro"
-          );
-          return;
-        }
+      const amostraId = selectAmostra.value;
 
-        if (!fileInput.files || fileInput.files.length === 0) {
-          mostrarMensagem(
-            "Selecione uma imagem.",
-            "erro"
-          );
-          return;
-        }
+      if (!amostraId) {
+        mostrarMensagem(
+          "Selecione uma amostra antes de enviar.",
+          "erro"
+        );
+        return;
+      }
 
-        const arquivo = fileInput.files[0];
-
-        const tiposPermitidos = [
-          "image/jpeg",
-          "image/png"
-        ];
-
-        if (!tiposPermitidos.includes(arquivo.type)) {
-          mostrarMensagem(
-            "Formato não permitido. Selecione uma imagem JPG ou PNG.",
-            "erro"
-          );
-          return;
-        }
-
-        const tamanhoMaximo = 4 * 1024 * 1024;
-
-        if (arquivo.size > tamanhoMaximo) {
-          mostrarMensagem(
-            "A imagem é muito grande. Escolha uma foto com menos de 4 MB.",
-            "erro"
-          );
-          return;
-        }
-
-        if (arquivo.size === 0) {
-          mostrarMensagem(
-            "O arquivo selecionado está vazio.",
-            "erro"
-          );
-          return;
-        }
-
-        botao.disabled = true;
-        botao.textContent = "Enviando...";
-
-        const reader = new FileReader();
-
-        reader.onload = async function (eventoLeitura) {
-          try {
-            const base64Data = eventoLeitura.target.result;
-
-            if (
-              typeof base64Data !== "string" ||
-              !base64Data.startsWith("data:image/")
-            ) {
-              throw new Error("Não foi possível ler a imagem selecionada.");
-            }
-
-            await obterTokenAtual();
-
-            const novaFoto = {
-              amostra_id: amostraId,
-              observacoes: document
-                .getElementById("observacoes")
-                .value.trim(),
-              nome_arquivo: arquivo.name,
-              mime_type: arquivo.type,
-              base64: base64Data
-            };
-
-            const payload = {
-              action: "criarFotografia",
-              idToken: idTokenAtual,
-              dados: novaFoto
-            };
-
-            const dados = await enviarRequisicao(payload);
-
-            if (!dados.sucesso) {
-              throw new Error(
-                dados.mensagem || "Erro ao salvar fotografia."
-              );
-            }
-
-            mostrarMensagem(
-              "Fotografia enviada com sucesso!",
-              "sucesso"
-            );
-
-            formulario.reset();
-
-            await carregarGaleria();
-
-          } catch (erro) {
-            mostrarMensagem(
-              erro.message || "Não foi possível enviar a fotografia.",
-              "erro"
-            );
-
-          } finally {
-            botao.disabled = false;
-            botao.innerHTML = "<span>＋</span> Enviar Fotografia";
-          }
-        };
-
-        reader.onerror = function () {
-          mostrarMensagem(
-            "Ocorreu um erro ao ler o arquivo. Tente selecionar a imagem novamente.",
-            "erro"
-          );
-
-          botao.disabled = false;
-          botao.innerHTML = "<span>＋</span> Enviar Fotografia";
-        };
-
-        reader.readAsDataURL(arquivo);
+      const amostraExiste = listaAmostras.some(amostra => {
+        return normalizarId(amostra.amostra_id) === amostraId;
       });
+
+      if (!amostraExiste) {
+        mostrarMensagem(
+          "A amostra selecionada não está disponível. Atualize a página e tente novamente.",
+          "erro"
+        );
+        return;
+      }
+
+      if (!inputFoto.files || inputFoto.files.length === 0) {
+        mostrarMensagem("Selecione uma imagem.", "erro");
+        return;
+      }
+
+      const arquivo = inputFoto.files[0];
+
+      const tiposPermitidos = [
+        "image/jpeg",
+        "image/png"
+      ];
+
+      if (!tiposPermitidos.includes(arquivo.type)) {
+        mostrarMensagem(
+          "Formato não permitido. Selecione uma imagem JPG ou PNG.",
+          "erro"
+        );
+        return;
+      }
+
+      const tamanhoMaximo = 4 * 1024 * 1024;
+
+      if (arquivo.size > tamanhoMaximo) {
+        mostrarMensagem(
+          "A imagem é muito grande. Escolha uma foto com até 4 MB.",
+          "erro"
+        );
+        return;
+      }
+
+      if (arquivo.size === 0) {
+        mostrarMensagem(
+          "O arquivo selecionado está vazio.",
+          "erro"
+        );
+        return;
+      }
+
+      definirEstadoBotaoSalvamento(true);
+
+      const reader = new FileReader();
+
+      reader.onload = async function(eventoLeitura) {
+        try {
+          const base64Data = eventoLeitura.target.result;
+
+          const prefixoEsperado = arquivo.type === "image/png"
+            ? "data:image/png;base64,"
+            : "data:image/jpeg;base64,";
+
+          if (
+            typeof base64Data !== "string" ||
+            !base64Data.startsWith(prefixoEsperado)
+          ) {
+            throw new Error(
+              "Não foi possível validar a imagem selecionada."
+            );
+          }
+
+          await obterTokenAtual();
+
+          const novaFoto = {
+            amostra_id: amostraId,
+            observacoes: inputObservacoes.value.trim(),
+            nome_arquivo: arquivo.name,
+            mime_type: arquivo.type,
+            base64: base64Data
+          };
+
+          const payload = {
+            action: "criarFotografia",
+            idToken: idTokenAtual,
+            dados: novaFoto
+          };
+
+          const dados = await enviarRequisicao(payload);
+
+          if (!dados.sucesso) {
+            throw new Error(
+              dados.mensagem || "Erro ao salvar fotografia."
+            );
+          }
+
+          mostrarMensagem(
+            "Fotografia enviada com sucesso!",
+            "sucesso"
+          );
+
+          formulario.reset();
+
+          await carregarGaleria();
+
+        } catch (erro) {
+          mostrarMensagem(
+            erro.message || "Não foi possível enviar a fotografia.",
+            "erro"
+          );
+
+        } finally {
+          definirEstadoBotaoSalvamento(false);
+        }
+      };
+
+      reader.onerror = function() {
+        mostrarMensagem(
+          "Ocorreu um erro ao ler o arquivo. Tente selecionar a imagem novamente.",
+          "erro"
+        );
+
+        definirEstadoBotaoSalvamento(false);
+      };
+
+      reader.onabort = function() {
+        mostrarMensagem(
+          "A leitura da imagem foi cancelada.",
+          "erro"
+        );
+
+        definirEstadoBotaoSalvamento(false);
+      };
+
+      reader.readAsDataURL(arquivo);
+    });
 
     /* Menu responsivo */
 
@@ -1634,12 +1768,19 @@
       menuToggle.setAttribute("aria-label", "Fechar menu");
     }
 
-    function fecharMenu() {
+    function fecharMenu(devolverFoco = false) {
+      const estavaAberto =
+        menuToggle.getAttribute("aria-expanded") === "true";
+
       sidebar.classList.remove("aberta");
       overlay.classList.remove("ativo");
 
       menuToggle.setAttribute("aria-expanded", "false");
       menuToggle.setAttribute("aria-label", "Abrir menu");
+
+      if (devolverFoco && estavaAberto && window.innerWidth <= 900) {
+        menuToggle.focus();
+      }
     }
 
     menuToggle.addEventListener("click", () => {
@@ -1653,21 +1794,61 @@
       }
     });
 
-    overlay.addEventListener("click", fecharMenu);
+    overlay.addEventListener("click", () => {
+      fecharMenu(true);
+    });
 
     sidebar.querySelectorAll("a").forEach(link => {
-      link.addEventListener("click", fecharMenu);
+      link.addEventListener("click", () => {
+        fecharMenu(false);
+      });
     });
 
     document.addEventListener("keydown", evento => {
       if (evento.key === "Escape") {
-        fecharMenu();
+        fecharMenu(true);
+      }
+
+      if (
+        evento.key === "Tab" &&
+        menuToggle.getAttribute("aria-expanded") === "true" &&
+        window.innerWidth <= 900
+      ) {
+        const elementosFocaveis = Array.from(
+          sidebar.querySelectorAll(
+            'a[href]:not([tabindex="-1"]), button:not(:disabled), input:not(:disabled), select:not(:disabled)'
+          )
+        );
+
+        if (elementosFocaveis.length === 0) {
+          return;
+        }
+
+        const primeiro = elementosFocaveis[0];
+        const ultimo = elementosFocaveis[elementosFocaveis.length - 1];
+
+        if (evento.shiftKey && document.activeElement === primeiro) {
+          evento.preventDefault();
+          menuToggle.focus();
+        } else if (
+          !evento.shiftKey &&
+          document.activeElement === menuToggle
+        ) {
+          evento.preventDefault();
+          primeiro.focus();
+        } else if (
+          !evento.shiftKey &&
+          document.activeElement === ultimo
+        ) {
+          evento.preventDefault();
+          menuToggle.focus();
+        }
       }
     });
 
     window.addEventListener("resize", () => {
       if (window.innerWidth > 900) {
-        fecharMenu();
+        fecharMenu(false);
       }
     });
 
@@ -1676,7 +1857,12 @@
     document
       .getElementById("botaoSair")
       .addEventListener("click", () => {
-        SoloSmart.sair();
+        if (
+          typeof SoloSmart !== "undefined" &&
+          typeof SoloSmart.sair === "function"
+        ) {
+          SoloSmart.sair();
+        }
       });
 
     /* Executar */
