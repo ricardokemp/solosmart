@@ -13,13 +13,13 @@
 
   <style>
     :root {
-      --verde: #236b45;
-      --verde-escuro: #123c2b;
-      --verde-claro: #eaf4ed;
-      --lima: #b6d957;
-      --fundo: #f5f7f4;
+      --verde: #237b4c;
+      --verde-escuro: #102f25;
+      --verde-claro: #eaf5ec;
+      --lima: #b8e58c;
+      --fundo: #f7faf7;
       --branco: #ffffff;
-      --texto: #203229;
+      --texto: #1b2c23;
       --cinza: #66756c;
       --borda: #dce6de;
       --vermelho: #a12d2d;
@@ -53,7 +53,7 @@
     a:focus-visible,
     input:focus-visible,
     select:focus-visible {
-      outline: 3px solid rgba(35, 107, 69, .25);
+      outline: 3px solid rgba(35, 123, 76, .25);
       outline-offset: 2px;
     }
 
@@ -203,6 +203,7 @@
       width: 22px;
       text-align: center;
       font-size: 17px;
+      flex-shrink: 0;
     }
 
     .overlay {
@@ -332,7 +333,7 @@
     .campo select:focus {
       outline: none;
       border-color: var(--verde);
-      box-shadow: 0 0 0 3px rgba(35, 107, 69, .09);
+      box-shadow: 0 0 0 3px rgba(35, 123, 76, .09);
     }
 
     .campo select:disabled,
@@ -799,12 +800,12 @@
         Fotografias
       </a>
 
-      <a href="#">
+      <a href="dispositivos-iot.html">
         <span class="icone">📡</span>
         Dispositivos IoT
       </a>
 
-      <a href="#">
+      <a href="relatorios.html">
         <span class="icone">📈</span>
         Relatórios
       </a>
@@ -813,17 +814,17 @@
     <div class="sidebar-secao">Conta</div>
 
     <nav aria-label="Conta">
-      <a href="#">
+      <a href="meu-perfil.html">
         <span class="icone">👤</span>
         Meu perfil
       </a>
 
-      <a href="#">
+      <a href="empresa.html">
         <span class="icone">🏢</span>
         Empresa
       </a>
 
-      <a href="#">
+      <a href="configuracoes.html">
         <span class="icone">⚙️</span>
         Configurações
       </a>
@@ -848,9 +849,7 @@
     <section class="cartao" aria-labelledby="tituloNovaFoto">
       <div class="cartao-cabecalho">
         <div>
-          <h2 class="cartao-titulo" id="tituloNovaFoto">
-            Nova Fotografia
-          </h2>
+          <h2 class="cartao-titulo" id="tituloNovaFoto">Nova Fotografia</h2>
           <p class="cartao-descricao">
             Selecione uma amostra e envie uma imagem.
           </p>
@@ -936,6 +935,7 @@
     let listaAmostras = [];
     let timerMensagem = null;
     let enviandoFoto = false;
+    let carregandoGaleria = false;
 
     const elementoMensagem = document.getElementById("mensagem");
     const elementoGaleria = document.getElementById("galeria");
@@ -949,7 +949,9 @@
     const botaoSalvar = document.getElementById("btnSalvar");
     const formulario = document.getElementById("formFoto");
 
-    /* Mensagens */
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+    const menuToggle = document.getElementById("menuToggle");
 
     function mostrarMensagem(texto, tipo) {
       clearTimeout(timerMensagem);
@@ -960,10 +962,8 @@
       timerMensagem = setTimeout(() => {
         elementoMensagem.className = "mensagem";
         elementoMensagem.textContent = "";
-      }, 5000);
+      }, 6000);
     }
-
-    /* Utilitários */
 
     function normalizarId(valor) {
       if (valor === null || valor === undefined) {
@@ -986,7 +986,6 @@
         const ano = Number(somenteData[1]);
         const mes = Number(somenteData[2]);
         const dia = Number(somenteData[3]);
-
         const dataLocal = new Date(ano, mes - 1, dia);
 
         if (
@@ -1036,6 +1035,13 @@
     }
 
     async function obterTokenAtual() {
+      if (
+        typeof firebase === "undefined" ||
+        !firebase.auth
+      ) {
+        throw new Error("O serviço de autenticação não está disponível.");
+      }
+
       const usuario = firebase.auth().currentUser;
 
       if (!usuario) {
@@ -1080,13 +1086,13 @@
       try {
         dados = await resposta.json();
       } catch {
-        throw new Error("O servidor retornou uma resposta que não é JSON válido.");
+        throw new Error(
+          "O servidor retornou uma resposta que não é JSON válido."
+        );
       }
 
       return validarRespostaObjeto(dados);
     }
-
-    /* URLs das imagens */
 
     function obterUrlImagem(urlOriginal) {
       if (
@@ -1148,12 +1154,12 @@
 
     function atualizarEstadoFormulario() {
       const possuiAmostras = listaAmostras.length > 0;
+      const formularioBloqueado = !possuiAmostras || enviandoFoto;
 
-      selectAmostra.disabled = !possuiAmostras || enviandoFoto;
-      inputFoto.disabled = !possuiAmostras || enviandoFoto;
-      inputObservacoes.disabled = !possuiAmostras || enviandoFoto;
-
-      botaoSalvar.disabled = !possuiAmostras || enviandoFoto;
+      selectAmostra.disabled = formularioBloqueado;
+      inputFoto.disabled = formularioBloqueado;
+      inputObservacoes.disabled = formularioBloqueado;
+      botaoSalvar.disabled = formularioBloqueado;
     }
 
     function definirEstadoBotaoSalvamento(carregando) {
@@ -1163,17 +1169,18 @@
 
       if (carregando) {
         botaoSalvar.textContent = "Enviando...";
+        botaoSalvar.setAttribute("aria-busy", "true");
       } else {
         botaoSalvar.append(
           criarElemento("span", "", "＋"),
           document.createTextNode(" Enviar Fotografia")
         );
+
+        botaoSalvar.removeAttribute("aria-busy");
       }
 
       atualizarEstadoFormulario();
     }
-
-    /* Inicialização */
 
     async function inicializarPagina() {
       try {
@@ -1189,18 +1196,18 @@
         });
 
         if (!usuario) {
-          throw new Error("Não foi possível identificar o usuário autenticado.");
+          throw new Error(
+            "Não foi possível identificar o usuário autenticado."
+          );
         }
 
         const nome = usuario.nome || usuario.email || "?";
 
         document.getElementById("nomeTopo").textContent = nome;
-
         document.getElementById("avatarTopo").textContent =
           nome.charAt(0).toUpperCase();
 
         await obterTokenAtual();
-
         await carregarAmostrasSelect();
         await carregarGaleria();
 
@@ -1208,27 +1215,25 @@
         elementoLoading.hidden = true;
 
         mostrarMensagem(
-          erro.message || "Não foi possível carregar a página. Verifique sua conexão.",
+          erro.message ||
+          "Não foi possível carregar a página. Verifique sua conexão.",
           "erro"
         );
       }
     }
 
-    /* Carregar amostras */
-
     async function carregarAmostrasSelect() {
       selectAmostra.disabled = true;
+
       selectAmostra.replaceChildren(
         criarElemento("option", "", "Carregando amostras...")
       );
 
       try {
-        const payload = {
+        const dados = await enviarRequisicao({
           action: "listarAmostras",
           idToken: idTokenAtual
-        };
-
-        const dados = await enviarRequisicao(payload);
+        });
 
         if (!dados.sucesso) {
           throw new Error(
@@ -1243,6 +1248,7 @@
         listaAmostras = dados.resultado.filter(amostra => {
           return (
             amostra &&
+            typeof amostra === "object" &&
             String(amostra.status || "").toLowerCase() !== "inativa" &&
             normalizarId(amostra.amostra_id) !== ""
           );
@@ -1261,11 +1267,13 @@
           const id = normalizarId(amostra.amostra_id);
 
           opcao.value = id;
-
           opcao.textContent =
-            `Amostra ${id} | ${amostra.data_coleta
-              ? formatarData(amostra.data_coleta)
-              : "Sem data"}`;
+            "Amostra " + id + " | " +
+            (
+              amostra.data_coleta
+                ? formatarData(amostra.data_coleta)
+                : "Sem data"
+            );
 
           selectAmostra.appendChild(opcao);
         });
@@ -1308,8 +1316,6 @@
         throw erro;
       }
     }
-
-    /* Estados da galeria */
 
     function mostrarEstadoVazio() {
       elementoGaleria.hidden = true;
@@ -1356,9 +1362,13 @@
       contadorFotos.textContent = "";
     }
 
-    /* Carregar galeria */
-
     async function carregarGaleria() {
+      if (carregandoGaleria) {
+        return;
+      }
+
+      carregandoGaleria = true;
+
       elementoLoading.hidden = false;
       elementoGaleria.hidden = true;
       elementoVazio.hidden = true;
@@ -1367,12 +1377,10 @@
       try {
         await obterTokenAtual();
 
-        const payload = {
+        const dados = await enviarRequisicao({
           action: "listarFotografias",
           idToken: idTokenAtual
-        };
-
-        const dados = await enviarRequisicao(payload);
+        });
 
         if (!dados.sucesso) {
           throw new Error(
@@ -1398,15 +1406,18 @@
 
       } finally {
         elementoLoading.hidden = true;
+        carregandoGaleria = false;
       }
     }
-
-    /* Renderizar galeria */
 
     function renderizarGaleria(fotos) {
       elementoGaleria.replaceChildren();
 
-      if (!fotos || fotos.length === 0) {
+      const fotosValidas = fotos.filter(foto => {
+        return foto && typeof foto === "object";
+      });
+
+      if (fotosValidas.length === 0) {
         mostrarEstadoVazio();
         return;
       }
@@ -1414,19 +1425,8 @@
       elementoGaleria.hidden = false;
       elementoVazio.hidden = true;
 
-      fotos.forEach(foto => {
-        if (!foto || typeof foto !== "object") {
-          return;
-        }
-
+      fotosValidas.forEach(foto => {
         const card = criarElemento("article", "foto-card");
-
-        const amostra = listaAmostras.find(item => {
-          return (
-            normalizarId(item.amostra_id) ===
-            normalizarId(foto.amostra_id)
-          );
-        });
 
         const idAmostra = normalizarId(foto.amostra_id);
 
@@ -1456,7 +1456,6 @@
           }, { once: true });
 
           containerImagem.appendChild(imagem);
-
         } else {
           mostrarErroImagem(containerImagem);
         }
@@ -1464,11 +1463,7 @@
         const informacoes = criarElemento("div", "foto-info");
 
         informacoes.appendChild(
-          criarElemento(
-            "strong",
-            "",
-            amostra ? identificacaoAmostra : identificacaoAmostra
-          )
+          criarElemento("strong", "", identificacaoAmostra)
         );
 
         informacoes.appendChild(
@@ -1539,10 +1534,8 @@
       contadorFotos.textContent =
         totalFotos === 1
           ? "1 fotografia cadastrada"
-          : `${totalFotos} fotografias cadastradas`;
+          : totalFotos + " fotografias cadastradas";
     }
-
-    /* Excluir fotografia */
 
     async function excluirFoto(id, botao) {
       if (
@@ -1567,13 +1560,11 @@
       try {
         await obterTokenAtual();
 
-        const payload = {
+        const dados = await enviarRequisicao({
           action: "excluirFotografia",
           idToken: idTokenAtual,
           id: id
-        };
-
-        const dados = await enviarRequisicao(payload);
+        });
 
         if (!dados.sucesso) {
           throw new Error(
@@ -1599,9 +1590,76 @@
       }
     }
 
-    /* Upload */
+    function validarArquivoImagem(arquivo) {
+      const tiposPermitidos = [
+        "image/jpeg",
+        "image/png"
+      ];
 
-    formulario.addEventListener("submit", async function(evento) {
+      if (!arquivo) {
+        throw new Error("Selecione uma imagem.");
+      }
+
+      if (!tiposPermitidos.includes(arquivo.type)) {
+        throw new Error(
+          "Formato não permitido. Selecione uma imagem JPG ou PNG."
+        );
+      }
+
+      const tamanhoMaximo = 4 * 1024 * 1024;
+
+      if (arquivo.size > tamanhoMaximo) {
+        throw new Error(
+          "A imagem é muito grande. Escolha uma foto com até 4 MB."
+        );
+      }
+
+      if (arquivo.size === 0) {
+        throw new Error("O arquivo selecionado está vazio.");
+      }
+    }
+
+    function lerArquivoComoBase64(arquivo) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onload = () => {
+          const resultado = reader.result;
+
+          const prefixoEsperado = arquivo.type === "image/png"
+            ? "data:image/png;base64,"
+            : "data:image/jpeg;base64,";
+
+          if (
+            typeof resultado !== "string" ||
+            !resultado.startsWith(prefixoEsperado)
+          ) {
+            reject(
+              new Error("Não foi possível validar a imagem selecionada.")
+            );
+            return;
+          }
+
+          resolve(resultado);
+        };
+
+        reader.onerror = () => {
+          reject(
+            new Error(
+              "Ocorreu um erro ao ler o arquivo. Tente novamente."
+            )
+          );
+        };
+
+        reader.onabort = () => {
+          reject(new Error("A leitura da imagem foi cancelada."));
+        };
+
+        reader.readAsDataURL(arquivo);
+      });
+    }
+
+    formulario.addEventListener("submit", async evento => {
       evento.preventDefault();
 
       if (enviandoFoto) {
@@ -1630,135 +1688,61 @@
         return;
       }
 
-      if (!inputFoto.files || inputFoto.files.length === 0) {
-        mostrarMensagem("Selecione uma imagem.", "erro");
-        return;
-      }
+      const arquivo = inputFoto.files && inputFoto.files[0];
 
-      const arquivo = inputFoto.files[0];
-
-      const tiposPermitidos = [
-        "image/jpeg",
-        "image/png"
-      ];
-
-      if (!tiposPermitidos.includes(arquivo.type)) {
-        mostrarMensagem(
-          "Formato não permitido. Selecione uma imagem JPG ou PNG.",
-          "erro"
-        );
-        return;
-      }
-
-      const tamanhoMaximo = 4 * 1024 * 1024;
-
-      if (arquivo.size > tamanhoMaximo) {
-        mostrarMensagem(
-          "A imagem é muito grande. Escolha uma foto com até 4 MB.",
-          "erro"
-        );
-        return;
-      }
-
-      if (arquivo.size === 0) {
-        mostrarMensagem(
-          "O arquivo selecionado está vazio.",
-          "erro"
-        );
+      try {
+        validarArquivoImagem(arquivo);
+      } catch (erro) {
+        mostrarMensagem(erro.message, "erro");
         return;
       }
 
       definirEstadoBotaoSalvamento(true);
 
-      const reader = new FileReader();
+      try {
+        const base64Data = await lerArquivoComoBase64(arquivo);
 
-      reader.onload = async function(eventoLeitura) {
-        try {
-          const base64Data = eventoLeitura.target.result;
+        await obterTokenAtual();
 
-          const prefixoEsperado = arquivo.type === "image/png"
-            ? "data:image/png;base64,"
-            : "data:image/jpeg;base64,";
+        const novaFoto = {
+          amostra_id: amostraId,
+          observacoes: inputObservacoes.value.trim(),
+          nome_arquivo: arquivo.name,
+          mime_type: arquivo.type,
+          base64: base64Data
+        };
 
-          if (
-            typeof base64Data !== "string" ||
-            !base64Data.startsWith(prefixoEsperado)
-          ) {
-            throw new Error(
-              "Não foi possível validar a imagem selecionada."
-            );
-          }
+        const dados = await enviarRequisicao({
+          action: "criarFotografia",
+          idToken: idTokenAtual,
+          dados: novaFoto
+        });
 
-          await obterTokenAtual();
-
-          const novaFoto = {
-            amostra_id: amostraId,
-            observacoes: inputObservacoes.value.trim(),
-            nome_arquivo: arquivo.name,
-            mime_type: arquivo.type,
-            base64: base64Data
-          };
-
-          const payload = {
-            action: "criarFotografia",
-            idToken: idTokenAtual,
-            dados: novaFoto
-          };
-
-          const dados = await enviarRequisicao(payload);
-
-          if (!dados.sucesso) {
-            throw new Error(
-              dados.mensagem || "Erro ao salvar fotografia."
-            );
-          }
-
-          mostrarMensagem(
-            "Fotografia enviada com sucesso!",
-            "sucesso"
+        if (!dados.sucesso) {
+          throw new Error(
+            dados.mensagem || "Erro ao salvar fotografia."
           );
-
-          formulario.reset();
-
-          await carregarGaleria();
-
-        } catch (erro) {
-          mostrarMensagem(
-            erro.message || "Não foi possível enviar a fotografia.",
-            "erro"
-          );
-
-        } finally {
-          definirEstadoBotaoSalvamento(false);
         }
-      };
 
-      reader.onerror = function() {
         mostrarMensagem(
-          "Ocorreu um erro ao ler o arquivo. Tente selecionar a imagem novamente.",
+          "Fotografia enviada com sucesso!",
+          "sucesso"
+        );
+
+        formulario.reset();
+
+        await carregarGaleria();
+
+      } catch (erro) {
+        mostrarMensagem(
+          erro.message || "Não foi possível enviar a fotografia.",
           "erro"
         );
 
+      } finally {
         definirEstadoBotaoSalvamento(false);
-      };
-
-      reader.onabort = function() {
-        mostrarMensagem(
-          "A leitura da imagem foi cancelada.",
-          "erro"
-        );
-
-        definirEstadoBotaoSalvamento(false);
-      };
-
-      reader.readAsDataURL(arquivo);
+      }
     });
-
-    /* Menu responsivo */
-
-    const sidebar = document.getElementById("sidebar");
-    const overlay = document.getElementById("overlay");
-    const menuToggle = document.getElementById("menuToggle");
 
     function abrirMenu() {
       sidebar.classList.add("aberta");
@@ -1778,7 +1762,11 @@
       menuToggle.setAttribute("aria-expanded", "false");
       menuToggle.setAttribute("aria-label", "Abrir menu");
 
-      if (devolverFoco && estavaAberto && window.innerWidth <= 900) {
+      if (
+        devolverFoco &&
+        estavaAberto &&
+        window.innerWidth <= 900
+      ) {
         menuToggle.focus();
       }
     }
@@ -1827,7 +1815,10 @@
         const primeiro = elementosFocaveis[0];
         const ultimo = elementosFocaveis[elementosFocaveis.length - 1];
 
-        if (evento.shiftKey && document.activeElement === primeiro) {
+        if (
+          evento.shiftKey &&
+          document.activeElement === primeiro
+        ) {
           evento.preventDefault();
           menuToggle.focus();
         } else if (
@@ -1852,8 +1843,6 @@
       }
     });
 
-    /* Sair */
-
     document
       .getElementById("botaoSair")
       .addEventListener("click", () => {
@@ -1864,8 +1853,6 @@
           SoloSmart.sair();
         }
       });
-
-    /* Executar */
 
     inicializarPagina();
   </script>
