@@ -29,13 +29,9 @@
       --sombra: 0 8px 24px rgba(25, 67, 43, .045);
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
-    html {
-      scroll-behavior: smooth;
-    }
+    html { scroll-behavior: smooth; }
 
     body {
       margin: 0;
@@ -46,9 +42,7 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    button, input, select {
-      font: inherit;
-    }
+    button, input, select { font: inherit; }
 
     button:focus-visible,
     a:focus-visible,
@@ -57,8 +51,6 @@
       outline: 3px solid rgba(35, 107, 69, .28);
       outline-offset: 3px;
     }
-
-    /* Cabeçalho */
 
     .topbar {
       position: fixed;
@@ -155,11 +147,7 @@
       transition: .2s;
     }
 
-    .botao-sair:hover {
-      background: #ffe5e3;
-    }
-
-    /* Menu lateral */
+    .botao-sair:hover { background: #ffe5e3; }
 
     .sidebar {
       position: fixed;
@@ -230,8 +218,6 @@
       background: rgba(12, 35, 22, .35);
       z-index: 39;
     }
-
-    /* Conteúdo principal */
 
     .conteudo {
       min-height: calc(100vh - var(--header-h));
@@ -304,8 +290,6 @@
       background: #62a878;
     }
 
-    /* Mensagens */
-
     .mensagem {
       display: none;
       padding: 14px 16px;
@@ -329,8 +313,6 @@
       border-color: #f2d6d3;
       color: #8a2525;
     }
-
-    /* Cartões */
 
     .cartao {
       margin-bottom: 23px;
@@ -393,8 +375,6 @@
       white-space: nowrap;
     }
 
-    /* Formulário */
-
     .form-grid {
       display: grid;
       grid-template-columns: 1.15fr 1.1fr .8fr 1fr auto;
@@ -415,9 +395,7 @@
       font-weight: 700;
     }
 
-    .campo label .obrigatorio {
-      color: #c34b42;
-    }
+    .campo label .obrigatorio { color: #c34b42; }
 
     .campo input,
     .campo select {
@@ -434,9 +412,7 @@
       transition: border-color .18s, box-shadow .18s;
     }
 
-    .campo input::placeholder {
-      color: #a5afa8;
-    }
+    .campo input::placeholder { color: #a5afa8; }
 
     .campo input:focus,
     .campo select:focus {
@@ -476,11 +452,9 @@
 
     .btn:disabled {
       opacity: .65;
-      cursor: wait;
+      cursor: not-allowed;
       transform: none;
     }
-
-    /* Listagem */
 
     .lista-cabecalho {
       display: flex;
@@ -531,17 +505,10 @@
       white-space: nowrap;
     }
 
-    td {
-      color: #536158;
-    }
+    td { color: #536158; }
 
-    tbody tr:last-child td {
-      border-bottom: 0;
-    }
-
-    tbody tr:hover td {
-      background: #fbfdfb;
-    }
+    tbody tr:last-child td { border-bottom: 0; }
+    tbody tr:hover td { background: #fbfdfb; }
 
     .nome-talhao {
       color: var(--verde-escuro);
@@ -585,9 +552,7 @@
       color: #727b75;
     }
 
-    .badge.inativa::before {
-      background: #9ba39d;
-    }
+    .badge.inativa::before { background: #9ba39d; }
 
     .btn-excluir {
       padding: 7px 11px;
@@ -608,10 +573,8 @@
 
     .btn-excluir:disabled {
       opacity: .55;
-      cursor: wait;
+      cursor: not-allowed;
     }
-
-    /* Estados da tabela */
 
     .loading {
       display: flex;
@@ -676,8 +639,6 @@
       font-size: 13px;
     }
 
-    /* Avisos */
-
     .nota-informativa {
       display: flex;
       align-items: flex-start;
@@ -691,16 +652,10 @@
       line-height: 1.6;
     }
 
-    .nota-informativa span:first-child {
-      font-size: 16px;
-    }
-
-    /* Responsividade */
+    .nota-informativa span:first-child { font-size: 16px; }
 
     @media (max-width: 1250px) {
-      .conteudo {
-        padding: 30px 25px 50px;
-      }
+      .conteudo { padding: 30px 25px 50px; }
 
       .form-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -717,17 +672,9 @@
         place-items: center;
       }
 
-      .sidebar {
-        transform: translateX(-100%);
-      }
-
-      .sidebar.aberta {
-        transform: translateX(0);
-      }
-
-      .overlay.ativo {
-        display: block;
-      }
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.aberta { transform: translateX(0); }
+      .overlay.ativo { display: block; }
 
       .conteudo {
         margin-left: 0;
@@ -736,17 +683,10 @@
     }
 
     @media (max-width: 600px) {
-      :root {
-        --header-h: 62px;
-      }
+      :root { --header-h: 62px; }
 
-      .topbar {
-        padding: 0 14px;
-      }
-
-      .marca {
-        font-size: 17px;
-      }
+      .topbar { padding: 0 14px; }
+      .marca { font-size: 17px; }
 
       .simbolo {
         width: 34px;
@@ -754,17 +694,9 @@
         font-size: 18px;
       }
 
-      .topbar-acoes {
-        gap: 9px;
-      }
-
-      .usuario-topo {
-        gap: 7px;
-      }
-
-      .nome-topo {
-        display: none;
-      }
+      .topbar-acoes { gap: 9px; }
+      .usuario-topo { gap: 7px; }
+      .nome-topo { display: none; }
 
       .avatar {
         width: 33px;
@@ -776,43 +708,27 @@
         font-size: 11px;
       }
 
-      .conteudo {
-        padding: 24px 15px 40px;
-      }
-
-      .pagina-titulo h1 {
-        font-size: 23px;
-      }
+      .conteudo { padding: 24px 15px 40px; }
+      .pagina-titulo h1 { font-size: 23px; }
 
       .cartao {
         padding: 19px 16px;
         border-radius: 12px;
       }
 
-      .cartao-cabecalho {
-        margin-bottom: 19px;
-      }
+      .cartao-cabecalho { margin-bottom: 19px; }
 
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
+      .form-grid { grid-template-columns: 1fr; }
 
-      .form-grid .campo:last-child {
-        grid-column: auto;
-      }
-
-      .form-grid .btn {
-        width: 100%;
-      }
+      .form-grid .campo:last-child { grid-column: auto; }
+      .form-grid .btn { width: 100%; }
 
       .lista-cabecalho {
         align-items: flex-start;
         flex-direction: column;
       }
 
-      .etiqueta-formulario {
-        display: none;
-      }
+      .etiqueta-formulario { display: none; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -902,12 +818,12 @@
         Fotografias
       </a>
 
-      <a href="#">
+      <a href="dispositivos-iot.html">
         <span class="icone">📡</span>
         Dispositivos IoT
       </a>
 
-      <a href="#">
+      <a href="relatorios.html">
         <span class="icone">📈</span>
         Relatórios
       </a>
@@ -916,17 +832,17 @@
     <div class="sidebar-secao">Conta</div>
 
     <nav>
-      <a href="#">
+      <a href="meu-perfil.html">
         <span class="icone">👤</span>
         Meu perfil
       </a>
 
-      <a href="#">
+      <a href="empresa.html">
         <span class="icone">🏢</span>
         Empresa
       </a>
 
-      <a href="#">
+      <a href="configuracoes.html">
         <span class="icone">⚙️</span>
         Configurações
       </a>
@@ -954,20 +870,12 @@
         </div>
       </section>
 
-      <div
-        id="mensagem"
-        class="mensagem"
-        role="status"
-        aria-live="polite"
-      ></div>
-
-      <!-- Cadastro de talhão -->
+      <div id="mensagem" class="mensagem" role="status" aria-live="polite"></div>
 
       <section class="cartao">
         <div class="cartao-cabecalho">
           <div class="cartao-titulo-grupo">
             <div class="cartao-icone">🔲</div>
-
             <div>
               <h2>Novo Talhão</h2>
               <p class="cartao-descricao">
@@ -975,12 +883,10 @@
               </p>
             </div>
           </div>
-
           <span class="etiqueta-formulario">NOVO CADASTRO</span>
         </div>
 
         <form id="formTalhao" class="form-grid">
-
           <div class="campo">
             <label for="propriedade">
               Propriedade <span class="obrigatorio">*</span>
@@ -1042,17 +948,13 @@
               Cadastrar talhão
             </button>
           </div>
-
         </form>
       </section>
-
-      <!-- Listagem de talhões -->
 
       <section class="cartao">
         <div class="lista-cabecalho">
           <div class="cartao-titulo-grupo">
             <div class="cartao-icone">🌾</div>
-
             <div>
               <h2>Meus Talhões</h2>
               <p class="cartao-descricao">
@@ -1096,7 +998,6 @@
                 <th>Ações</th>
               </tr>
             </thead>
-
             <tbody id="corpoTabela"></tbody>
           </table>
         </div>
@@ -1121,6 +1022,7 @@
   <script>
     let idTokenAtual = "";
     let listaPropriedades = [];
+    let cadastroEmAndamento = false;
 
     const elementoMensagem = document.getElementById("mensagem");
     const elementoLoading = document.getElementById("loadingTabela");
@@ -1171,6 +1073,10 @@
     }
 
     async function chamarAPI(payload) {
+      if (!SoloSmart || !SoloSmart.URL_API) {
+        throw new Error("Endereço da API não configurado.");
+      }
+
       const resposta = await fetch(SoloSmart.URL_API, {
         method: "POST",
         headers: {
@@ -1185,7 +1091,18 @@
         );
       }
 
-      return resposta.json();
+      const dados = await resposta.json();
+
+      if (!dados || typeof dados !== "object") {
+        throw new Error("O servidor retornou uma resposta inválida.");
+      }
+
+      return dados;
+    }
+
+    function atualizarEstadoBotao() {
+      elementoBotaoSalvar.disabled =
+        cadastroEmAndamento || listaPropriedades.length === 0;
     }
 
     // Inicialização e autenticação
@@ -1195,6 +1112,10 @@
         const usuario = await SoloSmart.protegerPagina({
           paginaLogin: "login.html"
         });
+
+        if (!usuario) {
+          return;
+        }
 
         const nome = usuario.nome || usuario.email || "?";
 
@@ -1216,7 +1137,8 @@
 
         elementoContador.textContent = "Indisponível";
         elementoSelectPropriedade.disabled = true;
-        elementoBotaoSalvar.disabled = true;
+        listaPropriedades = [];
+        atualizarEstadoBotao();
       }
     })();
 
@@ -1226,6 +1148,9 @@
       elementoSelectPropriedade.disabled = true;
       elementoSelectPropriedade.innerHTML =
         '<option value="">Carregando propriedades...</option>';
+
+      listaPropriedades = [];
+      atualizarEstadoBotao();
 
       try {
         idTokenAtual = await obterTokenAtual();
@@ -1244,11 +1169,16 @@
         }
 
         if (!Array.isArray(dados.resultado)) {
-          throw new Error("O servidor retornou uma lista de propriedades inválida.");
+          throw new Error(
+            "O servidor retornou uma lista de propriedades inválida."
+          );
         }
 
         listaPropriedades = dados.resultado.filter(propriedade =>
-          propriedade.status !== "inativa"
+          propriedade &&
+          propriedade.status !== "inativa" &&
+          propriedade.propriedade_id !== undefined &&
+          propriedade.propriedade_id !== null
         );
 
         elementoSelectPropriedade.innerHTML =
@@ -1257,8 +1187,9 @@
         listaPropriedades.forEach(propriedade => {
           const opcao = document.createElement("option");
 
-          opcao.value = propriedade.propriedade_id;
-          opcao.textContent = propriedade.nome || "Propriedade sem nome";
+          opcao.value = String(propriedade.propriedade_id);
+          opcao.textContent =
+            propriedade.nome || "Propriedade sem nome";
 
           elementoSelectPropriedade.appendChild(opcao);
         });
@@ -1266,8 +1197,7 @@
         elementoSelectPropriedade.disabled =
           listaPropriedades.length === 0;
 
-        elementoBotaoSalvar.disabled =
-          listaPropriedades.length === 0;
+        atualizarEstadoBotao();
 
         if (listaPropriedades.length === 0) {
           elementoSelectPropriedade.innerHTML =
@@ -1286,7 +1216,7 @@
           '<option value="">Erro ao carregar propriedades</option>';
 
         elementoSelectPropriedade.disabled = true;
-        elementoBotaoSalvar.disabled = true;
+        atualizarEstadoBotao();
 
         mostrarMensagem(
           erro.message || "Não foi possível carregar as propriedades.",
@@ -1322,7 +1252,9 @@
         }
 
         if (!Array.isArray(dados.resultado)) {
-          throw new Error("O servidor retornou uma lista de talhões inválida.");
+          throw new Error(
+            "O servidor retornou uma lista de talhões inválida."
+          );
         }
 
         renderizarTabela(dados.resultado);
@@ -1340,9 +1272,10 @@
     }
 
     function renderizarTabela(talhoes) {
-      elementoCorpoTabela.innerHTML = "";
+      elementoCorpoTabela.replaceChildren();
 
       const ativos = talhoes.filter(talhao =>
+        talhao &&
         talhao.status !== "inativa"
       );
 
@@ -1373,14 +1306,12 @@
         const propriedadeTexto = escaparHTML(nomePropriedade);
         const area = escaparHTML(talhao.area_hectares ?? "0");
         const cultura = escaparHTML(talhao.cultura || "-");
-        const status = talhao.status || "ativa";
+
+        const status = String(talhao.status || "ativa");
         const statusTexto = escaparHTML(status);
+        const statusClasse = status === "ativa" ? "" : "inativa";
 
-        const statusClasse = status === "ativa"
-          ? ""
-          : "inativa";
-
-        const id = escaparHTML(talhao.talhao_id);
+        const id = escaparHTML(talhao.talhao_id ?? "");
 
         const linha = document.createElement("tr");
 
@@ -1411,6 +1342,7 @@
               type="button"
               data-id="${id}"
               aria-label="Excluir talhão ${nome}"
+              ${id ? "" : "disabled"}
             >
               Excluir
             </button>
@@ -1429,7 +1361,6 @@
           "Identificador do talhão não encontrado.",
           "erro"
         );
-
         return;
       }
 
@@ -1496,6 +1427,10 @@
       .addEventListener("submit", async function(evento) {
         evento.preventDefault();
 
+        if (cadastroEmAndamento) {
+          return;
+        }
+
         const nome = document.getElementById("nome").value.trim();
         const propriedadeId = elementoSelectPropriedade.value;
         const area = document.getElementById("area").value;
@@ -1544,14 +1479,12 @@
             "A propriedade selecionada não está disponível. Atualize a página e tente novamente.",
             "erro"
           );
-
           return;
         }
 
-        const botao = elementoBotaoSalvar;
-
-        botao.disabled = true;
-        botao.innerHTML = "Salvando...";
+        cadastroEmAndamento = true;
+        atualizarEstadoBotao();
+        elementoBotaoSalvar.textContent = "Salvando...";
 
         try {
           idTokenAtual = await obterTokenAtual();
@@ -1593,8 +1526,11 @@
           );
 
         } finally {
-          botao.disabled = listaPropriedades.length === 0;
-          botao.innerHTML = "<span>＋</span> Cadastrar talhão";
+          cadastroEmAndamento = false;
+          elementoBotaoSalvar.innerHTML =
+            "<span>＋</span> Cadastrar talhão";
+
+          atualizarEstadoBotao();
         }
       });
 
@@ -1612,12 +1548,18 @@
     const overlay = document.getElementById("overlay");
     const menuToggle = document.getElementById("menuToggle");
 
-    function fecharMenu() {
+    function fecharMenu(devolverFoco = false) {
+      const estavaAberto = sidebar.classList.contains("aberta");
+
       sidebar.classList.remove("aberta");
       overlay.classList.remove("ativo");
 
       menuToggle.setAttribute("aria-expanded", "false");
       menuToggle.setAttribute("aria-label", "Abrir menu");
+
+      if (devolverFoco && estavaAberto) {
+        menuToggle.focus();
+      }
     }
 
     function alternarMenu() {
@@ -1630,10 +1572,18 @@
         "aria-label",
         aberto ? "Fechar menu" : "Abrir menu"
       );
+
+      if (aberto) {
+        const primeiroLink = sidebar.querySelector("a");
+        if (primeiroLink) primeiroLink.focus();
+      }
     }
 
     menuToggle.addEventListener("click", alternarMenu);
-    overlay.addEventListener("click", fecharMenu);
+
+    overlay.addEventListener("click", () => {
+      fecharMenu(true);
+    });
 
     sidebar.querySelectorAll("a").forEach(link => {
       link.addEventListener("click", () => {
@@ -1641,6 +1591,12 @@
           fecharMenu();
         }
       });
+    });
+
+    document.addEventListener("keydown", evento => {
+      if (evento.key === "Escape" && sidebar.classList.contains("aberta")) {
+        fecharMenu(true);
+      }
     });
 
     window.addEventListener("resize", () => {
