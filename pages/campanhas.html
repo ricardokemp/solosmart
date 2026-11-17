@@ -3,119 +3,731 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#123c2b">
+  <meta name="description" content="Gerencie as campanhas de coleta de amostras do SoloSmart.">
   <title>Campanhas | SoloSmart</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+
   <style>
     :root {
-      --verde: #236b45; --verde-escuro: #174b31; --verde-claro: #e9f5ed;
-      --fundo: #f3f7f3; --texto: #203229; --cinza: #66756c; --borda: #dce6de;
-      --branco: #ffffff; --sidebar-w: 260px; --header-h: 64px;
+      --verde: #236b45;
+      --verde-escuro: #123c2b;
+      --verde-claro: #eaf4ed;
+      --lima: #b6d957;
+      --fundo: #f5f7f4;
+      --branco: #ffffff;
+      --texto: #203229;
+      --cinza: #66756c;
+      --borda: #dce6de;
+      --vermelho: #a12d2d;
+      --vermelho-claro: #fff0f0;
+      --sombra: 0 6px 22px rgba(28, 65, 43, .055);
+      --sidebar-w: 258px;
+      --header-h: 70px;
     }
-    * { box-sizing: border-box; }
-    body { margin: 0; min-height: 100vh; background: var(--fundo); color: var(--texto); font-family: 'DM Sans', Arial, sans-serif; }
-    
-    /* Layout Base */
-    .topbar { position: fixed; top: 0; left: 0; right: 0; height: var(--header-h); background: #fff; border-bottom: 1px solid var(--borda); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 50; box-shadow: 0 2px 10px rgba(28,65,43,.04); }
-    .marca { display: flex; align-items: center; gap: 12px; font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 18px; color: var(--verde-escuro); }
-    .simbolo { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 10px; background: var(--verde); color: #fff; font-size: 20px; }
-    .menu-toggle { display: none; background: none; border: 0; font-size: 22px; color: var(--verde-escuro); cursor: pointer; padding: 6px; }
-    .topbar-acoes { display: flex; align-items: center; gap: 14px; }
-    .usuario-topo { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--cinza); }
-    .avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--verde-claro); color: var(--verde); display: grid; place-items: center; font-weight: 800; }
-    .botao-sair { background: #fff0f0; color: #8a2525; border: 1px solid #f5c2c2; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
-    
-    .sidebar { position: fixed; top: var(--header-h); left: 0; bottom: 0; width: var(--sidebar-w); background: #fff; border-right: 1px solid var(--borda); padding: 20px 0; overflow-y: auto; z-index: 40; transition: transform .25s ease; }
-    .sidebar-secao { padding: 0 20px; margin-bottom: 8px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; color: var(--cinza); }
-    .sidebar nav { display: flex; flex-direction: column; gap: 2px; margin-bottom: 18px; }
-    .sidebar a { display: flex; align-items: center; gap: 11px; padding: 10px 20px; color: var(--texto); text-decoration: none; font-size: 14px; font-weight: 600; border-left: 3px solid transparent; transition: .15s; }
-    .sidebar a:hover { background: var(--verde-claro); color: var(--verde-escuro); }
-    .sidebar a.ativo { background: var(--verde-claro); color: var(--verde-escuro); border-left-color: var(--verde); }
-    .sidebar a .icone { font-size: 17px; width: 22px; text-align: center; }
-    
-    /* Conteúdo Principal */
-    .conteudo { margin-left: var(--sidebar-w); margin-top: var(--header-h); padding: 32px 32px 60px; min-height: calc(100vh - var(--header-h)); }
-    .pagina-titulo { margin-bottom: 28px; display: flex; justify-content: space-between; align-items: center; }
-    .pagina-titulo h1 { font-family: 'Manrope', sans-serif; font-size: 26px; color: var(--verde-escuro); margin: 0 0 6px; letter-spacing: -.5px; }
-    .pagina-titulo p { color: var(--cinza); font-size: 14px; margin: 0; }
-    
-    /* Formulário */
-    .cartao { background: #fff; border: 1px solid var(--borda); border-radius: 14px; padding: 24px; box-shadow: 0 6px 18px rgba(28,65,43,.05); margin-bottom: 24px; }
-    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; align-items: end; }
-    .campo { display: flex; flex-direction: column; gap: 6px; }
-    .campo label { font-size: 12px; font-weight: 700; color: var(--texto); }
-    .campo input, .campo select { padding: 12px 14px; border: 1px solid var(--borda); border-radius: 8px; font-family: inherit; font-size: 14px; outline: none; transition: .15s; background: #fff; }
-    .campo input:focus, .campo select:focus { border-color: var(--verde); box-shadow: 0 0 0 3px rgba(35,107,69,.1); }
-    .btn { padding: 12px 20px; border: 0; border-radius: 8px; background: var(--verde); color: #fff; font-weight: 700; font-size: 14px; cursor: pointer; transition: .15s; font-family: inherit; display: inline-flex; justify-content: center; align-items: center; gap: 6px; width: 100%; }
-    .btn:hover { background: var(--verde-escuro); }
-    .btn:disabled { opacity: .6; cursor: wait; }
-    
-    /* Botão Excluir */
-    .btn-excluir { background: transparent; border: 1px solid #f5c2c2; color: #8a2525; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: 700; transition: .15s; }
-    .btn-excluir:hover { background: #fff0f0; }
-    
-    table { width: 100%; border-collapse: collapse; font-size: 14px; }
-    th, td { padding: 14px; text-align: left; border-bottom: 1px solid var(--borda); }
-    th { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--cinza); font-weight: 800; background: var(--fundo); }
-    tr:hover td { background: #fafcfa; }
-    .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; background: var(--verde-claro); color: var(--verde-escuro); }
-    
-    .mensagem { display: none; padding: 14px; margin-bottom: 20px; border-radius: 8px; font-size: 14px; }
-    .mensagem.sucesso { display: block; background: #edf8ef; color: #205d38; }
-    .mensagem.erro { display: block; background: #fff0f0; color: #8a2525; }
-    .loading { text-align: center; color: var(--cinza); padding: 20px; }
-    
-    .overlay { display: none; position: fixed; inset: var(--header-h) 0 0 0; background: rgba(0,0,0,.35); z-index: 39; }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--fundo);
+      color: var(--texto);
+      font-family: 'DM Sans', Arial, sans-serif;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button:focus-visible,
+    a:focus-visible,
+    input:focus-visible,
+    select:focus-visible {
+      outline: 3px solid rgba(35, 107, 69, .25);
+      outline-offset: 2px;
+    }
+
+    /* Cabeçalho */
+
+    .topbar {
+      position: fixed;
+      inset: 0 0 auto;
+      height: var(--header-h);
+      background: var(--branco);
+      border-bottom: 1px solid var(--borda);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 50;
+      box-shadow: 0 2px 12px rgba(28, 65, 43, .035);
+    }
+
+    .marca {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 19px;
+      font-weight: 800;
+      color: var(--verde-escuro);
+    }
+
+    .simbolo {
+      width: 39px;
+      height: 39px;
+      display: grid;
+      place-items: center;
+      border-radius: 11px;
+      background: var(--verde);
+      color: white;
+      font-size: 20px;
+    }
+
+    .menu-toggle {
+      display: none;
+      background: transparent;
+      border: 0;
+      color: var(--verde-escuro);
+      font-size: 23px;
+      padding: 6px;
+      cursor: pointer;
+    }
+
+    .topbar-acoes {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .usuario-topo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--cinza);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--verde-claro);
+      color: var(--verde);
+      font-weight: 800;
+    }
+
+    .botao-sair {
+      padding: 9px 15px;
+      border: 1px solid #f1cccc;
+      border-radius: 9px;
+      background: var(--vermelho-claro);
+      color: var(--vermelho);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .botao-sair:hover {
+      background: #ffe2e2;
+    }
+
+    /* Navegação lateral */
+
+    .sidebar {
+      position: fixed;
+      top: var(--header-h);
+      left: 0;
+      bottom: 0;
+      width: var(--sidebar-w);
+      padding: 24px 0;
+      overflow-y: auto;
+      background: var(--branco);
+      border-right: 1px solid var(--borda);
+      z-index: 40;
+      transition: transform .25s ease;
+    }
+
+    .sidebar-secao {
+      padding: 0 22px;
+      margin: 0 0 9px;
+      color: var(--cinza);
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .sidebar nav {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      margin-bottom: 24px;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 20px;
+      border-left: 3px solid transparent;
+      color: var(--texto);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      transition: .18s ease;
+    }
+
+    .sidebar a:hover {
+      background: #f5f9f5;
+      color: var(--verde-escuro);
+    }
+
+    .sidebar a.ativo {
+      background: var(--verde-claro);
+      border-left-color: var(--verde);
+      color: var(--verde-escuro);
+    }
+
+    .sidebar a .icone {
+      width: 22px;
+      text-align: center;
+      font-size: 17px;
+    }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: var(--header-h) 0 0;
+      background: rgba(12, 32, 21, .38);
+      z-index: 39;
+    }
+
+    /* Conteúdo */
+
+    .conteudo {
+      min-height: calc(100vh - var(--header-h));
+      margin-left: var(--sidebar-w);
+      margin-top: var(--header-h);
+      padding: 34px 36px 60px;
+    }
+
+    .pagina-titulo {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+
+    .pagina-titulo h1 {
+      margin: 0 0 7px;
+      color: var(--verde-escuro);
+      font-family: 'Manrope', sans-serif;
+      font-size: 27px;
+      font-weight: 800;
+      letter-spacing: -.7px;
+    }
+
+    .pagina-titulo p {
+      margin: 0;
+      color: var(--cinza);
+      font-size: 14px;
+    }
+
+    /* Mensagens */
+
+    .mensagem {
+      display: none;
+      padding: 14px 16px;
+      margin-bottom: 20px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    .mensagem.sucesso {
+      display: block;
+      background: #edf8ef;
+      border-color: #cce8d1;
+      color: #205d38;
+    }
+
+    .mensagem.erro {
+      display: block;
+      background: var(--vermelho-claro);
+      border-color: #f1cccc;
+      color: var(--vermelho);
+    }
+
+    /* Cartões */
+
+    .cartao {
+      padding: 25px;
+      margin-bottom: 24px;
+      background: var(--branco);
+      border: 1px solid var(--borda);
+      border-radius: 15px;
+      box-shadow: var(--sombra);
+    }
+
+    .cartao-cabecalho {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .cartao-titulo {
+      margin: 0;
+      color: var(--verde-escuro);
+      font-family: 'Manrope', sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .cartao-descricao {
+      margin: 5px 0 0;
+      color: var(--cinza);
+      font-size: 12px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+      align-items: end;
+    }
+
+    .campo {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .campo label {
+      color: var(--texto);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .campo input,
+    .campo select {
+      width: 100%;
+      min-height: 44px;
+      padding: 11px 13px;
+      border: 1px solid var(--borda);
+      border-radius: 9px;
+      background: #fff;
+      color: var(--texto);
+      font-size: 13px;
+      transition: border-color .18s, box-shadow .18s;
+    }
+
+    .campo input::placeholder {
+      color: #9aa79e;
+    }
+
+    .campo input:focus,
+    .campo select:focus {
+      outline: none;
+      border-color: var(--verde);
+      box-shadow: 0 0 0 3px rgba(35, 107, 69, .09);
+    }
+
+    .campo select:disabled {
+      background: #f3f5f3;
+      color: #929d95;
+      cursor: not-allowed;
+    }
+
+    .campo-botao {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      min-height: 44px;
+      padding: 11px 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 0;
+      border-radius: 9px;
+      background: var(--verde);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .18s, transform .18s;
+    }
+
+    .btn:hover:not(:disabled) {
+      background: var(--verde-escuro);
+      transform: translateY(-1px);
+    }
+
+    .btn:disabled {
+      opacity: .65;
+      cursor: wait;
+    }
+
+    /* Tabela */
+
+    .tabela-container {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--borda);
+      border-radius: 10px;
+    }
+
+    table {
+      width: 100%;
+      min-width: 720px;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th,
+    td {
+      padding: 15px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--borda);
+    }
+
+    th {
+      background: #f6f8f5;
+      color: var(--cinza);
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .7px;
+      white-space: nowrap;
+    }
+
+    td {
+      color: var(--texto);
+    }
+
+    tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    tbody tr:hover td {
+      background: #fafcfa;
+    }
+
+    .nome-campanha {
+      color: var(--verde-escuro);
+      font-weight: 700;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 10px;
+      border-radius: 20px;
+      background: var(--verde-claro);
+      color: var(--verde-escuro);
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: capitalize;
+      white-space: nowrap;
+    }
+
+    .badge-inativa {
+      background: #f0f1ef;
+      color: #69736d;
+    }
+
+    .btn-excluir {
+      padding: 7px 12px;
+      border: 1px solid #f1cccc;
+      border-radius: 7px;
+      background: #fff;
+      color: var(--vermelho);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .18s ease;
+    }
+
+    .btn-excluir:hover:not(:disabled) {
+      background: var(--vermelho-claro);
+    }
+
+    .btn-excluir:disabled {
+      opacity: .6;
+      cursor: wait;
+    }
+
+    .loading,
+    .estado-vazio {
+      padding: 36px 20px;
+      text-align: center;
+      color: var(--cinza);
+      font-size: 13px;
+    }
+
+    .estado-vazio strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--texto);
+      font-size: 14px;
+    }
+
+    .estado-vazio-icone {
+      display: block;
+      margin-bottom: 12px;
+      font-size: 28px;
+    }
+
+    .rodape-info {
+      margin-top: 15px;
+      color: var(--cinza);
+      font-size: 11px;
+    }
+
+    /* Responsividade */
+
+    @media (max-width: 1100px) {
+      .form-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
     @media (max-width: 900px) {
-      .menu-toggle { display: block; }
-      .sidebar { transform: translateX(-100%); }
-      .sidebar.aberta { transform: translateX(0); }
-      .conteudo { margin-left: 0; padding: 24px 20px 60px; }
-      .overlay.ativo { display: block; }
-      .pagina-titulo { flex-direction: column; align-items: flex-start; gap: 10px; }
-      .form-grid { grid-template-columns: 1fr; }
+      .menu-toggle {
+        display: block;
+      }
+
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.aberta {
+        transform: translateX(0);
+      }
+
+      .overlay.ativo {
+        display: block;
+      }
+
+      .conteudo {
+        margin-left: 0;
+        padding: 28px 22px 50px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      :root {
+        --header-h: 64px;
+      }
+
+      .topbar {
+        padding: 0 14px;
+      }
+
+      .marca {
+        gap: 8px;
+        font-size: 17px;
+      }
+
+      .simbolo {
+        width: 34px;
+        height: 34px;
+      }
+
+      .topbar-acoes {
+        gap: 9px;
+      }
+
+      .usuario-topo {
+        gap: 7px;
+      }
+
+      .nome-topo {
+        display: none;
+      }
+
+      .botao-sair {
+        padding: 8px 10px;
+        font-size: 12px;
+      }
+
+      .conteudo {
+        padding: 24px 15px 40px;
+      }
+
+      .pagina-titulo {
+        margin-bottom: 22px;
+      }
+
+      .pagina-titulo h1 {
+        font-size: 23px;
+      }
+
+      .pagina-titulo p {
+        font-size: 13px;
+      }
+
+      .cartao {
+        padding: 18px 15px;
+        border-radius: 12px;
+      }
+
+      .cartao-cabecalho {
+        margin-bottom: 18px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .campo-botao {
+        grid-column: auto;
+      }
+
+      .campo-botao .btn {
+        width: 100%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+      }
     }
   </style>
 </head>
+
 <body>
 
   <header class="topbar">
     <div class="marca">
-      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">☰</button>
+      <button
+        class="menu-toggle"
+        id="menuToggle"
+        type="button"
+        aria-label="Abrir menu"
+        aria-expanded="false"
+        aria-controls="sidebar"
+      >☰</button>
+
       <div class="simbolo">🌱</div>
       <span>SoloSmart</span>
     </div>
+
     <div class="topbar-acoes">
       <div class="usuario-topo">
         <div class="avatar" id="avatarTopo">?</div>
         <span class="nome-topo" id="nomeTopo">Carregando...</span>
       </div>
-      <button id="botaoSair" class="botao-sair">Sair</button>
+
+      <button id="botaoSair" class="botao-sair" type="button">
+        Sair
+      </button>
     </div>
   </header>
 
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-secao">Principal</div>
-    <nav>
-      <a href="painel.html"><span class="icone">📊</span> Visão geral</a>
-      <a href="propriedades.html"><span class="icone">🌾</span> Propriedades</a>
-      <a href="talhoes.html"><span class="icone">🔲</span> Talhões</a>
-      <a href="amostras.html"><span class="icone">🧪</span> Amostras</a>
-      <!-- Link de Mapas corrigido -->
-      <a href="mapas.html"><span class="icone">🗺️</span> Mapas</a>
+
+    <nav aria-label="Navegação principal">
+      <a href="painel.html">
+        <span class="icone">📊</span>
+        Visão geral
+      </a>
+
+      <a href="propriedades.html">
+        <span class="icone">🌾</span>
+        Propriedades
+      </a>
+
+      <a href="talhoes.html">
+        <span class="icone">🔲</span>
+        Talhões
+      </a>
+
+      <a href="amostras.html">
+        <span class="icone">🧪</span>
+        Amostras
+      </a>
+
+      <a href="mapas.html">
+        <span class="icone">🗺️</span>
+        Mapas
+      </a>
     </nav>
+
     <div class="sidebar-secao">Gestão</div>
-    <nav>
-      <a href="campanhas.html" class="ativo"><span class="icone">📋</span> Campanhas</a>
-      <a href="fotografias.html"><span class="icone">📷</span> Fotografias</a>
-      <a href="#"><span class="icone">📡</span> Dispositivos IoT</a>
-      <a href="#"><span class="icone">📈</span> Relatórios</a>
+
+    <nav aria-label="Gestão">
+      <a href="campanhas.html" class="ativo" aria-current="page">
+        <span class="icone">📋</span>
+        Campanhas
+      </a>
+
+      <a href="fotografias.html">
+        <span class="icone">📷</span>
+        Fotografias
+      </a>
+
+      <a href="#">
+        <span class="icone">📡</span>
+        Dispositivos IoT
+      </a>
+
+      <a href="#">
+        <span class="icone">📈</span>
+        Relatórios
+      </a>
     </nav>
+
     <div class="sidebar-secao">Conta</div>
-    <nav>
-      <a href="#"><span class="icone">👤</span> Meu perfil</a>
-      <a href="#"><span class="icone">🏢</span> Empresa</a>
-      <a href="#"><span class="icone">⚙️</span> Configurações</a>
+
+    <nav aria-label="Conta">
+      <a href="#">
+        <span class="icone">👤</span>
+        Meu perfil
+      </a>
+
+      <a href="#">
+        <span class="icone">🏢</span>
+        Empresa
+      </a>
+
+      <a href="#">
+        <span class="icone">⚙️</span>
+        Configurações
+      </a>
     </nav>
   </aside>
 
@@ -125,27 +737,48 @@
     <div class="pagina-titulo">
       <div>
         <h1>Campanhas</h1>
-        <p>Organize os períodos de coleta de amostras.</p>
+        <p>Organize os períodos de coleta de amostras das suas propriedades.</p>
       </div>
     </div>
 
-    <div id="mensagem" class="mensagem"></div>
+    <div
+      id="mensagem"
+      class="mensagem"
+      role="status"
+      aria-live="polite"
+    ></div>
 
-    <!-- Formulário -->
-    <div class="cartao">
-      <h2 style="font-family: 'Manrope', sans-serif; font-size: 18px; color: var(--verde-escuro); margin: 0 0 20px;">Nova Campanha</h2>
+    <!-- Cadastro de campanha -->
+
+    <section class="cartao" aria-labelledby="tituloNovaCampanha">
+      <div class="cartao-cabecalho">
+        <div>
+          <h2 class="cartao-titulo" id="tituloNovaCampanha">
+            Nova Campanha
+          </h2>
+          <p class="cartao-descricao">
+            Informe a propriedade e o período da campanha.
+          </p>
+        </div>
+      </div>
+
       <form id="formCampanha" class="form-grid">
-        
         <div class="campo">
           <label for="propriedade">Propriedade *</label>
           <select id="propriedade" required>
-            <option value="">Carregando...</option>
+            <option value="">Carregando propriedades...</option>
           </select>
         </div>
 
         <div class="campo">
           <label for="nome">Nome da Campanha *</label>
-          <input id="nome" type="text" required placeholder="Ex: Safra 2026/2027">
+          <input
+            id="nome"
+            type="text"
+            required
+            maxlength="120"
+            placeholder="Ex.: Safra 2026/2027"
+          >
         </div>
 
         <div class="campo">
@@ -158,35 +791,58 @@
           <input id="data_fim" type="date">
         </div>
 
-        <div class="campo">
-          <button type="submit" id="btnSalvar" class="btn">Cadastrar Campanha</button>
+        <div class="campo-botao">
+          <button type="submit" id="btnSalvar" class="btn">
+            <span>＋</span>
+            Cadastrar Campanha
+          </button>
         </div>
       </form>
-    </div>
+    </section>
 
-    <!-- Tabela -->
-    <div class="cartao">
-      <h2 style="font-family: 'Manrope', sans-serif; font-size: 18px; color: var(--verde-escuro); margin: 0 0 20px;">Minhas Campanhas</h2>
-      
-      <div id="loadingTabela" class="loading">Carregando campanhas...</div>
-      
-      <table id="tabelaCampanhas" style="display: none;">
-        <thead>
-          <tr>
-            <th>Campanha</th>
-            <th>Propriedade</th>
-            <th>Início</th>
-            <th>Término</th>
-            <th>Status</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody id="corpoTabela"></tbody>
-      </table>
-      <div id="vazioTabela" style="display: none; text-align: center; color: var(--cinza); padding: 20px;">
-        Nenhuma campanha cadastrada ainda.
+    <!-- Listagem de campanhas -->
+
+    <section class="cartao" aria-labelledby="tituloMinhasCampanhas">
+      <div class="cartao-cabecalho">
+        <div>
+          <h2 class="cartao-titulo" id="tituloMinhasCampanhas">
+            Minhas Campanhas
+          </h2>
+          <p class="cartao-descricao">
+            Consulte e gerencie as campanhas cadastradas.
+          </p>
+        </div>
       </div>
-    </div>
+
+      <div id="loadingTabela" class="loading" role="status">
+        Carregando campanhas...
+      </div>
+
+      <div id="vazioTabela" class="estado-vazio" hidden>
+        <span class="estado-vazio-icone">📋</span>
+        <strong>Nenhuma campanha cadastrada</strong>
+        <span>Cadastre uma campanha para começar a organizar suas coletas.</span>
+      </div>
+
+      <div id="tabelaContainer" class="tabela-container" hidden>
+        <table id="tabelaCampanhas">
+          <thead>
+            <tr>
+              <th>Campanha</th>
+              <th>Propriedade</th>
+              <th>Início</th>
+              <th>Término</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+
+          <tbody id="corpoTabela"></tbody>
+        </table>
+      </div>
+
+      <p class="rodape-info" id="contadorCampanhas"></p>
+    </section>
   </main>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -196,223 +852,559 @@
   <script>
     let idTokenAtual = "";
     let listaPropriedades = [];
+    let timerMensagem = null;
+
+    const elementoMensagem = document.getElementById("mensagem");
+    const elementoLoading = document.getElementById("loadingTabela");
+    const elementoVazio = document.getElementById("vazioTabela");
+    const elementoTabela = document.getElementById("tabelaContainer");
+    const corpoTabela = document.getElementById("corpoTabela");
+    const contadorCampanhas = document.getElementById("contadorCampanhas");
+
+    /* Mensagens */
 
     function mostrarMensagem(texto, tipo) {
-      const el = document.getElementById("mensagem");
-      el.textContent = texto;
-      el.className = "mensagem " + tipo;
-      setTimeout(() => { el.className = "mensagem"; }, 5000);
+      clearTimeout(timerMensagem);
+
+      elementoMensagem.textContent = texto;
+      elementoMensagem.className = "mensagem " + tipo;
+
+      timerMensagem = setTimeout(() => {
+        elementoMensagem.className = "mensagem";
+        elementoMensagem.textContent = "";
+      }, 5000);
     }
 
-    function formatarData(iso) {
-      if (!iso) return "-";
-      const d = new Date(iso);
-      return isNaN(d) ? iso : d.toLocaleDateString('pt-BR');
+    /* Datas */
+
+    function formatarData(valor) {
+      if (!valor) return "-";
+
+      const texto = String(valor).trim();
+
+      if (!texto) return "-";
+
+      let data;
+
+      // Evita alteração de dia em datas no formato YYYY-MM-DD.
+      const somenteData = texto.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+
+      if (somenteData) {
+        data = new Date(
+          Number(somenteData[1]),
+          Number(somenteData[2]) - 1,
+          Number(somenteData[3])
+        );
+      } else {
+        data = new Date(texto);
+      }
+
+      if (Number.isNaN(data.getTime())) {
+        return texto;
+      }
+
+      return data.toLocaleDateString("pt-BR");
     }
 
-    // --- Inicialização ---
-    (async function () {
+    /* Utilitários */
+
+    function normalizarId(valor) {
+      if (valor === null || valor === undefined) {
+        return "";
+      }
+
+      return String(valor);
+    }
+
+    async function obterTokenAtual() {
+      const usuario = firebase.auth().currentUser;
+
+      if (!usuario) {
+        throw new Error("Sua sessão expirou. Faça login novamente.");
+      }
+
+      idTokenAtual = await usuario.getIdToken(true);
+
+      return idTokenAtual;
+    }
+
+    async function enviarRequisicao(payload) {
+      const resposta = await fetch(SoloSmart.URL_API, {
+        method: "POST",
+        headers: {
+          "Content-Type": "text/plain"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!resposta.ok) {
+        throw new Error("Não foi possível comunicar com o servidor.");
+      }
+
+      return await resposta.json();
+    }
+
+    function criarOpcao(valor, texto) {
+      const opcao = document.createElement("option");
+      opcao.value = valor;
+      opcao.textContent = texto;
+      return opcao;
+    }
+
+    /* Inicialização */
+
+    async function inicializarPagina() {
       try {
-        const usuario = await SoloSmart.protegerPagina({ paginaLogin: "login.html" });
-        
-        const nome = usuario.nome || usuario.email || "?";
-        document.getElementById("nomeTopo").textContent = nome;
-        document.getElementById("avatarTopo").textContent = nome.charAt(0).toUpperCase();
+        if (typeof SoloSmart === "undefined") {
+          throw new Error("Não foi possível inicializar o sistema.");
+        }
 
-        idTokenAtual = await firebase.auth().currentUser.getIdToken(true);
-        
+        const usuario = await SoloSmart.protegerPagina({
+          paginaLogin: "login.html"
+        });
+
+        const nome = usuario.nome || usuario.email || "?";
+
+        document.getElementById("nomeTopo").textContent = nome;
+        document.getElementById("avatarTopo").textContent =
+          nome.charAt(0).toUpperCase();
+
+        await obterTokenAtual();
+
         await carregarSelectPropriedades();
         await carregarCampanhas();
 
-      } catch (e) {
-        console.error(e);
-      }
-    })();
+      } catch (erro) {
+        elementoLoading.textContent =
+          "Não foi possível carregar as campanhas. Verifique sua conexão e tente novamente.";
 
-    // --- Funções de API ---
-    
-    async function carregarSelectPropriedades() {
-      const payload = { action: "listarPropriedades", idToken: idTokenAtual };
-      try {
-        const resposta = await fetch(SoloSmart.URL_API, {
-          method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payload)
-        });
-        const dados = await resposta.json();
-        
-        if (dados.sucesso && dados.resultado) {
-          listaPropriedades = dados.resultado.filter(p => p.status !== "inativa");
-          
-          const select = document.getElementById("propriedade");
-          select.innerHTML = '<option value="">Selecione uma propriedade</option>';
-          
-          listaPropriedades.forEach(p => {
-            const opt = document.createElement("option");
-            opt.value = p.propriedade_id;
-            opt.textContent = p.nome;
-            select.appendChild(opt);
-          });
-        }
-      } catch (e) {
-        console.error("Erro ao carregar select de propriedades:", e);
+        mostrarMensagem(
+          erro.message || "Ocorreu um erro ao inicializar a página.",
+          "erro"
+        );
       }
     }
 
-    async function carregarCampanhas() {
-      const payload = { action: "listarCampanhas", idToken: idTokenAtual };
-      
-      try {
-        const resposta = await fetch(SoloSmart.URL_API, {
-          method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payload)
-        });
-        const dados = await resposta.json();
-        
-        document.getElementById("loadingTabela").style.display = "none";
+    /* Propriedades */
 
-        if (!dados.sucesso) throw new Error(dados.mensagem || "Erro ao carregar campanhas.");
+    async function carregarSelectPropriedades() {
+      const select = document.getElementById("propriedade");
+
+      try {
+        const payload = {
+          action: "listarPropriedades",
+          idToken: idTokenAtual
+        };
+
+        const dados = await enviarRequisicao(payload);
+
+        if (!dados.sucesso) {
+          throw new Error(
+            dados.mensagem || "Erro ao carregar propriedades."
+          );
+        }
+
+        if (!Array.isArray(dados.resultado)) {
+          throw new Error("A lista de propriedades recebida é inválida.");
+        }
+
+        listaPropriedades = dados.resultado.filter(
+          propriedade =>
+            String(propriedade.status || "").toLowerCase() !== "inativa"
+        );
+
+        select.replaceChildren(
+          criarOpcao("", "Selecione uma propriedade")
+        );
+
+        listaPropriedades.forEach(propriedade => {
+          select.appendChild(
+            criarOpcao(
+              normalizarId(propriedade.propriedade_id),
+              propriedade.nome || "Propriedade sem nome"
+            )
+          );
+        });
+
+        if (listaPropriedades.length === 0) {
+          select.replaceChildren(
+            criarOpcao("", "Nenhuma propriedade disponível")
+          );
+
+          select.disabled = true;
+
+          mostrarMensagem(
+            "Cadastre uma propriedade antes de criar uma campanha.",
+            "erro"
+          );
+        }
+
+      } catch (erro) {
+        select.replaceChildren(
+          criarOpcao("", "Erro ao carregar propriedades")
+        );
+
+        select.disabled = true;
+
+        mostrarMensagem(
+          erro.message || "Erro ao carregar propriedades.",
+          "erro"
+        );
+
+        throw erro;
+      }
+    }
+
+    /* Campanhas */
+
+    async function carregarCampanhas() {
+      elementoLoading.hidden = false;
+      elementoTabela.hidden = true;
+      elementoVazio.hidden = true;
+      contadorCampanhas.textContent = "";
+
+      try {
+        await obterTokenAtual();
+
+        const payload = {
+          action: "listarCampanhas",
+          idToken: idTokenAtual
+        };
+
+        const dados = await enviarRequisicao(payload);
+
+        if (!dados.sucesso) {
+          throw new Error(
+            dados.mensagem || "Erro ao carregar campanhas."
+          );
+        }
+
+        if (!Array.isArray(dados.resultado)) {
+          throw new Error("A lista de campanhas recebida é inválida.");
+        }
 
         renderizarTabela(dados.resultado);
 
       } catch (erro) {
-        document.getElementById("loadingTabela").style.display = "none";
-        mostrarMensagem(erro.message, "erro");
+        elementoLoading.textContent =
+          "Não foi possível carregar as campanhas.";
+
+        mostrarMensagem(
+          erro.message || "Erro ao carregar campanhas.",
+          "erro"
+        );
+
+      } finally {
+        elementoLoading.hidden = true;
       }
     }
 
     function renderizarTabela(campanhas) {
-      const tabela = document.getElementById("tabelaCampanhas");
-      const vazio = document.getElementById("vazioTabela");
-      const corpo = document.getElementById("corpoTabela");
+      corpoTabela.replaceChildren();
 
-      corpo.innerHTML = "";
-
-      const ativas = campanhas.filter(c => c.status !== "inativa");
+      const ativas = campanhas.filter(
+        campanha =>
+          String(campanha.status || "").toLowerCase() !== "inativa"
+      );
 
       if (ativas.length === 0) {
-        tabela.style.display = "none";
-        vazio.style.display = "block";
+        elementoTabela.hidden = true;
+        elementoVazio.hidden = false;
+        contadorCampanhas.textContent = "";
         return;
       }
 
-      tabela.style.display = "table";
-      vazio.style.display = "none";
+      elementoTabela.hidden = false;
+      elementoVazio.hidden = true;
 
-      ativas.forEach(c => {
-        const prop = listaPropriedades.find(p => p.propriedade_id === c.propriedade_id);
-        const nomePropriedade = prop ? prop.nome : "Desconhecida";
+      ativas.forEach(campanha => {
+        const propriedade = listaPropriedades.find(
+          item =>
+            normalizarId(item.propriedade_id) ===
+            normalizarId(campanha.propriedade_id)
+        );
 
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td><strong>${c.nome || '-'}</strong></td>
-          <td>${nomePropriedade}</td>
-          <td>${formatarData(c.data_inicio)}</td>
-          <td>${formatarData(c.data_fim)}</td>
-          <td><span class="badge">${c.status || 'ativa'}</span></td>
-          <td>
-            <button class="btn-excluir" data-id="${c.campanha_id}">Excluir</button>
-          </td>
-        `;
-        corpo.appendChild(tr);
-      });
+        const nomePropriedade = propriedade
+          ? propriedade.nome
+          : "Propriedade não encontrada";
 
-      document.querySelectorAll(".btn-excluir").forEach(btn => {
-        btn.addEventListener("click", function() {
-          const id = this.getAttribute("data-id");
-          excluirCampanha(id, this);
+        const linha = document.createElement("tr");
+
+        const celulaNome = document.createElement("td");
+        const nome = document.createElement("strong");
+
+        nome.className = "nome-campanha";
+        nome.textContent = campanha.nome || "-";
+        celulaNome.appendChild(nome);
+
+        const celulaPropriedade = document.createElement("td");
+        celulaPropriedade.textContent = nomePropriedade;
+
+        const celulaInicio = document.createElement("td");
+        celulaInicio.textContent = formatarData(campanha.data_inicio);
+
+        const celulaFim = document.createElement("td");
+        celulaFim.textContent = formatarData(campanha.data_fim);
+
+        const celulaStatus = document.createElement("td");
+        const badge = document.createElement("span");
+
+        const status = campanha.status || "ativa";
+
+        badge.className = "badge";
+
+        if (String(status).toLowerCase() === "inativa") {
+          badge.classList.add("badge-inativa");
+        }
+
+        badge.textContent = status;
+        celulaStatus.appendChild(badge);
+
+        const celulaAcoes = document.createElement("td");
+        const botaoExcluir = document.createElement("button");
+
+        botaoExcluir.type = "button";
+        botaoExcluir.className = "btn-excluir";
+        botaoExcluir.textContent = "Excluir";
+
+        botaoExcluir.addEventListener("click", () => {
+          excluirCampanha(campanha.campanha_id, botaoExcluir);
         });
+
+        celulaAcoes.appendChild(botaoExcluir);
+
+        linha.append(
+          celulaNome,
+          celulaPropriedade,
+          celulaInicio,
+          celulaFim,
+          celulaStatus,
+          celulaAcoes
+        );
+
+        corpoTabela.appendChild(linha);
       });
+
+      contadorCampanhas.textContent =
+        ativas.length === 1
+          ? "1 campanha cadastrada"
+          : `${ativas.length} campanhas cadastradas`;
     }
 
-    // --- Excluir Campanha ---
+    /* Exclusão */
+
     async function excluirCampanha(id, botao) {
-      if (!confirm("Tem certeza que deseja excluir esta campanha?")) return;
+      if (id === null || id === undefined || String(id).trim() === "") {
+        mostrarMensagem(
+          "Não foi possível identificar a campanha selecionada.",
+          "erro"
+        );
+        return;
+      }
+
+      const confirmado = confirm(
+        "Tem certeza que deseja excluir esta campanha?"
+      );
+
+      if (!confirmado) return;
 
       botao.disabled = true;
       botao.textContent = "Excluindo...";
 
-      idTokenAtual = await firebase.auth().currentUser.getIdToken(true);
-
-      const payload = {
-        action: "excluirCampanha", 
-        idToken: idTokenAtual,
-        id: id
-      };
-
       try {
-        const resposta = await fetch(SoloSmart.URL_API, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain" }, 
-          body: JSON.stringify(payload)
-        });
+        await obterTokenAtual();
 
-        const dados = await resposta.json();
+        const payload = {
+          action: "excluirCampanha",
+          idToken: idTokenAtual,
+          id: id
+        };
+
+        const dados = await enviarRequisicao(payload);
 
         if (!dados.sucesso) {
-          throw new Error(dados.mensagem || "Erro ao excluir.");
+          throw new Error(
+            dados.mensagem || "Erro ao excluir campanha."
+          );
         }
 
-        mostrarMensagem("Campanha excluída com sucesso!", "sucesso");
+        mostrarMensagem(
+          "Campanha excluída com sucesso!",
+          "sucesso"
+        );
+
         await carregarCampanhas();
 
       } catch (erro) {
-        mostrarMensagem(erro.message, "erro");
+        mostrarMensagem(
+          erro.message || "Não foi possível excluir a campanha.",
+          "erro"
+        );
+
         botao.disabled = false;
         botao.textContent = "Excluir";
       }
     }
 
-    // Submit do Formulário
-    document.getElementById("formCampanha").addEventListener("submit", async function (e) {
-      e.preventDefault();
+    /* Cadastro */
 
-      const btn = document.getElementById("btnSalvar");
-      btn.disabled = true;
-      btn.textContent = "Salvando...";
+    document
+      .getElementById("formCampanha")
+      .addEventListener("submit", async function (evento) {
+        evento.preventDefault();
 
-      idTokenAtual = await firebase.auth().currentUser.getIdToken(true);
+        const formulario = this;
+        const botao = document.getElementById("btnSalvar");
 
-      const novaCampanha = {
-        propriedade_id: document.getElementById("propriedade").value,
-        nome: document.getElementById("nome").value.trim(),
-        data_inicio: document.getElementById("data_inicio").value,
-        data_fim: document.getElementById("data_fim").value
-      };
+        const propriedadeId =
+          document.getElementById("propriedade").value;
 
-      const payload = {
-        action: "criarCampanha", 
-        idToken: idTokenAtual,
-        dados: novaCampanha
-      };
+        const nome =
+          document.getElementById("nome").value.trim();
 
-      try {
-        const resposta = await fetch(SoloSmart.URL_API, {
-          method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payload)
-        });
-        const dados = await resposta.json();
+        const dataInicio =
+          document.getElementById("data_inicio").value;
 
-        if (!dados.sucesso) throw new Error(dados.mensagem || "Erro ao salvar.");
+        const dataFim =
+          document.getElementById("data_fim").value;
 
-        mostrarMensagem("Campanha cadastrada com sucesso!", "sucesso");
-        this.reset();
-        await carregarCampanhas();
+        if (!propriedadeId) {
+          mostrarMensagem(
+            "Selecione uma propriedade para continuar.",
+            "erro"
+          );
+          return;
+        }
 
-      } catch (erro) {
-        mostrarMensagem(erro.message, "erro");
-      } finally {
-        btn.disabled = false;
-        btn.textContent = "Cadastrar Campanha";
+        if (!nome) {
+          mostrarMensagem(
+            "Informe o nome da campanha.",
+            "erro"
+          );
+          return;
+        }
+
+        if (dataInicio && dataFim && dataFim < dataInicio) {
+          mostrarMensagem(
+            "A data de término não pode ser anterior à data de início.",
+            "erro"
+          );
+
+          document.getElementById("data_fim").focus();
+          return;
+        }
+
+        botao.disabled = true;
+        botao.textContent = "Salvando...";
+
+        try {
+          await obterTokenAtual();
+
+          const novaCampanha = {
+            propriedade_id: propriedadeId,
+            nome: nome,
+            data_inicio: dataInicio,
+            data_fim: dataFim
+          };
+
+          const payload = {
+            action: "criarCampanha",
+            idToken: idTokenAtual,
+            dados: novaCampanha
+          };
+
+          const dados = await enviarRequisicao(payload);
+
+          if (!dados.sucesso) {
+            throw new Error(
+              dados.mensagem || "Erro ao cadastrar campanha."
+            );
+          }
+
+          mostrarMensagem(
+            "Campanha cadastrada com sucesso!",
+            "sucesso"
+          );
+
+          formulario.reset();
+
+          await carregarCampanhas();
+
+        } catch (erro) {
+          mostrarMensagem(
+            erro.message || "Não foi possível cadastrar a campanha.",
+            "erro"
+          );
+
+        } finally {
+          botao.disabled = false;
+          botao.innerHTML = "<span>＋</span> Cadastrar Campanha";
+        }
+      });
+
+    /* Menu responsivo */
+
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+    const menuToggle = document.getElementById("menuToggle");
+
+    function abrirMenu() {
+      sidebar.classList.add("aberta");
+      overlay.classList.add("ativo");
+
+      menuToggle.setAttribute("aria-expanded", "true");
+      menuToggle.setAttribute("aria-label", "Fechar menu");
+    }
+
+    function fecharMenu() {
+      sidebar.classList.remove("aberta");
+      overlay.classList.remove("ativo");
+
+      menuToggle.setAttribute("aria-expanded", "false");
+      menuToggle.setAttribute("aria-label", "Abrir menu");
+    }
+
+    menuToggle.addEventListener("click", () => {
+      const menuAberto =
+        menuToggle.getAttribute("aria-expanded") === "true";
+
+      if (menuAberto) {
+        fecharMenu();
+      } else {
+        abrirMenu();
       }
     });
 
-    // Logout e Menu
-    document.getElementById("botaoSair").addEventListener("click", () => SoloSmart.sair());
-    const sidebar = document.getElementById("sidebar");
-    const overlay = document.getElementById("overlay");
-    document.getElementById("menuToggle").addEventListener("click", () => {
-      sidebar.classList.toggle("aberta"); overlay.classList.toggle("ativo");
+    overlay.addEventListener("click", fecharMenu);
+
+    sidebar.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", fecharMenu);
     });
-    overlay.addEventListener("click", () => {
-      sidebar.classList.remove("aberta"); overlay.classList.remove("ativo");
+
+    document.addEventListener("keydown", evento => {
+      if (evento.key === "Escape") {
+        fecharMenu();
+      }
     });
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 900) {
+        fecharMenu();
+      }
+    });
+
+    /* Sair */
+
+    document
+      .getElementById("botaoSair")
+      .addEventListener("click", () => {
+        SoloSmart.sair();
+      });
+
+    /* Executar */
+
+    inicializarPagina();
   </script>
+
 </body>
 </html>
