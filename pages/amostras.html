@@ -6,6 +6,8 @@
   <title>Amostras | SoloSmart</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <!-- Leaflet CSS para o mapa -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
   <style>
     :root {
       --verde: #236b45; --verde-escuro: #174b31; --verde-claro: #e9f5ed;
@@ -50,6 +52,9 @@
     .btn:hover { background: var(--verde-escuro); }
     .btn:disabled { opacity: .6; cursor: wait; }
     
+    /* Estilo do Mapa */
+    #mapaAmostras { width: 100%; height: 350px; border-radius: 10px; margin-bottom: 20px; border: 1px solid var(--borda); display: none; }
+    
     /* Botão Excluir */
     .btn-excluir { background: transparent; border: 1px solid #f5c2c2; color: #8a2525; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: 700; transition: .15s; }
     .btn-excluir:hover { background: #fff0f0; }
@@ -58,7 +63,6 @@
     th, td { padding: 14px; text-align: left; border-bottom: 1px solid var(--borda); }
     th { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--cinza); font-weight: 800; background: var(--fundo); }
     tr:hover td { background: #fafcfa; }
-    .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; background: var(--verde-claro); color: var(--verde-escuro); }
     
     .mensagem { display: none; padding: 14px; margin-bottom: 20px; border-radius: 8px; font-size: 14px; }
     .mensagem.sucesso { display: block; background: #edf8ef; color: #205d38; }
@@ -101,7 +105,6 @@
       <a href="propriedades.html"><span class="icone">🌾</span> Propriedades</a>
       <a href="talhoes.html"><span class="icone">🔲</span> Talhões</a>
       <a href="amostras.html" class="ativo"><span class="icone">🧪</span> Amostras</a>
-      <!-- Link de Mapas corrigido -->
       <a href="mapas.html"><span class="icone">🗺️</span> Mapas</a>
     </nav>
     <div class="sidebar-secao">Gestão</div>
@@ -135,7 +138,6 @@
     <div class="cartao">
       <h2 style="font-family: 'Manrope', sans-serif; font-size: 18px; color: var(--verde-escuro); margin: 0 0 20px;">Nova Amostra</h2>
       <form id="formAmostra" class="form-grid">
-        
         <div class="campo">
           <label for="propriedade">Propriedade *</label>
           <select id="propriedade" required>
@@ -188,10 +190,13 @@
       </form>
     </div>
 
-    <!-- Tabela -->
+    <!-- Tabela e Mapa -->
     <div class="cartao">
-      <h2 style="font-family: 'Manrope', sans-serif; font-size: 18px; color: var(--verde-escuro); margin: 0 0 20px;">Minhas Amostras</h2>
+      <h2 style="font-family: 'Manrope', sans-serif; font-size: 18px; color: var(--verde-escuro); margin: 0 0 20px;">Minhas Amostras e Localização</h2>
       
+      <!-- Div onde o mapa será renderizado -->
+      <div id="mapaAmostras"></div>
+
       <div id="loadingTabela" class="loading">Carregando amostras...</div>
       
       <table id="tabelaAmostras" style="display: none;">
@@ -215,6 +220,8 @@
 
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script src="auth.js"></script>
 
   <script>
@@ -222,6 +229,7 @@
     let listaPropriedades = [];
     let listaTalhoes = [];
     let listaCampanhas = [];
+    let mapInstance = null; // Instância do mapa Leaflet
 
     function mostrarMensagem(texto, tipo) {
       const el = document.getElementById("mensagem");
@@ -247,7 +255,6 @@
 
         idTokenAtual = await firebase.auth().currentUser.getIdToken(true);
         
-        // Carrega as bases
         await carregarBases();
         await carregarAmostras();
 
@@ -256,32 +263,26 @@
       }
     })();
 
-    // --- Funções de API ---
-    
     async function carregarBases() {
       try {
-        // Propriedades
         const resProp = await fetch(SoloSmart.URL_API, {
           method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify({ action: "listarPropriedades", idToken: idTokenAtual })
         });
         const dadosProp = await resProp.json();
         if (dadosProp.sucesso) listaPropriedades = dadosProp.resultado.filter(p => p.status !== "inativa");
 
-        // Talhões
         const resTal = await fetch(SoloSmart.URL_API, {
           method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify({ action: "listarTalhoes", idToken: idTokenAtual })
         });
         const dadosTal = await resTal.json();
         if (dadosTal.sucesso) listaTalhoes = dadosTal.resultado.filter(t => t.status !== "inativa");
 
-        // Campanhas
         const resCamp = await fetch(SoloSmart.URL_API, {
           method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify({ action: "listarCampanhas", idToken: idTokenAtual })
         });
         const dadosCamp = await resCamp.json();
         if (dadosCamp.sucesso) listaCampanhas = dadosCamp.resultado.filter(c => c.status !== "inativa");
 
-        // Popula o select de propriedades
         const selectProp = document.getElementById("propriedade");
         selectProp.innerHTML = '<option value="">Selecione a propriedade</option>';
         listaPropriedades.forEach(p => {
@@ -296,13 +297,11 @@
       }
     }
 
-    // Filtro dinâmico quando muda a propriedade
     document.getElementById("propriedade").addEventListener("change", function() {
       const propId = this.value;
       const selectCamp = document.getElementById("campanha");
       const selectTal = document.getElementById("talhao");
 
-      // Limpa os selects
       selectCamp.innerHTML = '<option value="">Selecione...</option>';
       selectTal.innerHTML = '<option value="">Selecione...</option>';
 
@@ -312,7 +311,6 @@
         return;
       }
 
-      // Filtra Campanhas
       const campsFiltradas = listaCampanhas.filter(c => c.propriedade_id === propId);
       campsFiltradas.forEach(c => {
         const opt = document.createElement("option");
@@ -322,7 +320,6 @@
       });
       selectCamp.disabled = false;
 
-      // Filtra Talhões
       const talsFiltrados = listaTalhoes.filter(t => t.propriedade_id === propId);
       talsFiltrados.forEach(t => {
         const opt = document.createElement("option");
@@ -358,37 +355,71 @@
       const tabela = document.getElementById("tabelaAmostras");
       const vazio = document.getElementById("vazioTabela");
       const corpo = document.getElementById("corpoTabela");
+      const divMapa = document.getElementById("mapaAmostras");
 
       corpo.innerHTML = "";
-
       const ativas = amostras.filter(a => a.status !== "inativa");
 
       if (ativas.length === 0) {
         tabela.style.display = "none";
         vazio.style.display = "block";
+        divMapa.style.display = "none";
         return;
       }
 
       tabela.style.display = "table";
       vazio.style.display = "none";
+      divMapa.style.display = "block";
 
-      ativas.forEach(a => {
-        const talhao = listaTalhoes.find(t => t.talhao_id === a.talhao_id);
-        const nomeTalhao = talhao ? talhao.nome : "Desconhecido";
+      // Inicializa ou atualiza o Mapa Leaflet
+      setTimeout(() => {
+        if (!mapInstance) {
+          mapInstance = L.map('mapaAmostras').setView([-23.550520, -46.633308], 13);
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors'
+          }).addTo(mapInstance);
+        } else {
+          mapInstance.invalidateSize();
+        }
 
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>#${a.amostra_id.substring(0, 4)}</td>
-          <td><strong>${nomeTalhao}</strong></td>
-          <td>${formatarData(a.data_coleta)}</td>
-          <td>${a.latitude ? a.latitude : '-'}, ${a.longitude ? a.longitude : '-'}</td>
-          <td>${a.profundidade_cm ? a.profundidade_cm + ' cm' : '-'}</td>
-          <td>
-            <button class="btn-excluir" data-id="${a.amostra_id}">Excluir</button>
-          </td>
-        `;
-        corpo.appendChild(tr);
-      });
+        let bounds = [];
+
+        ativas.forEach(a => {
+          const talhao = listaTalhoes.find(t => t.talhao_id === a.talhao_id);
+          const nomeTalhao = talhao ? talhao.nome : "Desconhecido";
+
+          // Tratamento para coordenadas inteiras ou decimais
+          let lat = a.latitude ? parseFloat(a.latitude) : null;
+          let lng = a.longitude ? parseFloat(a.longitude) : null;
+
+          if (Math.abs(lat) > 180) lat = lat / 1000000;
+          if (Math.abs(lng) > 180) lng = lng / 1000000;
+
+          if (lat && lng) {
+            L.marker([lat, lng]).addTo(mapInstance)
+              .bindPopup(`<b>Talhão:</b> ${nomeTalhao}<br><b>Profundidade:</b> ${a.profundidade_cm || '-'} cm`);
+            bounds.push([lat, lng]);
+          }
+
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>#${a.amostra_id.substring(0, 4)}</td>
+            <td><strong>${nomeTalhao}</strong></td>
+            <td>${formatarData(a.data_coleta)}</td>
+            <td>${lat ? lat.toFixed(5) : '-'}, ${lng ? lng.toFixed(5) : '-'}</td>
+            <td>${a.profundidade_cm ? a.profundidade_cm + ' cm' : '-'}</td>
+            <td>
+              <button class="btn-excluir" data-id="${a.amostra_id}">Excluir</button>
+            </td>
+          `;
+          corpo.appendChild(tr);
+        });
+
+        if (bounds.length > 0) {
+          mapInstance.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
+        }
+      }, 200);
 
       document.querySelectorAll(".btn-excluir").forEach(btn => {
         btn.addEventListener("click", function() {
@@ -398,7 +429,6 @@
       });
     }
 
-    // --- Excluir Amostra ---
     async function excluirAmostra(id, botao) {
       if (!confirm("Tem certeza que deseja excluir esta amostra?")) return;
 
@@ -407,19 +437,12 @@
 
       idTokenAtual = await firebase.auth().currentUser.getIdToken(true);
 
-      const payload = {
-        action: "excluirAmostra", 
-        idToken: idTokenAtual,
-        id: id
-      };
+      const payload = { action: "excluirAmostra", idToken: idTokenAtual, id: id };
 
       try {
         const resposta = await fetch(SoloSmart.URL_API, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain" }, 
-          body: JSON.stringify(payload)
+          method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payload)
         });
-
         const dados = await resposta.json();
 
         if (!dados.sucesso) throw new Error(dados.mensagem || "Erro ao excluir.");
@@ -434,7 +457,6 @@
       }
     }
 
-    // Submit do Formulário
     document.getElementById("formAmostra").addEventListener("submit", async function (e) {
       e.preventDefault();
 
@@ -455,11 +477,7 @@
         observacoes: document.getElementById("observacoes").value.trim()
       };
 
-      const payload = {
-        action: "criarAmostra", 
-        idToken: idTokenAtual,
-        dados: novaAmostra
-      };
+      const payload = { action: "criarAmostra", idToken: idTokenAtual, dados: novaAmostra };
 
       try {
         const resposta = await fetch(SoloSmart.URL_API, {
@@ -472,7 +490,6 @@
         mostrarMensagem("Amostra cadastrada com sucesso!", "sucesso");
         this.reset();
         
-        // Limpa e desabilita os selects dependentes
         document.getElementById("campanha").innerHTML = '<option value="">Selecione a propriedade primeiro</option>';
         document.getElementById("campanha").disabled = true;
         document.getElementById("talhao").innerHTML = '<option value="">Selecione a propriedade primeiro</option>';
@@ -488,7 +505,6 @@
       }
     });
 
-    // Logout e Menu
     document.getElementById("botaoSair").addEventListener("click", () => SoloSmart.sair());
     const sidebar = document.getElementById("sidebar");
     const overlay = document.getElementById("overlay");
