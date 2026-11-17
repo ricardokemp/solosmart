@@ -1,29 +1,32 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#123c2b">
   <title>Mapas | SoloSmart</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
   <style>
     :root {
       --verde: #236b45;
-      --verde-escuro: #174b31;
-      --verde-claro: #e9f5ed;
-      --fundo: #f3f7f3;
-      --texto: #203229;
-      --cinza: #66756c;
-      --borda: #dce6de;
+      --verde-escuro: #123c2b;
+      --verde-claro: #eaf4ed;
+      --lima: #b6d957;
+      --fundo: #f5f7f4;
       --branco: #ffffff;
-      --sidebar-w: 260px;
-      --header-h: 64px;
+      --texto: #203229;
+      --cinza: #718078;
+      --borda: #e1e9e2;
+      --vermelho: #a63c3c;
+      --sidebar-w: 258px;
+      --header-h: 70px;
+      --sombra: 0 8px 28px rgba(25, 57, 39, .055);
     }
 
     * {
@@ -41,26 +44,32 @@
       background: var(--fundo);
       color: var(--texto);
       font-family: 'DM Sans', Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
+    }
+
+    button, a {
+      font: inherit;
+    }
+
+    button:focus-visible,
+    a:focus-visible {
+      outline: 3px solid rgba(182, 217, 87, .8);
+      outline-offset: 3px;
     }
 
     /* HEADER */
 
     .topbar {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
+      inset: 0 0 auto 0;
       height: var(--header-h);
-      background: #fff;
+      background: rgba(255,255,255,.96);
+      backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--borda);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 20px;
+      padding: 0 28px;
       z-index: 1000;
-      box-shadow: 0 2px 10px rgba(28,65,43,.04);
     }
 
     .marca {
@@ -69,27 +78,29 @@
       gap: 12px;
       font-family: 'Manrope', sans-serif;
       font-weight: 800;
-      font-size: 18px;
+      font-size: 19px;
       color: var(--verde-escuro);
+      letter-spacing: -.5px;
     }
 
     .simbolo {
-      width: 38px;
-      height: 38px;
+      width: 39px;
+      height: 39px;
       display: grid;
       place-items: center;
-      border-radius: 10px;
-      background: var(--verde);
-      color: #fff;
-      font-size: 20px;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #2d8152, #174b31);
+      color: white;
+      font-size: 21px;
+      box-shadow: 0 4px 10px rgba(35,107,69,.18);
     }
 
     .menu-toggle {
       display: none;
-      background: none;
+      background: transparent;
       border: 0;
-      font-size: 22px;
       color: var(--verde-escuro);
+      font-size: 23px;
       cursor: pointer;
       padding: 6px;
     }
@@ -97,38 +108,45 @@
     .topbar-acoes {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 18px;
     }
 
     .usuario-topo {
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 13px;
       color: var(--cinza);
+      font-size: 13px;
+      font-weight: 600;
     }
 
     .avatar {
-      width: 34px;
-      height: 34px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       background: var(--verde-claro);
       color: var(--verde);
       display: grid;
       place-items: center;
       font-weight: 800;
+      border: 1px solid #d9e9dc;
     }
 
     .botao-sair {
-      background: #fff0f0;
-      color: #8a2525;
-      border: 1px solid #f5c2c2;
-      padding: 8px 14px;
-      border-radius: 8px;
+      background: #fff5f4;
+      color: var(--vermelho);
+      border: 1px solid #f1d7d4;
+      padding: 9px 15px;
+      border-radius: 9px;
       font-size: 13px;
       font-weight: 700;
       cursor: pointer;
-      font-family: inherit;
+      transition: .2s ease;
+    }
+
+    .botao-sair:hover {
+      background: #fce8e6;
+      transform: translateY(-1px);
     }
 
     /* SIDEBAR */
@@ -139,59 +157,60 @@
       left: 0;
       bottom: 0;
       width: var(--sidebar-w);
-      background: #fff;
+      background: var(--branco);
       border-right: 1px solid var(--borda);
-      padding: 20px 0;
+      padding: 25px 0;
       overflow-y: auto;
       z-index: 900;
       transition: transform .25s ease;
     }
 
     .sidebar-secao {
-      padding: 0 20px;
-      margin-bottom: 8px;
-      font-size: 11px;
+      padding: 0 23px;
+      margin: 8px 0 11px;
+      font-size: 10px;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: .8px;
-      color: var(--cinza);
+      letter-spacing: 1.2px;
+      color: #9aa69e;
     }
 
     .sidebar nav {
       display: flex;
       flex-direction: column;
-      gap: 2px;
-      margin-bottom: 18px;
+      gap: 4px;
+      margin-bottom: 25px;
     }
 
     .sidebar a {
       display: flex;
       align-items: center;
-      gap: 11px;
-      padding: 10px 20px;
-      color: var(--texto);
+      gap: 12px;
+      margin: 0 12px;
+      padding: 11px 13px;
+      color: #53635a;
       text-decoration: none;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
-      border-left: 3px solid transparent;
-      transition: .15s;
+      border-radius: 9px;
+      transition: background .2s, color .2s;
     }
 
     .sidebar a:hover {
-      background: var(--verde-claro);
+      background: #f2f7f2;
       color: var(--verde-escuro);
     }
 
     .sidebar a.ativo {
       background: var(--verde-claro);
       color: var(--verde-escuro);
-      border-left-color: var(--verde);
+      font-weight: 800;
     }
 
     .sidebar a .icone {
-      font-size: 17px;
       width: 22px;
       text-align: center;
+      font-size: 17px;
     }
 
     /* CONTEÚDO */
@@ -199,104 +218,247 @@
     .conteudo {
       margin-left: var(--sidebar-w);
       margin-top: var(--header-h);
-      padding: 24px 32px;
+      min-height: calc(100vh - var(--header-h));
+      padding: 32px 36px;
       display: flex;
       flex-direction: column;
-      flex: 1;
-      height: calc(100vh - var(--header-h));
-      min-height: 0;
+      gap: 25px;
       min-width: 0;
     }
 
+    .cabecalho-pagina {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
     .pagina-titulo {
-      margin-bottom: 20px;
-      flex-shrink: 0;
+      min-width: 0;
+    }
+
+    .sobretitulo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--verde);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      margin-bottom: 9px;
+    }
+
+    .sobretitulo::before {
+      content: "";
+      width: 19px;
+      height: 2px;
+      border-radius: 5px;
+      background: var(--lima);
     }
 
     .pagina-titulo h1 {
       font-family: 'Manrope', sans-serif;
-      font-size: 26px;
+      font-size: clamp(25px, 3vw, 31px);
+      line-height: 1.2;
       color: var(--verde-escuro);
-      margin: 0 0 6px;
-      letter-spacing: -.5px;
+      margin: 0 0 8px;
+      letter-spacing: -.8px;
     }
 
     .pagina-titulo p {
       color: var(--cinza);
-      font-size: 14px;
+      font-size: 13px;
+      line-height: 1.6;
       margin: 0;
+    }
+
+    .status-mapa {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 13px;
+      border: 1px solid var(--borda);
+      border-radius: 30px;
+      background: white;
+      color: #65746b;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .status-ponto {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #9aa69e;
+    }
+
+    .status-mapa.online .status-ponto {
+      background: #36a56a;
+      box-shadow: 0 0 0 3px rgba(54,165,106,.12);
     }
 
     /* MAPA */
 
     .cartao-mapa {
-      background: #fff;
+      background: var(--branco);
       border: 1px solid var(--borda);
-      border-radius: 14px;
-      padding: 12px;
-      box-shadow: 0 6px 18px rgba(28,65,43,.05);
-      flex: 1;
+      border-radius: 17px;
+      box-shadow: var(--sombra);
+      overflow: hidden;
       display: flex;
       flex-direction: column;
+      flex: 1;
+      min-height: 560px;
+    }
+
+    .mapa-cabecalho {
+      min-height: 70px;
+      padding: 17px 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      border-bottom: 1px solid var(--borda);
+      flex-wrap: wrap;
+    }
+
+    .mapa-titulo {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .mapa-titulo strong {
+      font-family: 'Manrope', sans-serif;
+      color: var(--verde-escuro);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .mapa-titulo span {
+      color: var(--cinza);
+      font-size: 11px;
+    }
+
+    .mapa-legenda {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #64736a;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .legenda-marcador {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: var(--verde);
+      border: 2px solid white;
+      box-shadow: 0 0 0 1px var(--verde);
+    }
+
+    .mapa-area {
       position: relative;
-      min-height: 400px;
-      min-width: 0;
-      overflow: hidden;
+      flex: 1;
+      min-height: 480px;
+      padding: 10px;
+      background: #edf2ed;
     }
 
     #map {
       width: 100%;
       height: 100%;
-      min-height: 400px;
-      flex: 1;
-      border-radius: 8px;
-      background: #e5e5e5;
+      min-height: 460px;
+      border-radius: 10px;
+      background: #e7ece7;
       z-index: 1;
     }
 
     .loading-mapa {
       position: absolute;
-      inset: 12px;
-      background: rgba(255,255,255,.88);
+      inset: 10px;
+      z-index: 10;
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 10;
-      border-radius: 8px;
-      font-weight: 700;
+      flex-direction: column;
+      gap: 12px;
+      background: rgba(255,255,255,.94);
+      border-radius: 10px;
       color: var(--verde-escuro);
+      font-size: 13px;
+      font-weight: 700;
       text-align: center;
-      padding: 20px;
-      pointer-events: none;
+      padding: 24px;
+    }
+
+    .loading-icone {
+      width: 38px;
+      height: 38px;
+      border: 3px solid #dcebe0;
+      border-top-color: var(--verde);
+      border-radius: 50%;
+      animation: girar .9s linear infinite;
+    }
+
+    @keyframes girar {
+      to { transform: rotate(360deg); }
+    }
+
+    .mapa-rodape {
+      padding: 12px 21px;
+      border-top: 1px solid var(--borda);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      color: var(--cinza);
+      font-size: 10px;
+    }
+
+    .mapa-rodape strong {
+      color: #52645a;
+      font-weight: 700;
     }
 
     .overlay {
       display: none;
       position: fixed;
-      inset: var(--header-h) 0 0 0;
-      background: rgba(0,0,0,.35);
+      inset: var(--header-h) 0 0;
+      background: rgba(8, 30, 19, .4);
       z-index: 850;
     }
 
-    /* POPUP */
+    /* POPUPS */
 
     .leaflet-popup-content {
       font-family: 'DM Sans', Arial, sans-serif;
       margin: 14px;
-      line-height: 1.5;
-      min-width: 160px;
+      line-height: 1.6;
+      min-width: 170px;
     }
 
     .leaflet-popup-content h4 {
-      margin: 0 0 5px;
+      margin: 0 0 8px;
       color: var(--verde-escuro);
-      font-size: 15px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 14px;
     }
 
     .leaflet-popup-content p {
-      margin: 0;
-      font-size: 12px;
+      margin: 3px 0;
+      font-size: 11px;
       color: var(--cinza);
+      overflow-wrap: anywhere;
+    }
+
+    .leaflet-popup-content strong {
+      color: #405349;
     }
 
     .custom-div-icon {
@@ -304,56 +466,138 @@
       border: none;
     }
 
-    @media (max-width: 900px) {
+    .marcador-solosmart {
+      width: 19px;
+      height: 19px;
+      border-radius: 50%;
+      background: #236b45;
+      border: 3px solid white;
+      box-shadow: 0 2px 9px rgba(0,0,0,.35);
+    }
+
+    /* RESPONSIVIDADE */
+
+    @media (max-width: 1000px) {
+      .conteudo {
+        padding: 27px 24px;
+      }
+    }
+
+    @media (max-width: 850px) {
       .menu-toggle {
         display: block;
       }
 
       .sidebar {
         transform: translateX(-100%);
+        box-shadow: 10px 0 30px rgba(0,0,0,.08);
       }
 
       .sidebar.aberta {
         transform: translateX(0);
       }
 
-      .conteudo {
-        margin-left: 0;
-        padding: 20px;
-        height: calc(100vh - var(--header-h));
-      }
-
       .overlay.ativo {
         display: block;
       }
+
+      .conteudo {
+        margin-left: 0;
+      }
     }
 
-    @media (max-width: 500px) {
+    @media (max-width: 550px) {
+      :root {
+        --header-h: 62px;
+      }
+
       .topbar {
-        padding: 0 12px;
+        padding: 0 13px;
+      }
+
+      .marca {
+        gap: 8px;
+        font-size: 16px;
+      }
+
+      .simbolo {
+        width: 34px;
+        height: 34px;
+        font-size: 18px;
+      }
+
+      .topbar-acoes {
+        gap: 9px;
       }
 
       .usuario-topo {
         gap: 6px;
       }
 
+      .avatar {
+        width: 31px;
+        height: 31px;
+      }
+
       .nome-topo {
-        max-width: 100px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        display: none;
       }
 
       .botao-sair {
         padding: 7px 10px;
+        font-size: 11px;
       }
 
       .conteudo {
-        padding: 16px;
+        padding: 23px 14px;
+        gap: 19px;
+      }
+
+      .cabecalho-pagina {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 13px;
       }
 
       .pagina-titulo h1 {
-        font-size: 22px;
+        font-size: 25px;
+      }
+
+      .cartao-mapa {
+        min-height: 570px;
+        border-radius: 13px;
+      }
+
+      .mapa-cabecalho {
+        padding: 15px;
+      }
+
+      .mapa-area {
+        min-height: 450px;
+        padding: 7px;
+      }
+
+      #map {
+        min-height: 435px;
+      }
+
+      .loading-mapa {
+        inset: 7px;
+      }
+
+      .mapa-rodape {
+        padding: 11px 14px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
       }
     }
   </style>
@@ -361,33 +605,30 @@
 
 <body>
 
-  <!-- HEADER -->
-
   <header class="topbar">
-
     <div class="marca">
-      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">☰</button>
+      <button
+        class="menu-toggle"
+        id="menuToggle"
+        aria-label="Abrir menu"
+        aria-expanded="false"
+      >☰</button>
+
       <div class="simbolo">🌱</div>
       <span>SoloSmart</span>
     </div>
 
     <div class="topbar-acoes">
-
       <div class="usuario-topo">
         <div class="avatar" id="avatarTopo">?</div>
         <span class="nome-topo" id="nomeTopo">Carregando...</span>
       </div>
 
       <button id="botaoSair" class="botao-sair">Sair</button>
-
     </div>
-
   </header>
 
-  <!-- SIDEBAR -->
-
   <aside class="sidebar" id="sidebar">
-
     <div class="sidebar-secao">Principal</div>
 
     <nav>
@@ -395,7 +636,7 @@
       <a href="propriedades.html"><span class="icone">🌾</span> Propriedades</a>
       <a href="talhoes.html"><span class="icone">🔲</span> Talhões</a>
       <a href="amostras.html"><span class="icone">🧪</span> Amostras</a>
-      <a href="mapas.html" class="ativo"><span class="icone">🗺️</span> Mapas</a>
+      <a href="mapas.html" class="ativo" aria-current="page"><span class="icone">🗺️</span> Mapas</a>
     </nav>
 
     <div class="sidebar-secao">Gestão</div>
@@ -414,29 +655,59 @@
       <a href="#"><span class="icone">🏢</span> Empresa</a>
       <a href="#"><span class="icone">⚙️</span> Configurações</a>
     </nav>
-
   </aside>
 
   <div class="overlay" id="overlay"></div>
 
-  <!-- CONTEÚDO PRINCIPAL -->
-
   <main class="conteudo">
 
-    <div class="pagina-titulo">
-      <h1>Mapa de Amostras</h1>
-      <p>Visualização geográfica dos pontos de coleta da sua empresa.</p>
-    </div>
-
-    <div class="cartao-mapa">
-
-      <div id="loading-mapa" class="loading-mapa">
-        Carregando mapa e amostras...
+    <section class="cabecalho-pagina">
+      <div class="pagina-titulo">
+        <div class="sobretitulo">Inteligência geográfica</div>
+        <h1>Mapa de Amostras</h1>
+        <p>Visualize a distribuição geográfica dos pontos de coleta da sua empresa.</p>
       </div>
 
-      <div id="map"></div>
+      <div class="status-mapa" id="statusMapa">
+        <span class="status-ponto"></span>
+        <span id="textoStatusMapa">Conectando ao mapa</span>
+      </div>
+    </section>
 
-    </div>
+    <section class="cartao-mapa">
+
+      <div class="mapa-cabecalho">
+        <div class="mapa-titulo">
+          <strong>Distribuição das coletas</strong>
+          <span>Localização geográfica das amostras cadastradas</span>
+        </div>
+
+        <div class="mapa-legenda">
+          <span class="legenda-marcador"></span>
+          Ponto de coleta
+        </div>
+      </div>
+
+      <div class="mapa-area">
+
+        <div id="loading-mapa" class="loading-mapa">
+          <div class="loading-icone"></div>
+          <span id="textoLoading">Carregando mapa e amostras...</span>
+        </div>
+
+        <div
+          id="map"
+          aria-label="Mapa geográfico com a localização das amostras"
+        ></div>
+
+      </div>
+
+      <div class="mapa-rodape">
+        <span>Dados geográficos das amostras cadastradas</span>
+        <strong>Base cartográfica: OpenStreetMap</strong>
+      </div>
+
+    </section>
 
   </main>
 
@@ -445,7 +716,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-  <!-- AUTENTICAÇÃO DO SOLOSМART -->
+  <!-- AUTENTICAÇÃO -->
 
   <script src="auth.js"></script>
 
@@ -454,23 +725,25 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <script>
-
-    // =====================================================
-    // VARIÁVEIS GLOBAIS
-    // =====================================================
+    // VARIÁVEIS
 
     let idTokenAtual = "";
     let mapa = null;
     let marcadores = [];
 
     const elementoLoading = document.getElementById("loading-mapa");
+    const statusMapa = document.getElementById("statusMapa");
+    const textoStatusMapa = document.getElementById("textoStatusMapa");
 
-    // =====================================================
     // MENSAGENS DE STATUS
-    // =====================================================
 
     function mostrarLoading(mensagem) {
-      elementoLoading.textContent = mensagem;
+      elementoLoading.innerHTML = `
+        <div class="loading-icone"></div>
+        <span id="textoLoading"></span>
+      `;
+
+      document.getElementById("textoLoading").textContent = mensagem;
       elementoLoading.style.display = "flex";
     }
 
@@ -478,27 +751,33 @@
       elementoLoading.style.display = "none";
     }
 
-    function mostrarErro(mensagem) {
-      elementoLoading.textContent = mensagem;
-      elementoLoading.style.display = "flex";
-      console.error("[SoloSmart Mapa]", mensagem);
+    function atualizarStatus(mensagem, online = false) {
+      textoStatusMapa.textContent = mensagem;
+      statusMapa.classList.toggle("online", online);
     }
 
-    // =====================================================
-    // INICIALIZAÇÃO
-    // =====================================================
+    function mostrarErro(mensagem) {
+      elementoLoading.innerHTML = `
+        <div style="font-size:30px;">⚠️</div>
+        <span id="textoLoading"></span>
+      `;
+
+      document.getElementById("textoLoading").textContent = mensagem;
+      elementoLoading.style.display = "flex";
+
+      atualizarStatus("Falha ao carregar");
+    }
+
+    // INICIALIZAÇÃO DA PÁGINA
 
     async function inicializarPagina() {
-
-      console.log("==================================");
-      console.log("INICIALIZANDO MAPA SOLOSMART");
-      console.log("==================================");
-
       try {
-
-        // 1. Verifica autenticação
-
-        console.log("[1] Verificando autenticação...");
+        if (
+          typeof SoloSmart === "undefined" ||
+          typeof SoloSmart.protegerPagina !== "function"
+        ) {
+          throw new Error("Módulo de autenticação não foi carregado.");
+        }
 
         const usuario = await SoloSmart.protegerPagina({
           paginaLogin: "login.html"
@@ -508,8 +787,6 @@
           throw new Error("Usuário não autenticado.");
         }
 
-        // 2. Atualiza cabeçalho
-
         const nome = usuario.nome || usuario.email || "?";
 
         document.getElementById("nomeTopo").textContent = nome;
@@ -517,17 +794,15 @@
         document.getElementById("avatarTopo").textContent =
           nome.charAt(0).toUpperCase();
 
-        console.log("[2] Usuário autenticado:", nome);
-
-        // 3. Recupera token Firebase
-
-        console.log("[3] Recuperando token Firebase...");
-
-        const usuarioFirebase = firebase.auth().currentUser;
-
-        if (!usuarioFirebase) {
+        if (
+          typeof firebase === "undefined" ||
+          !firebase.auth ||
+          !firebase.auth().currentUser
+        ) {
           throw new Error("Sessão Firebase não encontrada.");
         }
+
+        const usuarioFirebase = firebase.auth().currentUser;
 
         idTokenAtual = await usuarioFirebase.getIdToken(true);
 
@@ -535,36 +810,20 @@
           throw new Error("Não foi possível obter o token de autenticação.");
         }
 
-        console.log("[3] Token recuperado com sucesso.");
-
-        // 4. Inicializa mapa
-
         inicializarMapa();
-
-        // 5. Busca amostras
 
         await carregarAmostrasNoMapa();
 
       } catch (erro) {
-
-        console.error("[ERRO NA INICIALIZAÇÃO]", erro);
-
         mostrarErro(
           "Não foi possível inicializar o mapa: " + erro.message
         );
-
       }
-
     }
 
-    // =====================================================
     // INICIALIZAÇÃO DO LEAFLET
-    // =====================================================
 
     function inicializarMapa() {
-
-      console.log("[4] Inicializando Leaflet...");
-
       if (typeof L === "undefined") {
         throw new Error("Biblioteca Leaflet não foi carregada.");
       }
@@ -583,30 +842,21 @@
         "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         {
           maxZoom: 19,
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+          attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }
       ).addTo(mapa);
 
       setTimeout(() => {
-
         if (mapa) {
           mapa.invalidateSize(true);
         }
-
-        console.log("[4] Dimensões do mapa recalculadas.");
-
       }, 300);
-
-      console.log("[4] Mapa inicializado com sucesso.");
-
     }
 
-    // =====================================================
-    // CONVERSÃO E VALIDAÇÃO DE COORDENADAS
-    // =====================================================
+    // NORMALIZAÇÃO DAS COORDENADAS
 
     function normalizarCoordenada(valor, tipo) {
-
       if (
         valor === null ||
         valor === undefined ||
@@ -623,11 +873,9 @@
 
       const limite = tipo === "latitude" ? 90 : 180;
 
-      const limiteMicros =
-        tipo === "latitude" ? 90000000 : 180000000;
-
-      // Detecta coordenadas armazenadas em microsgraus.
-      // Exemplo: -23550520 passa a ser -23.55052.
+      const limiteMicros = tipo === "latitude"
+        ? 90000000
+        : 180000000;
 
       if (
         Math.abs(numero) > limite &&
@@ -636,55 +884,29 @@
         numero = numero / 1000000;
       }
 
-      // Confirma os limites geográficos.
-
       if (Math.abs(numero) > limite) {
         return null;
       }
 
       return numero;
-
     }
 
-    // =====================================================
     // ÍCONE PERSONALIZADO
-    // =====================================================
 
     function criarIconeVerde() {
-
       return L.divIcon({
-
         className: "custom-div-icon",
-
-        html: `
-          <div style="
-            background-color: #236b45;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            border: 3px solid white;
-            box-shadow: 0 0 7px rgba(0,0,0,0.55);
-          "></div>
-        `,
-
+        html: '<div class="marcador-solosmart"></div>',
         iconSize: [24, 24],
-
         iconAnchor: [12, 12],
-
         popupAnchor: [0, -12]
-
       });
-
     }
 
-    // =====================================================
-    // PROTEÇÃO DO CONTEÚDO DOS POPUPS
-    // =====================================================
+    // PROTEÇÃO DO HTML DOS POPUPS
 
     function escaparHTML(valor) {
-
       return String(valor ?? "").replace(/[&<>"']/g, caractere => {
-
         const mapaCaracteres = {
           "&": "&amp;",
           "<": "&lt;",
@@ -694,20 +916,14 @@
         };
 
         return mapaCaracteres[caractere];
-
       });
-
     }
 
-    // =====================================================
     // CARREGAMENTO DAS AMOSTRAS
-    // =====================================================
 
     async function carregarAmostrasNoMapa() {
-
-      console.log("[5] Iniciando busca de amostras...");
-
       mostrarLoading("Buscando amostras...");
+      atualizarStatus("Consultando amostras");
 
       const payload = {
         action: "listarAmostras",
@@ -715,24 +931,13 @@
       };
 
       try {
-
-        // 1. Consulta API
-
-        console.log("[API] Enviando requisição:", payload.action);
-
         const resposta = await fetch(SoloSmart.URL_API, {
-
           method: "POST",
-
           headers: {
             "Content-Type": "text/plain"
           },
-
           body: JSON.stringify(payload)
-
         });
-
-        console.log("[API] Status HTTP:", resposta.status);
 
         if (!resposta.ok) {
           throw new Error(
@@ -740,105 +945,38 @@
           );
         }
 
-        // 2. Converte resposta JSON
-
         const dados = await resposta.json();
 
-        // 3. Diagnóstico da resposta
-
-        console.log("========== DIAGNÓSTICO API SOLOSMART ==========");
-        console.log("Resposta completa:", dados);
-        console.log("Sucesso:", dados.sucesso);
-        console.log("Resultado é array:", Array.isArray(dados.resultado));
-        console.log("Total de amostras:", dados.resultado?.length);
-
-        if (Array.isArray(dados.resultado) && dados.resultado.length > 0) {
-
-          const primeira = dados.resultado[0];
-
-          console.log("Primeira amostra:", primeira);
-          console.log("Campos recebidos:", Object.keys(primeira));
-          console.log("Latitude original:", primeira.latitude);
-          console.log("Longitude original:", primeira.longitude);
-          console.log("Tipo da latitude:", typeof primeira.latitude);
-          console.log("Tipo da longitude:", typeof primeira.longitude);
-
-        }
-
-        console.log("===============================================");
-
-        console.log("[API] Resposta recebida:", dados);
-
-        // 4. Valida resposta
-
-        if (!dados.sucesso) {
-
+        if (!dados || !dados.sucesso) {
           throw new Error(
-            dados.mensagem || "A API não retornou sucesso."
+            dados?.mensagem || "A API não retornou sucesso."
           );
-
         }
 
         if (!Array.isArray(dados.resultado)) {
-
           throw new Error(
             "A resposta da API não contém uma lista válida de amostras."
           );
-
         }
 
         const todasAmostras = dados.resultado;
 
-        console.log(
-          "[DADOS] Total de amostras recebidas:",
-          todasAmostras.length
-        );
-
-        // 5. Filtra amostras ativas
-
         const amostras = todasAmostras.filter(amostra => {
-
           return String(amostra.status || "").toLowerCase() !== "inativa";
-
         });
 
-        console.log(
-          "[DADOS] Amostras após filtro:",
-          amostras.length
-        );
-
-        // 6. Verifica se existem amostras
-
         if (amostras.length === 0) {
-
           mostrarLoading("Nenhuma amostra ativa encontrada.");
-
-          console.warn("[MAPA] Nenhuma amostra ativa.");
-
+          atualizarStatus("Nenhuma amostra encontrada");
           return;
-
         }
 
-        // 7. Prepara ícone e variáveis
-
         const iconeVerde = criarIconeVerde();
-
         const limites = [];
 
-        let totalMarcadores = 0;
         let coordenadasInvalidas = 0;
 
-        // 8. Percorre amostras
-
-        amostras.forEach((amostra, indice) => {
-
-          console.log(
-            `[AMOSTRA ${indice + 1}]`,
-            amostra
-          );
-
-          // Normaliza as coordenadas recebidas da API.
-
+        amostras.forEach(amostra => {
           const lat = normalizarCoordenada(
             amostra.latitude,
             "latitude"
@@ -849,50 +987,25 @@
             "longitude"
           );
 
-          console.log("[COORDENADAS NORMALIZADAS]", {
-            amostraId: amostra.amostra_id,
-            latitudeOriginal: amostra.latitude,
-            longitudeOriginal: amostra.longitude,
-            latitudeFinal: lat,
-            longitudeFinal: lng
-          });
-
-          // Verifica se as coordenadas são válidas.
-
           if (lat === null || lng === null) {
-
-            console.warn(
-              "[COORDENADA INVÁLIDA]",
-              amostra.amostra_id,
-              amostra.latitude,
-              amostra.longitude
-            );
-
             coordenadasInvalidas++;
-
             return;
-
           }
-
-          // Cria marcador.
 
           const marker = L.marker(
             [lat, lng],
-            {
-              icon: iconeVerde
-            }
+            { icon: iconeVerde }
           ).addTo(mapa);
-
-          // Informações do popup.
 
           const identificador = escaparHTML(
             String(amostra.amostra_id || "Sem ID").substring(0, 8)
           );
 
           const dataFormatada = amostra.data_coleta
-            ? new Date(amostra.data_coleta).toLocaleDateString("pt-BR", {
-                timeZone: "UTC"
-              })
+            ? new Date(amostra.data_coleta).toLocaleDateString(
+                "pt-BR",
+                { timeZone: "UTC" }
+              )
             : "Sem data";
 
           const profundidade = escaparHTML(
@@ -908,7 +1021,7 @@
               <h4>Amostra #${identificador}</h4>
 
               <p>
-                <strong>Data:</strong> ${dataFormatada}
+                <strong>Data:</strong> ${escaparHTML(dataFormatada)}
               </p>
 
               <p>
@@ -932,135 +1045,92 @@
           marker.bindPopup(popup);
 
           marcadores.push(marker);
-
           limites.push([lat, lng]);
-
-          totalMarcadores++;
-
         });
 
-        // 9. Resultado do processamento
-
-        console.log("==================================");
-        console.log("RESULTADO DO MAPA");
-        console.log("==================================");
-
-        console.log("Total recebido:", todasAmostras.length);
-        console.log("Total ativo:", amostras.length);
-        console.log("Marcadores criados:", totalMarcadores);
-        console.log("Coordenadas inválidas:", coordenadasInvalidas);
-
-        // 10. Ajusta enquadramento do mapa
-
         if (limites.length > 0) {
-
           mapa.fitBounds(limites, {
-            padding: [50, 50],
+            padding: [45, 45],
             maxZoom: 16
           });
 
-          console.log("[MAPA] Zoom ajustado para os marcadores.");
-
           esconderLoading();
+          atualizarStatus("Mapa atualizado", true);
 
         } else {
-
           mostrarLoading(
             "As amostras foram encontradas, mas nenhuma possui coordenadas válidas."
           );
 
-          console.warn(
-            "[MAPA] Nenhum marcador pôde ser criado."
-          );
-
+          atualizarStatus("Sem coordenadas válidas");
         }
 
-        // 11. Atualiza dimensões novamente
-
         setTimeout(() => {
-
           if (mapa) {
             mapa.invalidateSize(true);
           }
-
         }, 300);
 
       } catch (erro) {
-
-        console.error(
-          "[ERRO AO CARREGAR AMOSTRAS]",
-          erro
-        );
-
         mostrarErro(
           "Erro ao carregar amostras: " + erro.message
         );
 
-        throw erro;
-
+        atualizarStatus("Erro na consulta");
       }
-
     }
 
-    // =====================================================
     // ATUALIZAÇÃO DO TAMANHO DO MAPA
-    // =====================================================
 
     window.addEventListener("resize", () => {
-
       if (mapa) {
-
         setTimeout(() => {
-
           mapa.invalidateSize(true);
-
         }, 200);
-
       }
-
     });
 
-    // =====================================================
     // LOGOUT
-    // =====================================================
 
     document
       .getElementById("botaoSair")
       .addEventListener("click", () => {
-
-        SoloSmart.sair();
-
+        if (
+          typeof SoloSmart !== "undefined" &&
+          typeof SoloSmart.sair === "function"
+        ) {
+          SoloSmart.sair();
+        }
       });
 
-    // =====================================================
     // MENU RESPONSIVO
-    // =====================================================
 
     const sidebar = document.getElementById("sidebar");
     const overlay = document.getElementById("overlay");
+    const menuToggle = document.getElementById("menuToggle");
 
-    document
-      .getElementById("menuToggle")
-      .addEventListener("click", () => {
-
-        sidebar.classList.toggle("aberta");
-        overlay.classList.toggle("ativo");
-
-      });
-
-    overlay.addEventListener("click", () => {
-
+    function fecharMenu() {
       sidebar.classList.remove("aberta");
       overlay.classList.remove("ativo");
+      menuToggle.setAttribute("aria-expanded", "false");
+    }
 
+    menuToggle.addEventListener("click", () => {
+      const aberto = sidebar.classList.toggle("aberta");
+
+      overlay.classList.toggle("ativo", aberto);
+      menuToggle.setAttribute("aria-expanded", String(aberto));
     });
 
-    // =====================================================
+    overlay.addEventListener("click", fecharMenu);
+
+    document.querySelectorAll(".sidebar a").forEach(link => {
+      link.addEventListener("click", fecharMenu);
+    });
+
     // EXECUÇÃO
-    // =====================================================
 
     inicializarPagina();
-
   </script>
 
 </body>
