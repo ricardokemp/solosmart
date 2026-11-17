@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -719,6 +718,27 @@
         // 2. Converte resposta JSON
 
         const dados = await resposta.json();
+
+        console.log("========== DIAGNÓSTICO API SOLOSMART ==========");
+console.log("Resposta completa:", dados);
+console.log("Sucesso:", dados.sucesso);
+console.log("Resultado é array:", Array.isArray(dados.resultado));
+console.log("Total de amostras:", dados.resultado?.length);
+
+if (Array.isArray(dados.resultado) && dados.resultado.length > 0) {
+  const primeira = dados.resultado[0];
+
+  console.log("Primeira amostra:", primeira);
+  console.log("Campos recebidos:", Object.keys(primeira));
+
+  console.log("Latitude:", primeira.latitude);
+  console.log("Longitude:", primeira.longitude);
+
+  console.log("Tipo da latitude:", typeof primeira.latitude);
+  console.log("Tipo da longitude:", typeof primeira.longitude);
+}
+
+console.log("===============================================");
 
         console.log("[API] Resposta recebida:", dados);
 
