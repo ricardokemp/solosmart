@@ -10,9 +10,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
-
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-static@0.468.0/font/lucide.css">
 
   <style>
@@ -23,36 +21,27 @@
       --green-light: #48a66b;
       --lime: #b8e58c;
       --mint: #eaf5ec;
-
       --background: #f7faf7;
       --surface: #ffffff;
       --surface-soft: #f4f8f4;
-
       --text: #1b2c23;
       --text-secondary: #68796e;
       --text-muted: #89988e;
-
       --border: #e3ebe4;
       --border-strong: #d4e2d6;
-
       --danger: #a13e3e;
       --danger-bg: #fff4f3;
-
       --sidebar-width: 258px;
       --header-height: 70px;
-
       --radius-sm: 9px;
       --radius-md: 13px;
       --radius-lg: 17px;
-
       --shadow-card: 0 4px 18px rgba(16, 47, 37, 0.045);
       --shadow-header: 0 2px 12px rgba(16, 47, 37, 0.035);
       --shadow-hover: 0 10px 26px rgba(16, 47, 37, 0.075);
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     html {
       min-height: 100%;
@@ -68,24 +57,15 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    button,
-    a {
-      font: inherit;
-    }
+    button, a { font: inherit; }
 
-    button:focus-visible,
-    a:focus-visible {
+    button:focus-visible, a:focus-visible {
       outline: 3px solid rgba(72, 166, 107, 0.55);
       outline-offset: 3px;
     }
 
-    button {
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    [hidden] {
-      display: none !important;
-    }
+    button { -webkit-tap-highlight-color: transparent; }
+    [hidden] { display: none !important; }
 
     /* HEADER */
 
@@ -93,13 +73,11 @@
       position: fixed;
       inset: 0 0 auto;
       z-index: 50;
-
       height: var(--header-height);
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 29px;
-
       background: rgba(255, 255, 255, 0.97);
       border-bottom: 1px solid var(--border);
       box-shadow: var(--shadow-header);
@@ -117,7 +95,6 @@
       display: flex;
       align-items: center;
       gap: 11px;
-
       color: var(--forest);
       font-family: "Manrope", sans-serif;
       font-size: 19px;
@@ -132,11 +109,9 @@
       display: grid;
       place-items: center;
       flex-shrink: 0;
-
       border-radius: 12px;
       background: linear-gradient(145deg, var(--green), var(--forest-dark));
       color: #fff;
-
       font-family: "Manrope", sans-serif;
       font-size: 21px;
       font-weight: 800;
@@ -147,7 +122,6 @@
       width: 39px;
       height: 39px;
       place-items: center;
-
       border: 0;
       border-radius: 10px;
       background: transparent;
@@ -155,13 +129,8 @@
       cursor: pointer;
     }
 
-    .menu-toggle:hover {
-      background: var(--mint);
-    }
-
-    .menu-toggle i {
-      font-size: 21px;
-    }
+    .menu-toggle:hover { background: var(--mint); }
+    .menu-toggle i { font-size: 21px; }
 
     .topbar-acoes {
       display: flex;
@@ -182,12 +151,10 @@
       display: grid;
       place-items: center;
       flex-shrink: 0;
-
       border: 1px solid #d8e9db;
       border-radius: 50%;
       background: var(--mint);
       color: var(--green);
-
       font-family: "Manrope", sans-serif;
       font-size: 14px;
       font-weight: 800;
@@ -209,14 +176,11 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-
       padding: 8px 13px;
       border: 1px solid #f0dddd;
       border-radius: var(--radius-sm);
-
       background: var(--danger-bg);
       color: var(--danger);
-
       font-size: 12px;
       font-weight: 700;
       cursor: pointer;
@@ -228,9 +192,7 @@
       background: #ffebea;
     }
 
-    .botao-sair i {
-      font-size: 15px;
-    }
+    .botao-sair i { font-size: 15px; }
 
     /* SIDEBAR */
 
@@ -240,23 +202,18 @@
       left: 0;
       bottom: 0;
       z-index: 40;
-
       width: var(--sidebar-width);
       padding: 27px 0 35px;
-
       overflow-y: auto;
       overscroll-behavior: contain;
-
       background: var(--surface);
       border-right: 1px solid var(--border);
-
       transition: transform 0.25s ease;
     }
 
     .sidebar-secao {
       margin: 0 0 11px;
       padding: 0 25px;
-
       color: var(--text-muted);
       font-size: 10px;
       font-weight: 800;
@@ -273,22 +230,17 @@
 
     .sidebar a {
       position: relative;
-
       min-height: 43px;
       display: flex;
       align-items: center;
       gap: 12px;
-
       margin: 0 12px;
       padding: 10px 13px;
-
       border-radius: 10px;
       color: #5b6c61;
-
       font-size: 13px;
       font-weight: 600;
       text-decoration: none;
-
       transition: background 0.18s, color 0.18s;
     }
 
@@ -309,11 +261,12 @@
       left: -12px;
       top: 9px;
       bottom: 9px;
-
       width: 3px;
       border-radius: 0 4px 4px 0;
       background: var(--green);
     }
+
+    /* ÍCONES DA NAVEGAÇÃO */
 
     .sidebar .icone {
       width: 21px;
@@ -322,15 +275,11 @@
       place-items: center;
       flex-shrink: 0;
       color: #84968a;
+      font-size: 18px;
+      line-height: 1;
     }
 
-    .sidebar .icone i {
-      font-size: 17px;
-    }
-
-    .sidebar a.ativo .icone {
-      color: var(--green);
-    }
+    .sidebar a.ativo .icone { color: var(--green); }
 
     /* OVERLAY MOBILE */
 
@@ -339,7 +288,6 @@
       position: fixed;
       inset: var(--header-height) 0 0;
       z-index: 39;
-
       background: rgba(10, 31, 22, 0.38);
       backdrop-filter: blur(2px);
     }
@@ -359,9 +307,7 @@
       margin: 0 auto;
     }
 
-    .pagina-titulo {
-      margin-bottom: 26px;
-    }
+    .pagina-titulo { margin-bottom: 26px; }
 
     .sobretitulo {
       margin-bottom: 7px;
@@ -375,7 +321,6 @@
     .pagina-titulo h1 {
       margin: 0 0 7px;
       color: var(--forest);
-
       font-family: "Manrope", sans-serif;
       font-size: 28px;
       font-weight: 800;
@@ -398,18 +343,14 @@
       align-items: center;
       justify-content: space-between;
       gap: 24px;
-
       margin-bottom: 26px;
       padding: 25px 28px;
-
       overflow: hidden;
       border: 1px solid rgba(255, 255, 255, 0.09);
       border-radius: var(--radius-lg);
-
       background:
         radial-gradient(circle at 90% 5%, rgba(184, 229, 140, 0.16), transparent 32%),
         linear-gradient(115deg, var(--forest), var(--forest-dark) 65%, #237b4c);
-
       color: #fff;
       box-shadow: 0 9px 26px rgba(16, 47, 37, 0.13);
     }
@@ -421,16 +362,12 @@
       height: 230px;
       right: 15%;
       top: -155px;
-
       border: 1px solid rgba(255, 255, 255, 0.09);
       border-radius: 50%;
       pointer-events: none;
     }
 
-    .banner-conteudo {
-      position: relative;
-      z-index: 1;
-    }
+    .banner-conteudo { position: relative; z-index: 1; }
 
     .banner-boas-vindas h2 {
       margin: 0 0 8px;
@@ -451,26 +388,21 @@
     .banner-btn {
       position: relative;
       z-index: 1;
-
       min-height: 42px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 9px;
       flex-shrink: 0;
-
       padding: 10px 16px;
       border: 1px solid rgba(255, 255, 255, 0.18);
       border-radius: 10px;
-
       background: var(--lime);
       color: var(--forest);
-
       font-size: 12px;
       font-weight: 800;
       text-decoration: none;
       white-space: nowrap;
-
       transition: background 0.2s, transform 0.2s;
     }
 
@@ -479,15 +411,11 @@
       transform: translateY(-2px);
     }
 
-    .banner-btn i {
-      font-size: 15px;
-    }
+    .banner-btn i { font-size: 15px; }
 
     /* SEÇÕES */
 
-    .secao-kpis {
-      margin-bottom: 26px;
-    }
+    .secao-kpis { margin-bottom: 26px; }
 
     .secao-cabecalho {
       display: flex;
@@ -500,7 +428,6 @@
     .secao-cabecalho h2 {
       margin: 0;
       color: var(--forest);
-
       font-family: "Manrope", sans-serif;
       font-size: 15px;
       font-weight: 800;
@@ -523,12 +450,10 @@
     .kpi {
       min-width: 0;
       padding: 19px;
-
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
       background: var(--surface);
       box-shadow: var(--shadow-card);
-
       transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
     }
 
@@ -560,20 +485,16 @@
       display: grid;
       place-items: center;
       flex-shrink: 0;
-
       border-radius: 10px;
       background: var(--mint);
       color: var(--green);
-    }
-
-    .kpi-icone i {
-      font-size: 18px;
+      font-size: 19px;
+      line-height: 1;
     }
 
     .kpi-valor {
       margin: 0 0 5px;
       color: var(--forest);
-
       font-family: "Manrope", sans-serif;
       font-size: 30px;
       font-weight: 800;
@@ -592,7 +513,6 @@
     .cartao {
       margin-bottom: 19px;
       padding: 23px;
-
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       background: var(--surface);
@@ -610,7 +530,6 @@
     .cartao h2 {
       margin: 0 0 5px;
       color: var(--forest);
-
       font-family: "Manrope", sans-serif;
       font-size: 16px;
       font-weight: 800;
@@ -629,22 +548,17 @@
       align-items: center;
       gap: 7px;
       flex-shrink: 0;
-
       padding: 7px 10px;
       border: 1px solid #dcebdd;
       border-radius: 30px;
-
       background: #f2f8f2;
       color: var(--green);
-
       font-size: 10px;
       font-weight: 800;
       white-space: nowrap;
     }
 
-    .cartao-identificador i {
-      font-size: 13px;
-    }
+    .cartao-identificador i { font-size: 13px; }
 
     /* INFORMAÇÕES DA CONTA */
 
@@ -657,7 +571,6 @@
     .info-item {
       min-width: 0;
       padding: 14px 15px;
-
       border: 1px solid #e7eee8;
       border-radius: 11px;
       background: #f8faf8;
@@ -666,7 +579,6 @@
     .info-label {
       margin-bottom: 7px;
       color: var(--text-muted);
-
       font-size: 10px;
       font-weight: 800;
       letter-spacing: 0.7px;
@@ -695,15 +607,12 @@
       flex-direction: column;
       align-items: flex-start;
       gap: 9px;
-
       padding: 17px;
       border: 1px solid var(--border);
       border-radius: 12px;
-
       background: #fff;
       color: var(--text);
       text-decoration: none;
-
       transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
     }
 
@@ -718,14 +627,11 @@
       height: 39px;
       display: grid;
       place-items: center;
-
       border-radius: 11px;
       background: var(--mint);
       color: var(--green);
-    }
-
-    .atalho-icone i {
-      font-size: 19px;
+      font-size: 21px;
+      line-height: 1;
     }
 
     .atalho strong {
@@ -746,16 +652,13 @@
       position: fixed;
       inset: 0;
       z-index: 9999;
-
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-
       background:
         radial-gradient(circle at 50% 40%, rgba(184, 229, 140, 0.12), transparent 38%),
         var(--background);
-
       transition: opacity 0.3s ease;
     }
 
@@ -764,7 +667,6 @@
       align-items: center;
       gap: 11px;
       margin-bottom: 29px;
-
       color: var(--forest);
       font-family: "Manrope", sans-serif;
       font-size: 21px;
@@ -777,11 +679,9 @@
       height: 41px;
       display: grid;
       place-items: center;
-
       border-radius: 12px;
       background: linear-gradient(145deg, var(--green), var(--forest-dark));
       color: white;
-
       font-size: 21px;
     }
 
@@ -791,14 +691,11 @@
       display: grid;
       place-items: center;
       margin-bottom: 16px;
-
       color: var(--green);
       animation: girarAmpulheta 1.8s ease-in-out infinite;
     }
 
-    .ampulheta i {
-      font-size: 31px;
-    }
+    .ampulheta i { font-size: 31px; }
 
     .loading-texto {
       margin: 0;
@@ -815,75 +712,43 @@
     }
 
     @keyframes girarAmpulheta {
-      0%, 35% {
-        transform: rotate(0deg);
-      }
-
-      65%, 100% {
-        transform: rotate(180deg);
-      }
+      0%, 35% { transform: rotate(0deg); }
+      65%, 100% { transform: rotate(180deg); }
     }
 
     /* RESPONSIVIDADE */
 
     @media (max-width: 1150px) {
-      .conteudo {
-        padding: 30px 25px 50px;
-      }
-
-      .kpis {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .atalhos {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
+      .conteudo { padding: 30px 25px 50px; }
+      .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .atalhos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
     @media (max-width: 900px) {
-      .menu-toggle {
-        display: grid;
-      }
-
-      .topbar {
-        padding: 0 18px;
-      }
+      .menu-toggle { display: grid; }
+      .topbar { padding: 0 18px; }
 
       .sidebar {
         transform: translateX(-100%);
         box-shadow: 12px 0 30px rgba(16, 47, 37, 0.09);
       }
 
-      .sidebar.aberta {
-        transform: translateX(0);
-      }
-
-      .overlay.ativo {
-        display: block;
-      }
+      .sidebar.aberta { transform: translateX(0); }
+      .overlay.ativo { display: block; }
 
       .conteudo {
         margin-left: 0;
         padding: 29px 23px 50px;
       }
 
-      .banner-boas-vindas {
-        align-items: flex-start;
-      }
+      .banner-boas-vindas { align-items: flex-start; }
     }
 
     @media (max-width: 600px) {
-      :root {
-        --header-height: 62px;
-      }
+      :root { --header-height: 62px; }
 
-      .topbar {
-        padding: 0 13px;
-      }
-
-      .topbar-marca {
-        gap: 8px;
-      }
+      .topbar { padding: 0 13px; }
+      .topbar-marca { gap: 8px; }
 
       .marca {
         gap: 8px;
@@ -897,18 +762,14 @@
         font-size: 18px;
       }
 
-      .topbar-acoes {
-        gap: 9px;
-      }
+      .topbar-acoes { gap: 9px; }
 
       .avatar {
         width: 33px;
         height: 33px;
       }
 
-      .nome-topo {
-        display: none;
-      }
+      .nome-topo { display: none; }
 
       .botao-sair {
         min-height: 35px;
@@ -916,21 +777,10 @@
         font-size: 11px;
       }
 
-      .conteudo {
-        padding: 24px 15px 40px;
-      }
-
-      .pagina-titulo {
-        margin-bottom: 22px;
-      }
-
-      .pagina-titulo h1 {
-        font-size: 24px;
-      }
-
-      .pagina-titulo p {
-        font-size: 12px;
-      }
+      .conteudo { padding: 24px 15px 40px; }
+      .pagina-titulo { margin-bottom: 22px; }
+      .pagina-titulo h1 { font-size: 24px; }
+      .pagina-titulo p { font-size: 12px; }
 
       .banner-boas-vindas {
         flex-direction: column;
@@ -939,67 +789,32 @@
         padding: 21px;
       }
 
-      .banner-boas-vindas h2 {
-        font-size: 17px;
-      }
+      .banner-boas-vindas h2 { font-size: 17px; }
+      .banner-boas-vindas p { font-size: 12px; }
+      .banner-btn { width: 100%; }
 
-      .banner-boas-vindas p {
-        font-size: 12px;
-      }
-
-      .banner-btn {
-        width: 100%;
-      }
-
-      .secao-cabecalho {
-        align-items: flex-start;
-      }
-
-      .secao-cabecalho h2 {
-        font-size: 14px;
-      }
+      .secao-cabecalho { align-items: flex-start; }
+      .secao-cabecalho h2 { font-size: 14px; }
 
       .secao-cabecalho > span {
         font-size: 10px;
         text-align: right;
       }
 
-      .kpis {
-        gap: 10px;
-      }
-
-      .kpi {
-        padding: 14px;
-      }
-
-      .kpi-topo {
-        margin-bottom: 12px;
-      }
-
-      .kpi-label {
-        font-size: 9px;
-      }
+      .kpis { gap: 10px; }
+      .kpi { padding: 14px; }
+      .kpi-topo { margin-bottom: 12px; }
+      .kpi-label { font-size: 9px; }
 
       .kpi-icone {
         width: 31px;
         height: 31px;
+        font-size: 17px;
       }
 
-      .kpi-icone i {
-        font-size: 16px;
-      }
-
-      .kpi-valor {
-        font-size: 26px;
-      }
-
-      .kpi-detalhe {
-        font-size: 10px;
-      }
-
-      .cartao {
-        padding: 18px 15px;
-      }
+      .kpi-valor { font-size: 26px; }
+      .kpi-detalhe { font-size: 10px; }
+      .cartao { padding: 18px 15px; }
 
       .cartao-cabecalho {
         flex-direction: column;
@@ -1011,39 +826,17 @@
         gap: 9px;
       }
 
-      .info-item {
-        padding: 12px;
-      }
-
-      .info-valor {
-        font-size: 12px;
-      }
-
-      .atalhos {
-        gap: 9px;
-      }
-
-      .atalho {
-        padding: 13px;
-      }
+      .info-item { padding: 12px; }
+      .info-valor { font-size: 12px; }
+      .atalhos { gap: 9px; }
+      .atalho { padding: 13px; }
     }
 
     @media (max-width: 360px) {
-      .info-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .kpi {
-        padding: 12px;
-      }
-
-      .kpi-valor {
-        font-size: 23px;
-      }
-
-      .kpi-label {
-        letter-spacing: 0.2px;
-      }
+      .info-grid { grid-template-columns: 1fr; }
+      .kpi { padding: 12px; }
+      .kpi-valor { font-size: 23px; }
+      .kpi-label { letter-spacing: 0.2px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1080,9 +873,7 @@
   <!-- CABEÇALHO -->
 
   <header class="topbar">
-
     <div class="topbar-marca">
-
       <button
         class="menu-toggle"
         id="menuToggle"
@@ -1098,11 +889,9 @@
         <span class="marca-simbolo" aria-hidden="true">S</span>
         <span>SoloSmart</span>
       </a>
-
     </div>
 
     <div class="topbar-acoes">
-
       <div class="usuario-topo">
         <div class="avatar" id="avatarTopo" aria-hidden="true">?</div>
         <span class="nome-topo" id="nomeTopo">Carregando...</span>
@@ -1112,98 +901,88 @@
         <i class="icon icon-log-out" aria-hidden="true"></i>
         Sair
       </button>
-
     </div>
-
   </header>
 
   <!-- MENU LATERAL -->
 
   <aside class="sidebar" id="sidebar">
-
     <div class="sidebar-secao">Principal</div>
 
     <nav aria-label="Navegação principal">
-
       <a href="painel.html" class="ativo" aria-current="page">
-        <span class="icone"><i class="icon icon-layout-dashboard" aria-hidden="true"></i></span>
+        <span class="icone" aria-hidden="true">📊</span>
         Visão geral
       </a>
 
       <a href="propriedades.html">
-        <span class="icone"><i class="icon icon-house" aria-hidden="true"></i></span>
+        <span class="icone" aria-hidden="true">🌾</span>
         Propriedades
       </a>
 
       <a href="talhoes.html">
-        <span class="icone"><i class="icon icon-grid-2x2" aria-hidden="true"></i></span>
+        <span class="icone" aria-hidden="true">🔲</span>
         Talhões
       </a>
 
       <a href="amostras.html">
-        <span class="icone"><i class="icon icon-flask-conical" aria-hidden="true"></i></span>
+        <span class="icone" aria-hidden="true">🧪</span>
         Amostras
       </a>
 
       <a href="mapas.html">
-        <span class="icone"><i class="icon icon-map" aria-hidden="true"></i></span>
+        <span class="icone" aria-hidden="true">🗺️</span>
         Mapas
       </a>
-
     </nav>
 
     <div class="sidebar-secao">Gestão</div>
 
     <nav aria-label="Navegação de gestão">
-
       <a href="campanhas.html">
-        <span class="icone"><i class="icon icon-clipboard-list" aria-hidden="true"></i></span>
+        <span class="icone" aria-hidden="true">📋</span>
         Campanhas
       </a>
 
       <a href="fotografias.html">
-        <span class="icone"><i class="icon icon-images" aria-hidden="true"></i></span>
+        <span class="icone" aria-hidden="true">📷</span>
         Fotografias
       </a>
 
       <a href="dispositivos-iot.html">
-        <span class="icone"><i class="icon icon-radio-tower" aria-hidden="true"></i></span>
+        <span class="icone" aria-hidden="true">📡</span>
         Dispositivos IoT
       </a>
 
       <a href="relatorios.html">
-        <span class="icone"><i class="icon icon-chart-no-axes-combined" aria-hidden="true"></i></span>
+        <span class="icone" aria-hidden="true">📈</span>
         Relatórios
       </a>
-
     </nav>
 
     <div class="sidebar-secao">Conta</div>
 
     <nav aria-label="Navegação da conta">
-
       <a href="conta.html">
-        <span class="icone"><i class="icon icon-user-round" aria-hidden="true"></i></span>
+        <span class="icone" aria-hidden="true">👤</span>
         Conta
       </a>
 
       <a href="meu-perfil.html">
-        <span class="icone"><i class="icon icon-contact-round" aria-hidden="true"></i></span>
+        <span class="icone" aria-hidden="true">👤</span>
         Meu perfil
       </a>
 
       <a href="empresa.html">
-        <span class="icone"><i class="icon icon-building-2" aria-hidden="true"></i></span>
+        <span class="icone" aria-hidden="true">🏢</span>
         Empresa
       </a>
 
       <a href="configuracoes.html">
-        <span class="icone"><i class="icon icon-settings" aria-hidden="true"></i></span>
+        <span class="icone" aria-hidden="true">⚙️</span>
         Configurações
       </a>
-
     </nav>
-
   </aside>
 
   <div class="overlay" id="overlay"></div>
@@ -1211,127 +990,86 @@
   <!-- CONTEÚDO PRINCIPAL -->
 
   <main class="conteudo" id="conteudoPrincipal" hidden>
-
     <div class="conteudo-inner">
 
       <header class="pagina-titulo">
-
         <div class="sobretitulo">Central de gestão</div>
-
         <h1 id="saudacao">Bem-vindo</h1>
-
         <p id="subtitulo">
           Gestão e monitoramento da sua operação rural.
         </p>
-
       </header>
 
       <!-- BANNER DE BOAS-VINDAS -->
 
-      <section
-        class="banner-boas-vindas"
-        id="bannerBoasVindas"
-        hidden
-      >
-
+      <section class="banner-boas-vindas" id="bannerBoasVindas" hidden>
         <div class="banner-conteudo">
-
           <h2>Vamos começar sua gestão rural?</h2>
-
           <p>
             Cadastre sua primeira propriedade para começar a organizar
             seus talhões, campanhas e amostras no SoloSmart.
           </p>
-
         </div>
 
         <a href="propriedades.html" class="banner-btn">
           Cadastrar propriedade
           <i class="icon icon-arrow-right" aria-hidden="true"></i>
         </a>
-
       </section>
 
       <!-- INDICADORES -->
 
       <section class="secao-kpis">
-
         <div class="secao-cabecalho">
           <h2>Visão geral da operação</h2>
           <span>Indicadores da sua conta</span>
         </div>
 
         <div class="kpis">
-
           <article class="kpi">
-
             <div class="kpi-topo">
               <div class="kpi-label">Propriedades</div>
-              <div class="kpi-icone">
-                <i class="icon icon-house" aria-hidden="true"></i>
-              </div>
+              <div class="kpi-icone" aria-hidden="true">🌾</div>
             </div>
-
             <div class="kpi-valor" id="kpiPropriedades">--</div>
             <div class="kpi-detalhe">Áreas cadastradas</div>
-
           </article>
 
           <article class="kpi">
-
             <div class="kpi-topo">
               <div class="kpi-label">Talhões</div>
-              <div class="kpi-icone">
-                <i class="icon icon-grid-2x2" aria-hidden="true"></i>
-              </div>
+              <div class="kpi-icone" aria-hidden="true">🔲</div>
             </div>
-
             <div class="kpi-valor" id="kpiTalhoes">--</div>
             <div class="kpi-detalhe">Divisões de área</div>
-
           </article>
 
           <article class="kpi">
-
             <div class="kpi-topo">
               <div class="kpi-label">Campanhas</div>
-              <div class="kpi-icone">
-                <i class="icon icon-clipboard-list" aria-hidden="true"></i>
-              </div>
+              <div class="kpi-icone" aria-hidden="true">📋</div>
             </div>
-
             <div class="kpi-valor" id="kpiCampanhas">--</div>
             <div class="kpi-detalhe">Coletas organizadas</div>
-
           </article>
 
           <article class="kpi">
-
             <div class="kpi-topo">
               <div class="kpi-label">Amostras</div>
-              <div class="kpi-icone">
-                <i class="icon icon-flask-conical" aria-hidden="true"></i>
-              </div>
+              <div class="kpi-icone" aria-hidden="true">🧪</div>
             </div>
-
             <div class="kpi-valor" id="kpiAmostras">--</div>
             <div class="kpi-detalhe">Pontos registrados</div>
-
           </article>
-
         </div>
-
       </section>
 
       <!-- INFORMAÇÕES DA CONTA -->
 
       <section class="cartao">
-
         <div class="cartao-cabecalho">
-
           <div>
             <h2>Informações da conta</h2>
-
             <p class="sub">
               Dados da sua sessão atual, integrados ao Firebase e SoloSmart.
             </p>
@@ -1341,11 +1079,9 @@
             <i class="icon icon-shield-check" aria-hidden="true"></i>
             Sessão autenticada
           </span>
-
         </div>
 
         <div class="info-grid">
-
           <div class="info-item">
             <div class="info-label">Usuário</div>
             <div id="valNome" class="info-valor">-</div>
@@ -1375,67 +1111,49 @@
             <div class="info-label">E-mail verificado</div>
             <div id="valVerificado" class="info-valor">-</div>
           </div>
-
         </div>
-
       </section>
 
       <!-- ATALHOS -->
 
       <section class="cartao">
-
         <div class="cartao-cabecalho">
-
           <div>
             <h2>Acesso rápido</h2>
-
             <p class="sub">
               Acesse diretamente os principais módulos da plataforma.
             </p>
           </div>
-
         </div>
 
         <div class="atalhos">
-
           <a class="atalho" href="propriedades.html">
-            <div class="atalho-icone">
-              <i class="icon icon-house" aria-hidden="true"></i>
-            </div>
+            <div class="atalho-icone" aria-hidden="true">🌾</div>
             <strong>Propriedades</strong>
             <span>Cadastrar e gerenciar propriedades rurais</span>
           </a>
 
           <a class="atalho" href="talhoes.html">
-            <div class="atalho-icone">
-              <i class="icon icon-grid-2x2" aria-hidden="true"></i>
-            </div>
+            <div class="atalho-icone" aria-hidden="true">🔲</div>
             <strong>Talhões</strong>
             <span>Gerenciar áreas de manejo</span>
           </a>
 
           <a class="atalho" href="campanhas.html">
-            <div class="atalho-icone">
-              <i class="icon icon-clipboard-list" aria-hidden="true"></i>
-            </div>
+            <div class="atalho-icone" aria-hidden="true">📋</div>
             <strong>Campanhas</strong>
             <span>Organizar coletas de solo</span>
           </a>
 
           <a class="atalho" href="amostras.html">
-            <div class="atalho-icone">
-              <i class="icon icon-flask-conical" aria-hidden="true"></i>
-            </div>
+            <div class="atalho-icone" aria-hidden="true">🧪</div>
             <strong>Amostras</strong>
             <span>Registrar e consultar coletas</span>
           </a>
-
         </div>
-
       </section>
 
     </div>
-
   </main>
 
   <!-- FIREBASE -->
@@ -1443,7 +1161,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-  <!-- AUTH NA PASTA RAIZ -->
+  <!-- AUTH NA MESMA PASTA PAGES -->
 
   <script src="auth.js"></script>
 
@@ -1455,20 +1173,16 @@
     const elementos = {
       loading: document.getElementById("loadingOverlay"),
       conteudo: document.getElementById("conteudoPrincipal"),
-
       saudacao: document.getElementById("saudacao"),
       nomeTopo: document.getElementById("nomeTopo"),
       avatarTopo: document.getElementById("avatarTopo"),
-
       valNome: document.getElementById("valNome"),
       valEmail: document.getElementById("valEmail"),
       valEmpresa: document.getElementById("valEmpresa"),
       valPerfil: document.getElementById("valPerfil"),
       valStatus: document.getElementById("valStatus"),
       valVerificado: document.getElementById("valVerificado"),
-
       banner: document.getElementById("bannerBoasVindas"),
-
       kpis: {
         propriedades: document.getElementById("kpiPropriedades"),
         talhoes: document.getElementById("kpiTalhoes"),
@@ -1594,7 +1308,6 @@
         }
 
         const quantidade = contarRegistrosAtivos(resultado.value);
-
         consulta.elemento.textContent = quantidade;
 
         if (consulta.chave === "propriedades" && quantidade === 0) {
@@ -1614,7 +1327,6 @@
         });
 
         preencherDadosUsuario(usuario);
-
         esconderLoading();
 
         await carregarKPIs();
