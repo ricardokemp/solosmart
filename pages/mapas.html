@@ -33,7 +33,8 @@
       box-sizing: border-box;
     }
 
-    html, body {
+    html,
+    body {
       margin: 0;
       width: 100%;
       min-height: 100%;
@@ -44,9 +45,11 @@
       background: var(--fundo);
       color: var(--texto);
       font-family: 'DM Sans', Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
     }
 
-    button, a {
+    button,
+    a {
       font: inherit;
     }
 
@@ -293,6 +296,7 @@
       height: 8px;
       border-radius: 50%;
       background: #9aa69e;
+      flex-shrink: 0;
     }
 
     .status-mapa.online .status-ponto {
@@ -406,7 +410,9 @@
     }
 
     @keyframes girar {
-      to { transform: rotate(360deg); }
+      to {
+        transform: rotate(360deg);
+      }
     }
 
     .mapa-rodape {
@@ -610,8 +616,10 @@
       <button
         class="menu-toggle"
         id="menuToggle"
+        type="button"
         aria-label="Abrir menu"
         aria-expanded="false"
+        aria-controls="sidebar"
       >☰</button>
 
       <div class="simbolo">🌱</div>
@@ -624,14 +632,14 @@
         <span class="nome-topo" id="nomeTopo">Carregando...</span>
       </div>
 
-      <button id="botaoSair" class="botao-sair">Sair</button>
+      <button id="botaoSair" class="botao-sair" type="button">Sair</button>
     </div>
   </header>
 
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-secao">Principal</div>
 
-    <nav>
+    <nav aria-label="Navegação principal">
       <a href="painel.html"><span class="icone">📊</span> Visão geral</a>
       <a href="propriedades.html"><span class="icone">🌾</span> Propriedades</a>
       <a href="talhoes.html"><span class="icone">🔲</span> Talhões</a>
@@ -641,7 +649,7 @@
 
     <div class="sidebar-secao">Gestão</div>
 
-    <nav>
+    <nav aria-label="Gestão">
       <a href="campanhas.html"><span class="icone">📋</span> Campanhas</a>
       <a href="fotografias.html"><span class="icone">📷</span> Fotografias</a>
       <a href="#"><span class="icone">📡</span> Dispositivos IoT</a>
@@ -650,7 +658,7 @@
 
     <div class="sidebar-secao">Conta</div>
 
-    <nav>
+    <nav aria-label="Conta">
       <a href="#"><span class="icone">👤</span> Meu perfil</a>
       <a href="#"><span class="icone">🏢</span> Empresa</a>
       <a href="#"><span class="icone">⚙️</span> Configurações</a>
@@ -668,7 +676,7 @@
         <p>Visualize a distribuição geográfica dos pontos de coleta da sua empresa.</p>
       </div>
 
-      <div class="status-mapa" id="statusMapa">
+      <div class="status-mapa" id="statusMapa" role="status" aria-live="polite">
         <span class="status-ponto"></span>
         <span id="textoStatusMapa">Conectando ao mapa</span>
       </div>
@@ -690,14 +698,20 @@
 
       <div class="mapa-area">
 
-        <div id="loading-mapa" class="loading-mapa">
-          <div class="loading-icone"></div>
+        <div
+          id="loading-mapa"
+          class="loading-mapa"
+          role="status"
+          aria-live="polite"
+        >
+          <div class="loading-icone" aria-hidden="true"></div>
           <span id="textoLoading">Carregando mapa e amostras...</span>
         </div>
 
         <div
           id="map"
-          aria-label="Mapa geográfico com a localização das amostras"
+          role="application"
+          aria-label="Mapa geográfico interativo com a localização das amostras"
         ></div>
 
       </div>
@@ -732,18 +746,23 @@
     let marcadores = [];
 
     const elementoLoading = document.getElementById("loading-mapa");
+    const textoLoading = document.getElementById("textoLoading");
     const statusMapa = document.getElementById("statusMapa");
     const textoStatusMapa = document.getElementById("textoStatusMapa");
 
     // MENSAGENS DE STATUS
 
     function mostrarLoading(mensagem) {
-      elementoLoading.innerHTML = `
-        <div class="loading-icone"></div>
-        <span id="textoLoading"></span>
-      `;
+      elementoLoading.replaceChildren();
 
-      document.getElementById("textoLoading").textContent = mensagem;
+      const icone = document.createElement("div");
+      icone.className = "loading-icone";
+      icone.setAttribute("aria-hidden", "true");
+
+      const texto = document.createElement("span");
+      texto.textContent = mensagem;
+
+      elementoLoading.append(icone, texto);
       elementoLoading.style.display = "flex";
     }
 
@@ -757,12 +776,17 @@
     }
 
     function mostrarErro(mensagem) {
-      elementoLoading.innerHTML = `
-        <div style="font-size:30px;">⚠️</div>
-        <span id="textoLoading"></span>
-      `;
+      elementoLoading.replaceChildren();
 
-      document.getElementById("textoLoading").textContent = mensagem;
+      const icone = document.createElement("div");
+      icone.textContent = "⚠️";
+      icone.style.fontSize = "30px";
+      icone.setAttribute("aria-hidden", "true");
+
+      const texto = document.createElement("span");
+      texto.textContent = mensagem;
+
+      elementoLoading.append(icone, texto);
       elementoLoading.style.display = "flex";
 
       atualizarStatus("Falha ao carregar");
@@ -816,7 +840,8 @@
 
       } catch (erro) {
         mostrarErro(
-          "Não foi possível inicializar o mapa: " + erro.message
+          "Não foi possível inicializar o mapa: " +
+          (erro.message || "Erro desconhecido.")
         );
       }
     }
@@ -831,6 +856,7 @@
       if (mapa) {
         mapa.remove();
         mapa = null;
+        marcadores = [];
       }
 
       mapa = L.map("map", {
@@ -847,11 +873,11 @@
         }
       ).addTo(mapa);
 
-      setTimeout(() => {
+      requestAnimationFrame(() => {
         if (mapa) {
           mapa.invalidateSize(true);
         }
-      }, 300);
+      });
     }
 
     // NORMALIZAÇÃO DAS COORDENADAS
@@ -919,11 +945,49 @@
       });
     }
 
+    // FORMATAÇÃO DE DATA SEM DESLOCAMENTO DE FUSO
+
+    function formatarData(iso) {
+      if (!iso) {
+        return "Sem data";
+      }
+
+      const texto = String(iso);
+
+      if (/^\d{4}-\d{2}-\d{2}$/.test(texto)) {
+        const [ano, mes, dia] = texto.split("-");
+
+        return `${dia}/${mes}/${ano}`;
+      }
+
+      const data = new Date(texto);
+
+      if (Number.isNaN(data.getTime())) {
+        return texto;
+      }
+
+      return data.toLocaleDateString("pt-BR");
+    }
+
+    // LIMPEZA DE MARCADORES
+
+    function limparMarcadores() {
+      marcadores.forEach(marker => {
+        if (mapa && mapa.hasLayer(marker)) {
+          mapa.removeLayer(marker);
+        }
+      });
+
+      marcadores = [];
+    }
+
     // CARREGAMENTO DAS AMOSTRAS
 
     async function carregarAmostrasNoMapa() {
       mostrarLoading("Buscando amostras...");
       atualizarStatus("Consultando amostras");
+
+      limparMarcadores();
 
       const payload = {
         action: "listarAmostras",
@@ -959,10 +1023,11 @@
           );
         }
 
-        const todasAmostras = dados.resultado;
-
-        const amostras = todasAmostras.filter(amostra => {
-          return String(amostra.status || "").toLowerCase() !== "inativa";
+        const amostras = dados.resultado.filter(amostra => {
+          return (
+            amostra &&
+            String(amostra.status || "").toLowerCase() !== "inativa"
+          );
         });
 
         if (amostras.length === 0) {
@@ -1001,15 +1066,12 @@
             String(amostra.amostra_id || "Sem ID").substring(0, 8)
           );
 
-          const dataFormatada = amostra.data_coleta
-            ? new Date(amostra.data_coleta).toLocaleDateString(
-                "pt-BR",
-                { timeZone: "UTC" }
-              )
-            : "Sem data";
+          const dataFormatada = escaparHTML(
+            formatarData(amostra.data_coleta)
+          );
 
           const profundidade = escaparHTML(
-            amostra.profundidade_cm ?? 0
+            amostra.profundidade_cm ?? "Não informada"
           );
 
           const observacoes = escaparHTML(
@@ -1021,11 +1083,12 @@
               <h4>Amostra #${identificador}</h4>
 
               <p>
-                <strong>Data:</strong> ${escaparHTML(dataFormatada)}
+                <strong>Data:</strong> ${dataFormatada}
               </p>
 
               <p>
-                <strong>Profundidade:</strong> ${profundidade} cm
+                <strong>Profundidade:</strong>
+                ${profundidade}${amostra.profundidade_cm !== null && amostra.profundidade_cm !== undefined && amostra.profundidade_cm !== "" ? " cm" : ""}
               </p>
 
               <p>
@@ -1055,7 +1118,13 @@
           });
 
           esconderLoading();
-          atualizarStatus("Mapa atualizado", true);
+
+          atualizarStatus(
+            coordenadasInvalidas > 0
+              ? "Mapa atualizado, alguns pontos sem coordenadas"
+              : "Mapa atualizado",
+            true
+          );
 
         } else {
           mostrarLoading(
@@ -1065,29 +1134,32 @@
           atualizarStatus("Sem coordenadas válidas");
         }
 
-        setTimeout(() => {
+        requestAnimationFrame(() => {
           if (mapa) {
             mapa.invalidateSize(true);
           }
-        }, 300);
+        });
 
       } catch (erro) {
         mostrarErro(
-          "Erro ao carregar amostras: " + erro.message
+          "Erro ao carregar amostras: " +
+          (erro.message || "Erro desconhecido.")
         );
-
-        atualizarStatus("Erro na consulta");
       }
     }
 
     // ATUALIZAÇÃO DO TAMANHO DO MAPA
 
+    let timerResize = null;
+
     window.addEventListener("resize", () => {
-      if (mapa) {
-        setTimeout(() => {
+      clearTimeout(timerResize);
+
+      timerResize = setTimeout(() => {
+        if (mapa) {
           mapa.invalidateSize(true);
-        }, 200);
-      }
+        }
+      }, 200);
     });
 
     // LOGOUT
@@ -1112,20 +1184,44 @@
     function fecharMenu() {
       sidebar.classList.remove("aberta");
       overlay.classList.remove("ativo");
+
       menuToggle.setAttribute("aria-expanded", "false");
+      menuToggle.setAttribute("aria-label", "Abrir menu");
     }
 
-    menuToggle.addEventListener("click", () => {
+    function alternarMenu() {
       const aberto = sidebar.classList.toggle("aberta");
 
       overlay.classList.toggle("ativo", aberto);
-      menuToggle.setAttribute("aria-expanded", String(aberto));
-    });
 
+      menuToggle.setAttribute(
+        "aria-expanded",
+        String(aberto)
+      );
+
+      menuToggle.setAttribute(
+        "aria-label",
+        aberto ? "Fechar menu" : "Abrir menu"
+      );
+    }
+
+    menuToggle.addEventListener("click", alternarMenu);
     overlay.addEventListener("click", fecharMenu);
 
-    document.querySelectorAll(".sidebar a").forEach(link => {
+    sidebar.querySelectorAll("a").forEach(link => {
       link.addEventListener("click", fecharMenu);
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") {
+        fecharMenu();
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 850) {
+        fecharMenu();
+      }
     });
 
     // EXECUÇÃO
