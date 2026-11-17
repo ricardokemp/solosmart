@@ -3,114 +3,828 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#123c2b">
+  <meta name="description" content="Gerencie as fotografias vinculadas às amostras no SoloSmart.">
   <title>Fotografias | SoloSmart</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+
   <style>
     :root {
-      --verde: #236b45; --verde-escuro: #174b31; --verde-claro: #e9f5ed;
-      --fundo: #f3f7f3; --texto: #203229; --cinza: #66756c; --borda: #dce6de;
-      --branco: #ffffff; --sidebar-w: 260px; --header-h: 64px;
+      --verde: #236b45;
+      --verde-escuro: #123c2b;
+      --verde-claro: #eaf4ed;
+      --lima: #b6d957;
+      --fundo: #f5f7f4;
+      --branco: #ffffff;
+      --texto: #203229;
+      --cinza: #66756c;
+      --borda: #dce6de;
+      --vermelho: #a12d2d;
+      --vermelho-claro: #fff0f0;
+      --sombra: 0 6px 22px rgba(28, 65, 43, .055);
+      --sidebar-w: 258px;
+      --header-h: 70px;
     }
-    * { box-sizing: border-box; }
-    body { margin: 0; min-height: 100vh; background: var(--fundo); color: var(--texto); font-family: 'DM Sans', Arial, sans-serif; }
-    
-    .topbar { position: fixed; top: 0; left: 0; right: 0; height: var(--header-h); background: #fff; border-bottom: 1px solid var(--borda); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 50; box-shadow: 0 2px 10px rgba(28,65,43,.04); }
-    .marca { display: flex; align-items: center; gap: 12px; font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 18px; color: var(--verde-escuro); }
-    .simbolo { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 10px; background: var(--verde); color: #fff; font-size: 20px; }
-    .menu-toggle { display: none; background: none; border: 0; font-size: 22px; color: var(--verde-escuro); cursor: pointer; padding: 6px; }
-    .topbar-acoes { display: flex; align-items: center; gap: 14px; }
-    .usuario-topo { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--cinza); }
-    .avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--verde-claro); color: var(--verde); display: grid; place-items: center; font-weight: 800; }
-    .botao-sair { background: #fff0f0; color: #8a2525; border: 1px solid #f5c2c2; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
-    
-    .sidebar { position: fixed; top: var(--header-h); left: 0; bottom: 0; width: var(--sidebar-w); background: #fff; border-right: 1px solid var(--borda); padding: 20px 0; overflow-y: auto; z-index: 40; transition: transform .25s ease; }
-    .sidebar-secao { padding: 0 20px; margin-bottom: 8px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; color: var(--cinza); }
-    .sidebar nav { display: flex; flex-direction: column; gap: 2px; margin-bottom: 18px; }
-    .sidebar a { display: flex; align-items: center; gap: 11px; padding: 10px 20px; color: var(--texto); text-decoration: none; font-size: 14px; font-weight: 600; border-left: 3px solid transparent; transition: .15s; }
-    .sidebar a:hover { background: var(--verde-claro); color: var(--verde-escuro); }
-    .sidebar a.ativo { background: var(--verde-claro); color: var(--verde-escuro); border-left-color: var(--verde); }
-    .sidebar a .icone { font-size: 17px; width: 22px; text-align: center; }
-    
-    .conteudo { margin-left: var(--sidebar-w); margin-top: var(--header-h); padding: 32px 32px 60px; min-height: calc(100vh - var(--header-h)); }
-    .pagina-titulo { margin-bottom: 28px; }
-    .pagina-titulo h1 { font-family: 'Manrope', sans-serif; font-size: 26px; color: var(--verde-escuro); margin: 0 0 6px; letter-spacing: -.5px; }
-    .pagina-titulo p { color: var(--cinza); font-size: 14px; margin: 0; }
-    
-    .cartao { background: #fff; border: 1px solid var(--borda); border-radius: 14px; padding: 24px; box-shadow: 0 6px 18px rgba(28,65,43,.05); margin-bottom: 24px; }
-    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; align-items: end; }
-    .campo { display: flex; flex-direction: column; gap: 6px; }
-    .campo label { font-size: 12px; font-weight: 700; color: var(--texto); }
-    .campo input[type="text"], .campo select { padding: 12px 14px; border: 1px solid var(--borda); border-radius: 8px; font-family: inherit; font-size: 14px; outline: none; background: #fff; }
-    .campo input[type="file"] { padding: 9px; border: 1px dashed var(--verde); border-radius: 8px; background: var(--verde-claro); cursor: pointer; font-size: 13px; }
-    .btn { padding: 12px 20px; border: 0; border-radius: 8px; background: var(--verde); color: #fff; font-weight: 700; font-size: 14px; cursor: pointer; transition: .15s; font-family: inherit; display: inline-flex; justify-content: center; align-items: center; gap: 6px; width: 100%; }
-    .btn:hover { background: var(--verde-escuro); }
-    .btn:disabled { opacity: .6; cursor: wait; }
-    
-    .galeria { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-    .foto-card { background: #fff; border: 1px solid var(--borda); border-radius: 14px; overflow: hidden; box-shadow: 0 4px 12px rgba(28,65,43,.05); display: flex; flex-direction: column; }
-    .foto-img { width: 100%; height: 160px; object-fit: cover; background: #e5e5e5; }
-    .foto-info { padding: 14px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
-    .foto-info strong { font-size: 14px; color: var(--verde-escuro); }
-    .foto-info span { font-size: 11px; color: var(--cinza); }
-    .foto-acoes { padding: 10px 14px; border-top: 1px solid var(--borda); display: flex; gap: 8px; }
-    .btn-acao { flex: 1; padding: 8px; text-align: center; border-radius: 6px; font-size: 12px; font-weight: 700; text-decoration: none; cursor: pointer; border: none; }
-    .btn-abrir { background: var(--verde-claro); color: var(--verde-escuro); }
-    .btn-excluir { background: #fff0f0; color: #8a2525; }
-    
-    .mensagem { display: none; padding: 14px; margin-bottom: 20px; border-radius: 8px; font-size: 14px; }
-    .mensagem.sucesso { display: block; background: #edf8ef; color: #205d38; }
-    .mensagem.erro { display: block; background: #fff0f0; color: #8a2525; }
-    .loading { text-align: center; color: var(--cinza); padding: 20px; }
-    
-    .overlay { display: none; position: fixed; inset: var(--header-h) 0 0 0; background: rgba(0,0,0,.35); z-index: 39; }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--fundo);
+      color: var(--texto);
+      font-family: 'DM Sans', Arial, sans-serif;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button:focus-visible,
+    a:focus-visible,
+    input:focus-visible,
+    select:focus-visible {
+      outline: 3px solid rgba(35, 107, 69, .25);
+      outline-offset: 2px;
+    }
+
+    /* Cabeçalho */
+
+    .topbar {
+      position: fixed;
+      inset: 0 0 auto;
+      height: var(--header-h);
+      background: var(--branco);
+      border-bottom: 1px solid var(--borda);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 50;
+      box-shadow: 0 2px 12px rgba(28, 65, 43, .035);
+    }
+
+    .marca {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--verde-escuro);
+      font-family: 'Manrope', sans-serif;
+      font-size: 19px;
+      font-weight: 800;
+    }
+
+    .simbolo {
+      width: 39px;
+      height: 39px;
+      display: grid;
+      place-items: center;
+      border-radius: 11px;
+      background: var(--verde);
+      color: white;
+      font-size: 20px;
+    }
+
+    .menu-toggle {
+      display: none;
+      padding: 6px;
+      border: 0;
+      background: transparent;
+      color: var(--verde-escuro);
+      font-size: 23px;
+      cursor: pointer;
+    }
+
+    .topbar-acoes {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .usuario-topo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--cinza);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--verde-claro);
+      color: var(--verde);
+      font-weight: 800;
+    }
+
+    .botao-sair {
+      padding: 9px 15px;
+      border: 1px solid #f1cccc;
+      border-radius: 9px;
+      background: var(--vermelho-claro);
+      color: var(--vermelho);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .botao-sair:hover {
+      background: #ffe2e2;
+    }
+
+    /* Menu lateral */
+
+    .sidebar {
+      position: fixed;
+      top: var(--header-h);
+      left: 0;
+      bottom: 0;
+      width: var(--sidebar-w);
+      padding: 24px 0;
+      overflow-y: auto;
+      background: var(--branco);
+      border-right: 1px solid var(--borda);
+      z-index: 40;
+      transition: transform .25s ease;
+    }
+
+    .sidebar-secao {
+      padding: 0 22px;
+      margin: 0 0 9px;
+      color: var(--cinza);
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .sidebar nav {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      margin-bottom: 24px;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 20px;
+      border-left: 3px solid transparent;
+      color: var(--texto);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      transition: .18s ease;
+    }
+
+    .sidebar a:hover {
+      background: #f5f9f5;
+      color: var(--verde-escuro);
+    }
+
+    .sidebar a.ativo {
+      background: var(--verde-claro);
+      border-left-color: var(--verde);
+      color: var(--verde-escuro);
+    }
+
+    .sidebar a .icone {
+      width: 22px;
+      text-align: center;
+      font-size: 17px;
+    }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: var(--header-h) 0 0;
+      background: rgba(12, 32, 21, .38);
+      z-index: 39;
+    }
+
+    /* Conteúdo */
+
+    .conteudo {
+      min-height: calc(100vh - var(--header-h));
+      margin-left: var(--sidebar-w);
+      margin-top: var(--header-h);
+      padding: 34px 36px 60px;
+    }
+
+    .pagina-titulo {
+      margin-bottom: 28px;
+    }
+
+    .pagina-titulo h1 {
+      margin: 0 0 7px;
+      color: var(--verde-escuro);
+      font-family: 'Manrope', sans-serif;
+      font-size: 27px;
+      font-weight: 800;
+      letter-spacing: -.7px;
+    }
+
+    .pagina-titulo p {
+      margin: 0;
+      color: var(--cinza);
+      font-size: 14px;
+    }
+
+    /* Mensagens */
+
+    .mensagem {
+      display: none;
+      padding: 14px 16px;
+      margin-bottom: 20px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    .mensagem.sucesso {
+      display: block;
+      background: #edf8ef;
+      border-color: #cce8d1;
+      color: #205d38;
+    }
+
+    .mensagem.erro {
+      display: block;
+      background: var(--vermelho-claro);
+      border-color: #f1cccc;
+      color: var(--vermelho);
+    }
+
+    /* Cartões */
+
+    .cartao {
+      padding: 25px;
+      margin-bottom: 25px;
+      background: var(--branco);
+      border: 1px solid var(--borda);
+      border-radius: 15px;
+      box-shadow: var(--sombra);
+    }
+
+    .cartao-cabecalho {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .cartao-titulo {
+      margin: 0;
+      color: var(--verde-escuro);
+      font-family: 'Manrope', sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .cartao-descricao {
+      margin: 5px 0 0;
+      color: var(--cinza);
+      font-size: 12px;
+    }
+
+    /* Formulário */
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      align-items: end;
+    }
+
+    .campo {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .campo label {
+      color: var(--texto);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .campo input[type="text"],
+    .campo select {
+      width: 100%;
+      min-height: 44px;
+      padding: 11px 13px;
+      border: 1px solid var(--borda);
+      border-radius: 9px;
+      background: #fff;
+      color: var(--texto);
+      font-size: 13px;
+      transition: border-color .18s, box-shadow .18s;
+    }
+
+    .campo input:focus,
+    .campo select:focus {
+      outline: none;
+      border-color: var(--verde);
+      box-shadow: 0 0 0 3px rgba(35, 107, 69, .09);
+    }
+
+    .campo select:disabled {
+      background: #f3f5f3;
+      color: #929d95;
+      cursor: not-allowed;
+    }
+
+    .campo input[type="file"] {
+      width: 100%;
+      min-height: 44px;
+      padding: 9px;
+      border: 1px dashed var(--verde);
+      border-radius: 9px;
+      background: var(--verde-claro);
+      color: var(--texto);
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .campo-amostra {
+      grid-column: 1 / -1;
+    }
+
+    .campo-botao {
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .btn {
+      width: 100%;
+      min-height: 44px;
+      padding: 11px 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 0;
+      border-radius: 9px;
+      background: var(--verde);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .18s, transform .18s;
+    }
+
+    .btn:hover:not(:disabled) {
+      background: var(--verde-escuro);
+      transform: translateY(-1px);
+    }
+
+    .btn:disabled {
+      opacity: .65;
+      cursor: wait;
+    }
+
+    .ajuda-campo {
+      margin: 6px 0 0;
+      color: var(--cinza);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    /* Galeria */
+
+    .galeria-secao {
+      margin-top: 30px;
+    }
+
+    .galeria {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 20px;
+    }
+
+    .foto-card {
+      min-width: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background: var(--branco);
+      border: 1px solid var(--borda);
+      border-radius: 14px;
+      box-shadow: 0 4px 14px rgba(28, 65, 43, .045);
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .foto-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 9px 22px rgba(28, 65, 43, .09);
+    }
+
+    .foto-imagem-container {
+      position: relative;
+      width: 100%;
+      height: 185px;
+      overflow: hidden;
+      background: #edf1ed;
+    }
+
+    .foto-img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      transition: transform .3s ease;
+    }
+
+    .foto-card:hover .foto-img {
+      transform: scale(1.035);
+    }
+
+    .foto-imagem-erro {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: var(--cinza);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .foto-imagem-erro span {
+      font-size: 28px;
+    }
+
+    .foto-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      padding: 16px;
+    }
+
+    .foto-info strong {
+      color: var(--verde-escuro);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .foto-info span {
+      color: var(--cinza);
+      font-size: 11px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    .foto-observacao {
+      padding-top: 7px;
+      border-top: 1px solid #edf1ed;
+      color: var(--texto) !important;
+    }
+
+    .foto-acoes {
+      display: flex;
+      gap: 9px;
+      padding: 12px 14px;
+      border-top: 1px solid var(--borda);
+    }
+
+    .btn-acao {
+      flex: 1;
+      min-height: 35px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 10px;
+      border: 0;
+      border-radius: 7px;
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      transition: .18s ease;
+    }
+
+    .btn-abrir {
+      background: var(--verde-claro);
+      color: var(--verde-escuro);
+    }
+
+    .btn-abrir:hover {
+      background: #dceee0;
+    }
+
+    .btn-excluir {
+      background: var(--vermelho-claro);
+      color: var(--vermelho);
+    }
+
+    .btn-excluir:hover:not(:disabled) {
+      background: #ffe2e2;
+    }
+
+    .btn-excluir:disabled {
+      opacity: .6;
+      cursor: wait;
+    }
+
+    /* Estados */
+
+    .loading,
+    .estado-vazio {
+      padding: 40px 20px;
+      color: var(--cinza);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .estado-vazio strong {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--texto);
+      font-size: 14px;
+    }
+
+    .estado-vazio-icone {
+      display: block;
+      margin-bottom: 12px;
+      font-size: 30px;
+    }
+
+    .contador-fotos {
+      margin: 18px 0 0;
+      color: var(--cinza);
+      font-size: 11px;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    /* Responsividade */
+
+    @media (max-width: 1100px) {
+      .galeria {
+        grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      }
+    }
+
     @media (max-width: 900px) {
-      .menu-toggle { display: block; }
-      .sidebar { transform: translateX(-100%); }
-      .sidebar.aberta { transform: translateX(0); }
-      .conteudo { margin-left: 0; padding: 24px 20px 60px; }
-      .overlay.ativo { display: block; }
+      .menu-toggle {
+        display: block;
+      }
+
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.aberta {
+        transform: translateX(0);
+      }
+
+      .overlay.ativo {
+        display: block;
+      }
+
+      .conteudo {
+        margin-left: 0;
+        padding: 28px 22px 50px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      :root {
+        --header-h: 64px;
+      }
+
+      .topbar {
+        padding: 0 14px;
+      }
+
+      .marca {
+        gap: 8px;
+        font-size: 17px;
+      }
+
+      .simbolo {
+        width: 34px;
+        height: 34px;
+      }
+
+      .topbar-acoes {
+        gap: 9px;
+      }
+
+      .usuario-topo {
+        gap: 7px;
+      }
+
+      .nome-topo {
+        display: none;
+      }
+
+      .botao-sair {
+        padding: 8px 10px;
+        font-size: 12px;
+      }
+
+      .conteudo {
+        padding: 24px 15px 40px;
+      }
+
+      .pagina-titulo h1 {
+        font-size: 23px;
+      }
+
+      .pagina-titulo p {
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .cartao {
+        padding: 19px 15px;
+        border-radius: 12px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .campo-amostra {
+        grid-column: auto;
+      }
+
+      .galeria {
+        grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+        gap: 12px;
+      }
+
+      .foto-imagem-container {
+        height: 145px;
+      }
+
+      .foto-info {
+        padding: 12px;
+      }
+
+      .foto-acoes {
+        padding: 10px;
+        gap: 6px;
+      }
+
+      .btn-acao {
+        padding: 8px 5px;
+        font-size: 10px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .galeria {
+        grid-template-columns: 1fr;
+      }
+
+      .foto-imagem-container {
+        height: 190px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+      }
     }
   </style>
 </head>
+
 <body>
 
   <header class="topbar">
     <div class="marca">
-      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">☰</button>
+      <button
+        class="menu-toggle"
+        id="menuToggle"
+        type="button"
+        aria-label="Abrir menu"
+        aria-expanded="false"
+        aria-controls="sidebar"
+      >☰</button>
+
       <div class="simbolo">🌱</div>
       <span>SoloSmart</span>
     </div>
+
     <div class="topbar-acoes">
       <div class="usuario-topo">
         <div class="avatar" id="avatarTopo">?</div>
         <span class="nome-topo" id="nomeTopo">Carregando...</span>
       </div>
-      <button id="botaoSair" class="botao-sair">Sair</button>
+
+      <button id="botaoSair" class="botao-sair" type="button">
+        Sair
+      </button>
     </div>
   </header>
 
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-secao">Principal</div>
-    <nav>
-      <a href="painel.html"><span class="icone">📊</span> Visão geral</a>
-      <a href="propriedades.html"><span class="icone">🌾</span> Propriedades</a>
-      <a href="talhoes.html"><span class="icone">🔲</span> Talhões</a>
-      <a href="amostras.html"><span class="icone">🧪</span> Amostras</a>
-      <a href="mapas.html"><span class="icone">🗺️</span> Mapas</a>
+
+    <nav aria-label="Navegação principal">
+      <a href="painel.html">
+        <span class="icone">📊</span>
+        Visão geral
+      </a>
+
+      <a href="propriedades.html">
+        <span class="icone">🌾</span>
+        Propriedades
+      </a>
+
+      <a href="talhoes.html">
+        <span class="icone">🔲</span>
+        Talhões
+      </a>
+
+      <a href="amostras.html">
+        <span class="icone">🧪</span>
+        Amostras
+      </a>
+
+      <a href="mapas.html">
+        <span class="icone">🗺️</span>
+        Mapas
+      </a>
     </nav>
+
     <div class="sidebar-secao">Gestão</div>
-    <nav>
-      <a href="campanhas.html"><span class="icone">📋</span> Campanhas</a>
-      <a href="fotografias.html" class="ativo"><span class="icone">📷</span> Fotografias</a>
-      <a href="#"><span class="icone">📡</span> Dispositivos IoT</a>
-      <a href="#"><span class="icone">📈</span> Relatórios</a>
+
+    <nav aria-label="Gestão">
+      <a href="campanhas.html">
+        <span class="icone">📋</span>
+        Campanhas
+      </a>
+
+      <a href="fotografias.html" class="ativo" aria-current="page">
+        <span class="icone">📷</span>
+        Fotografias
+      </a>
+
+      <a href="#">
+        <span class="icone">📡</span>
+        Dispositivos IoT
+      </a>
+
+      <a href="#">
+        <span class="icone">📈</span>
+        Relatórios
+      </a>
     </nav>
+
     <div class="sidebar-secao">Conta</div>
-    <nav>
-      <a href="#"><span class="icone">👤</span> Meu perfil</a>
-      <a href="#"><span class="icone">🏢</span> Empresa</a>
-      <a href="#"><span class="icone">⚙️</span> Configurações</a>
+
+    <nav aria-label="Conta">
+      <a href="#">
+        <span class="icone">👤</span>
+        Meu perfil
+      </a>
+
+      <a href="#">
+        <span class="icone">🏢</span>
+        Empresa
+      </a>
+
+      <a href="#">
+        <span class="icone">⚙️</span>
+        Configurações
+      </a>
     </nav>
   </aside>
 
@@ -122,13 +836,29 @@
       <p>Registre imagens do solo e das culturas vinculadas às amostras.</p>
     </div>
 
-    <div id="mensagem" class="mensagem"></div>
+    <div
+      id="mensagem"
+      class="mensagem"
+      role="status"
+      aria-live="polite"
+    ></div>
 
-    <div class="cartao">
-      <h2 style="font-family: 'Manrope', sans-serif; font-size: 18px; color: var(--verde-escuro); margin: 0 0 20px;">Nova Fotografia</h2>
+    <!-- Cadastro de fotografia -->
+
+    <section class="cartao" aria-labelledby="tituloNovaFoto">
+      <div class="cartao-cabecalho">
+        <div>
+          <h2 class="cartao-titulo" id="tituloNovaFoto">
+            Nova Fotografia
+          </h2>
+          <p class="cartao-descricao">
+            Selecione uma amostra e envie uma imagem.
+          </p>
+        </div>
+      </div>
+
       <form id="formFoto" class="form-grid">
-        
-        <div class="campo" style="grid-column: 1 / -1;">
+        <div class="campo campo-amostra">
           <label for="amostra">Amostra Vinculada *</label>
           <select id="amostra" required>
             <option value="">Carregando amostras...</option>
@@ -137,28 +867,64 @@
 
         <div class="campo">
           <label for="foto">Selecionar Imagem *</label>
-          <input id="foto" type="file" accept="image/png, image/jpeg" required>
+          <input
+            id="foto"
+            type="file"
+            accept="image/png,image/jpeg"
+            required
+          >
+          <p class="ajuda-campo">
+            Formatos aceitos: JPG e PNG. Tamanho máximo: 4 MB.
+          </p>
         </div>
 
         <div class="campo">
           <label for="observacoes">Observações</label>
-          <input id="observacoes" type="text" placeholder="Ex: Perfil do solo">
+          <input
+            id="observacoes"
+            type="text"
+            maxlength="500"
+            placeholder="Ex.: Perfil do solo"
+          >
         </div>
 
-        <div class="campo">
-          <button type="submit" id="btnSalvar" class="btn">Enviar Fotografia</button>
+        <div class="campo-botao">
+          <button type="submit" id="btnSalvar" class="btn">
+            <span>＋</span>
+            Enviar Fotografia
+          </button>
         </div>
       </form>
-    </div>
+    </section>
 
-    <h2 style="font-family: 'Manrope', sans-serif; font-size: 18px; color: var(--verde-escuro); margin: 30px 0 16px;">Galeria de Fotos</h2>
-    
-    <div id="loadingGaleria" class="loading">Carregando galeria...</div>
-    
-    <div id="galeria" class="galeria" style="display: none;"></div>
-    <div id="vazioGaleria" style="display: none; text-align: center; color: var(--cinza); padding: 20px;">
-      Nenhuma fotografia cadastrada ainda.
-    </div>
+    <!-- Galeria -->
+
+    <section class="galeria-secao" aria-labelledby="tituloGaleria">
+      <div class="cartao-cabecalho">
+        <div>
+          <h2 class="cartao-titulo" id="tituloGaleria">
+            Galeria de Fotografias
+          </h2>
+          <p class="cartao-descricao">
+            Imagens registradas nas amostras cadastradas.
+          </p>
+        </div>
+      </div>
+
+      <div id="loadingGaleria" class="loading" role="status">
+        Carregando galeria...
+      </div>
+
+      <div id="galeria" class="galeria" hidden></div>
+
+      <div id="vazioGaleria" class="estado-vazio" hidden>
+        <span class="estado-vazio-icone">📷</span>
+        <strong>Nenhuma fotografia cadastrada</strong>
+        <span>As imagens enviadas aparecerão aqui.</span>
+      </div>
+
+      <p id="contadorFotos" class="contador-fotos"></p>
+    </section>
   </main>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -168,305 +934,755 @@
   <script>
     let idTokenAtual = "";
     let listaAmostras = [];
+    let timerMensagem = null;
+
+    const elementoMensagem = document.getElementById("mensagem");
+    const elementoGaleria = document.getElementById("galeria");
+    const elementoVazio = document.getElementById("vazioGaleria");
+    const elementoLoading = document.getElementById("loadingGaleria");
+    const contadorFotos = document.getElementById("contadorFotos");
+
+    /* Mensagens */
 
     function mostrarMensagem(texto, tipo) {
-      const el = document.getElementById("mensagem");
-      el.textContent = texto;
-      el.className = "mensagem " + tipo;
-      setTimeout(() => { el.className = "mensagem"; }, 5000);
+      clearTimeout(timerMensagem);
+
+      elementoMensagem.textContent = texto;
+      elementoMensagem.className = "mensagem " + tipo;
+
+      timerMensagem = setTimeout(() => {
+        elementoMensagem.className = "mensagem";
+        elementoMensagem.textContent = "";
+      }, 5000);
     }
 
-    function formatarData(iso) {
-      if (!iso) return "-";
-      const d = new Date(iso);
-      return isNaN(d) ? iso : d.toLocaleDateString('pt-BR');
+    /* Utilitários */
+
+    function normalizarId(valor) {
+      if (valor === null || valor === undefined) {
+        return "";
+      }
+
+      return String(valor);
     }
 
-    // ============================================================
-    // BOOT
-    // ============================================================
-    (async function () {
+    function formatarData(valor) {
+      if (!valor) return "-";
+
+      const texto = String(valor).trim();
+
+      if (!texto) return "-";
+
+      let data;
+
+      const somenteData = texto.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+
+      if (somenteData) {
+        data = new Date(
+          Number(somenteData[1]),
+          Number(somenteData[2]) - 1,
+          Number(somenteData[3])
+        );
+      } else {
+        data = new Date(texto);
+      }
+
+      if (Number.isNaN(data.getTime())) {
+        return texto;
+      }
+
+      return data.toLocaleDateString("pt-BR");
+    }
+
+    function criarElemento(tag, classe, texto) {
+      const elemento = document.createElement(tag);
+
+      if (classe) {
+        elemento.className = classe;
+      }
+
+      if (texto !== undefined && texto !== null) {
+        elemento.textContent = String(texto);
+      }
+
+      return elemento;
+    }
+
+    async function obterTokenAtual() {
+      const usuario = firebase.auth().currentUser;
+
+      if (!usuario) {
+        throw new Error("Sua sessão expirou. Faça login novamente.");
+      }
+
+      idTokenAtual = await usuario.getIdToken(true);
+
+      return idTokenAtual;
+    }
+
+    /*
+      Mantém o formato original de comunicação desta página:
+      application/x-www-form-urlencoded com o campo payload.
+    */
+
+    async function enviarRequisicao(payload) {
+      const resposta = await fetch(SoloSmart.URL_API, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "payload=" + encodeURIComponent(JSON.stringify(payload))
+      });
+
+      if (!resposta.ok) {
+        throw new Error("Não foi possível comunicar com o servidor.");
+      }
+
+      return await resposta.json();
+    }
+
+    /* URLs das imagens */
+
+    function obterUrlImagem(urlOriginal) {
+      if (!urlOriginal || typeof urlOriginal !== "string") {
+        return "";
+      }
+
       try {
-        // DIAGNÓSTICO: qual URL o auth.js está usando?
-        console.log("🔍 [SoloSmart] URL_API em uso:", SoloSmart.URL_API);
-        console.log("🔍 [SoloSmart] É a URL V28?", SoloSmart.URL_API.includes("AKfycbzsolPc"));
-        console.log("🔍 [SoloSmart] É a URL V27?", SoloSmart.URL_API.includes("AKfycbzYwTGM"));
-        console.log("🔍 [SoloSmart] É a URL V25?", SoloSmart.URL_API.includes("AKfycbxeU6am"));
+        const url = new URL(urlOriginal);
 
-        const usuario = await SoloSmart.protegerPagina({ paginaLogin: "login.html" });
-        console.log("🔍 [SoloSmart] Usuário logado:", usuario.email, "| Empresa:", usuario.empresa_id);
+        if (url.protocol !== "https:" && url.protocol !== "http:") {
+          return "";
+        }
+
+        const dominio = url.hostname.toLowerCase();
+
+        const ehGoogleDrive =
+          dominio === "drive.google.com" ||
+          dominio === "docs.google.com";
+
+        if (ehGoogleDrive) {
+          const match = url.pathname.match(/\/d\/([a-zA-Z0-9_-]+)/);
+          const idArquivo =
+            url.searchParams.get("id") ||
+            (match ? match[1] : "");
+
+          if (idArquivo) {
+            return "https://drive.google.com/thumbnail?id=" +
+              encodeURIComponent(idArquivo) +
+              "&sz=w600";
+          }
+        }
+
+        return url.href;
+
+      } catch (erro) {
+        return "";
+      }
+    }
+
+    /* Inicialização */
+
+    async function inicializarPagina() {
+      try {
+        if (typeof SoloSmart === "undefined") {
+          throw new Error("Não foi possível inicializar o sistema.");
+        }
+
+        const usuario = await SoloSmart.protegerPagina({
+          paginaLogin: "login.html"
+        });
 
         const nome = usuario.nome || usuario.email || "?";
-        document.getElementById("nomeTopo").textContent = nome;
-        document.getElementById("avatarTopo").textContent = nome.charAt(0).toUpperCase();
 
-        idTokenAtual = await firebase.auth().currentUser.getIdToken(true);
+        document.getElementById("nomeTopo").textContent = nome;
+
+        document.getElementById("avatarTopo").textContent =
+          nome.charAt(0).toUpperCase();
+
+        await obterTokenAtual();
 
         await carregarAmostrasSelect();
         await carregarGaleria();
 
-      } catch (e) {
-        console.error("❌ [SoloSmart] Erro no boot:", e);
-        mostrarMensagem("Não foi possível carregar a página. " + (e.message || ""), "erro");
-      }
-    })();
+      } catch (erro) {
+        elementoLoading.hidden = true;
 
-    // ============================================================
-    // AMOSTRAS (select)
-    // ============================================================
-    async function carregarAmostrasSelect() {
-      const payload = { action: "listarAmostras", idToken: idTokenAtual };
-
-      try {
-        const resposta = await fetch(SoloSmart.URL_API, {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: "payload=" + encodeURIComponent(JSON.stringify(payload))
-        });
-        const dados = await resposta.json();
-
-        console.log("🔍 [Amostras] Resposta do backend:", dados);
-
-        if (dados.sucesso && dados.resultado) {
-          listaAmostras = dados.resultado.filter(a => String(a.status || "").toLowerCase() !== "inativa");
-
-          console.log("🔍 [Amostras] Após filtro de inativas:", listaAmostras.length, "amostra(s)");
-          console.log("🔍 [Amostras] A amostra 9d15f965 está presente?", listaAmostras.some(a => a.amostra_id === "9d15f965-459d-4656-97ae-fdac71879324"));
-
-          const select = document.getElementById("amostra");
-          select.innerHTML = '<option value="">Selecione uma amostra</option>';
-
-          listaAmostras.forEach(a => {
-            const opt = document.createElement("option");
-            opt.value = a.amostra_id;
-            opt.textContent = `#${a.amostra_id.substring(0,4)} - ${a.data_coleta ? formatarData(a.data_coleta) : 'Sem data'}`;
-            select.appendChild(opt);
-          });
-
-          if (listaAmostras.length === 0) {
-            select.innerHTML = '<option value="">Nenhuma amostra ativa encontrada</option>';
-          }
-        } else {
-          console.warn("⚠️ [Amostras] Backend não retornou sucesso:", dados.mensagem);
-          const select = document.getElementById("amostra");
-          select.innerHTML = '<option value="">Erro ao carregar amostras</option>';
-          mostrarMensagem("Não foi possível carregar as amostras. " + (dados.mensagem || ""), "erro");
-        }
-      } catch (e) {
-        console.error("❌ [Amostras] Erro:", e);
-        const select = document.getElementById("amostra");
-        select.innerHTML = '<option value="">Erro ao carregar amostras</option>';
-        mostrarMensagem("Erro ao carregar amostras. Tente novamente.", "erro");
+        mostrarMensagem(
+          "Não foi possível carregar a página. " +
+          (erro.message || "Verifique sua conexão."),
+          "erro"
+        );
       }
     }
 
-    // ============================================================
-    // GALERIA
-    // ============================================================
-    async function carregarGaleria() {
-      const payload = { action: "listarFotografias", idToken: idTokenAtual };
+    /* Carregar amostras */
+
+    async function carregarAmostrasSelect() {
+      const select = document.getElementById("amostra");
 
       try {
-        const resposta = await fetch(SoloSmart.URL_API, {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: "payload=" + encodeURIComponent(JSON.stringify(payload))
+        const payload = {
+          action: "listarAmostras",
+          idToken: idTokenAtual
+        };
+
+        const dados = await enviarRequisicao(payload);
+
+        if (!dados.sucesso) {
+          throw new Error(
+            dados.mensagem || "Erro ao carregar amostras."
+          );
+        }
+
+        if (!Array.isArray(dados.resultado)) {
+          throw new Error("A lista de amostras recebida é inválida.");
+        }
+
+        listaAmostras = dados.resultado.filter(
+          amostra =>
+            String(amostra.status || "").toLowerCase() !== "inativa"
+        );
+
+        select.replaceChildren();
+
+        const opcaoInicial = document.createElement("option");
+        opcaoInicial.value = "";
+        opcaoInicial.textContent = "Selecione uma amostra";
+
+        select.appendChild(opcaoInicial);
+
+        listaAmostras.forEach(amostra => {
+          const opcao = document.createElement("option");
+
+          const id = normalizarId(amostra.amostra_id);
+          const idCurto = id ? id.substring(0, 4) : "----";
+
+          opcao.value = id;
+          opcao.textContent =
+            `#${idCurto} | ${amostra.data_coleta
+              ? formatarData(amostra.data_coleta)
+              : "Sem data"}`;
+
+          select.appendChild(opcao);
         });
-        const dados = await resposta.json();
 
-        document.getElementById("loadingGaleria").style.display = "none";
+        if (listaAmostras.length === 0) {
+          select.replaceChildren();
 
-        console.log("🔍 [Galeria] Resposta do backend:", dados);
-        console.log("🔍 [Galeria] Total de fotos retornadas:", (dados.resultado || []).length);
+          const opcao = document.createElement("option");
+          opcao.value = "";
+          opcao.textContent = "Nenhuma amostra ativa encontrada";
 
-        if (!dados.sucesso) throw new Error(dados.mensagem || "Erro ao carregar galeria.");
+          select.appendChild(opcao);
+          select.disabled = true;
 
-        const fotos = Array.isArray(dados.resultado) ? dados.resultado : [];
-        renderizarGaleria(fotos);
+          mostrarMensagem(
+            "Cadastre uma amostra ativa antes de enviar fotografias.",
+            "erro"
+          );
+        } else {
+          select.disabled = false;
+        }
 
       } catch (erro) {
-        console.error("❌ [Galeria] Erro:", erro);
-        document.getElementById("loadingGaleria").style.display = "none";
-        document.getElementById("vazioGaleria").style.display = "block";
-        document.getElementById("vazioGaleria").textContent = "Erro ao carregar galeria: " + (erro.message || "desconhecido");
-        mostrarMensagem(erro.message, "erro");
+        select.replaceChildren();
+
+        const opcao = document.createElement("option");
+        opcao.value = "";
+        opcao.textContent = "Erro ao carregar amostras";
+
+        select.appendChild(opcao);
+        select.disabled = true;
+
+        mostrarMensagem(
+          erro.message || "Não foi possível carregar as amostras.",
+          "erro"
+        );
+
+        throw erro;
       }
     }
 
-    function renderizarGaleria(fotos) {
-      const galeria = document.getElementById("galeria");
-      const vazia = document.getElementById("vazioGaleria");
+    /* Carregar galeria */
 
-      galeria.innerHTML = "";
+    async function carregarGaleria() {
+      elementoLoading.hidden = false;
+      elementoGaleria.hidden = true;
+      elementoVazio.hidden = true;
+      contadorFotos.textContent = "";
+
+      try {
+        await obterTokenAtual();
+
+        const payload = {
+          action: "listarFotografias",
+          idToken: idTokenAtual
+        };
+
+        const dados = await enviarRequisicao(payload);
+
+        if (!dados.sucesso) {
+          throw new Error(
+            dados.mensagem || "Erro ao carregar galeria."
+          );
+        }
+
+        if (!Array.isArray(dados.resultado)) {
+          throw new Error("A lista de fotografias recebida é inválida.");
+        }
+
+        renderizarGaleria(dados.resultado);
+
+      } catch (erro) {
+        elementoVazio.hidden = false;
+        elementoVazio.replaceChildren(
+          criarElemento("span", "estado-vazio-icone", "⚠️"),
+          criarElemento("strong", "", "Não foi possível carregar a galeria"),
+          criarElemento("span", "", erro.message || "Tente novamente.")
+        );
+
+        mostrarMensagem(
+          erro.message || "Erro ao carregar galeria.",
+          "erro"
+        );
+
+      } finally {
+        elementoLoading.hidden = true;
+      }
+    }
+
+    /* Renderizar galeria */
+
+    function renderizarGaleria(fotos) {
+      elementoGaleria.replaceChildren();
 
       if (!fotos || fotos.length === 0) {
-        galeria.style.display = "none";
-        vazia.style.display = "block";
-        vazia.textContent = "Nenhuma fotografia cadastrada ainda.";
+        elementoGaleria.hidden = true;
+        elementoVazio.hidden = false;
+
+        elementoVazio.replaceChildren(
+          criarElemento("span", "estado-vazio-icone", "📷"),
+          criarElemento("strong", "", "Nenhuma fotografia cadastrada"),
+          criarElemento("span", "", "As imagens enviadas aparecerão aqui.")
+        );
+
+        contadorFotos.textContent = "";
         return;
       }
 
-      galeria.style.display = "grid";
-      vazia.style.display = "none";
+      elementoGaleria.hidden = false;
+      elementoVazio.hidden = true;
 
-      fotos.forEach(f => {
-        const amostra = listaAmostras.find(a => a.amostra_id === f.amostra_id);
-        const idCurto = amostra ? `#${amostra.amostra_id.substring(0,4)}` : "Desconhecida";
+      fotos.forEach(foto => {
+        const card = criarElemento("article", "foto-card");
 
-        // 🔧 CORREÇÃO: usa thumbnail do Drive (mais confiável que uc?export=view)
-        let urlImg = f.arquivo_url || "";
-        if (urlImg.includes("drive.google.com") || urlImg.includes("docs.google.com")) {
-          const match = urlImg.match(/[-\w]{25,}/);
-          if (match) {
-            urlImg = `https://drive.google.com/thumbnail?id=${match[0]}&sz=w400`;
-          }
+        const amostra = listaAmostras.find(
+          item =>
+            normalizarId(item.amostra_id) ===
+            normalizarId(foto.amostra_id)
+        );
+
+        const idAmostra = amostra
+          ? normalizarId(amostra.amostra_id)
+          : "";
+
+        const idCurto = idAmostra
+          ? "#" + idAmostra.substring(0, 4)
+          : "Amostra não identificada";
+
+        /* Imagem */
+
+        const containerImagem = criarElemento(
+          "div",
+          "foto-imagem-container"
+        );
+
+        const urlImagem = obterUrlImagem(foto.arquivo_url);
+
+        if (urlImagem) {
+          const imagem = document.createElement("img");
+
+          imagem.className = "foto-img";
+          imagem.alt = "Fotografia vinculada à amostra " + idCurto;
+          imagem.loading = "lazy";
+          imagem.decoding = "async";
+          imagem.src = urlImagem;
+
+          imagem.addEventListener("error", () => {
+            containerImagem.replaceChildren(
+              criarElemento(
+                "div",
+                "foto-imagem-erro",
+                null
+              )
+            );
+
+            const estadoErro = containerImagem.firstElementChild;
+
+            estadoErro.append(
+              criarElemento("span", "", "🖼️"),
+              criarElemento("strong", "", "Imagem indisponível")
+            );
+          }, { once: true });
+
+          containerImagem.appendChild(imagem);
+
+        } else {
+          const erroImagem = criarElemento(
+            "div",
+            "foto-imagem-erro"
+          );
+
+          erroImagem.append(
+            criarElemento("span", "", "🖼️"),
+            criarElemento("strong", "", "Imagem indisponível")
+          );
+
+          containerImagem.appendChild(erroImagem);
         }
 
-        const div = document.createElement("div");
-        div.className = "foto-card";
-        div.innerHTML = `
-          <img src="${urlImg}" class="foto-img" alt="Foto da amostra" loading="lazy"
-               onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 160%22><rect fill=%22%23f0f0f0%22 width=%22400%22 height=%22160%22/><text x=%2250%25%22 y=%2250%25%22 font-family=%22Arial%22 font-size=%2214%22 fill=%22%23999%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22>Imagem indisponível</text></svg>'">
-          <div class="foto-info">
-            <strong>Amostra ${idCurto}</strong>
-            <span>Enviado em: ${formatarData(f.data_upload)}</span>
-            ${f.observacoes ? `<span>${f.observacoes}</span>` : ''}
-          </div>
-          <div class="foto-acoes">
-            <a href="${f.arquivo_url}" target="_blank" rel="noopener" class="btn-acao btn-abrir">Abrir</a>
-            <button class="btn-acao btn-excluir" data-id="${f.foto_id}">Excluir</button>
-          </div>
-        `;
-        galeria.appendChild(div);
+        /* Informações */
+
+        const informacoes = criarElemento("div", "foto-info");
+
+        informacoes.appendChild(
+          criarElemento("strong", "", "Amostra " + idCurto)
+        );
+
+        informacoes.appendChild(
+          criarElemento(
+            "span",
+            "",
+            "Enviado em: " + formatarData(foto.data_upload)
+          )
+        );
+
+        if (foto.observacoes) {
+          informacoes.appendChild(
+            criarElemento(
+              "span",
+              "foto-observacao",
+              foto.observacoes
+            )
+          );
+        }
+
+        /* Ações */
+
+        const acoes = criarElemento("div", "foto-acoes");
+
+        if (foto.arquivo_url) {
+          const linkAbrir = document.createElement("a");
+
+          linkAbrir.className = "btn-acao btn-abrir";
+          linkAbrir.textContent = "Abrir";
+          linkAbrir.href = foto.arquivo_url;
+          linkAbrir.target = "_blank";
+          linkAbrir.rel = "noopener noreferrer";
+
+          linkAbrir.addEventListener("click", evento => {
+            const urlSegura = obterUrlImagem(foto.arquivo_url);
+
+            if (!urlSegura) {
+              evento.preventDefault();
+              mostrarMensagem(
+                "O endereço desta imagem não é válido.",
+                "erro"
+              );
+              return;
+            }
+
+            linkAbrir.href = foto.arquivo_url;
+          });
+
+          acoes.appendChild(linkAbrir);
+        }
+
+        const botaoExcluir = document.createElement("button");
+
+        botaoExcluir.type = "button";
+        botaoExcluir.className = "btn-acao btn-excluir";
+        botaoExcluir.textContent = "Excluir";
+
+        botaoExcluir.addEventListener("click", () => {
+          excluirFoto(foto.foto_id, botaoExcluir);
+        });
+
+        acoes.appendChild(botaoExcluir);
+
+        card.append(
+          containerImagem,
+          informacoes,
+          acoes
+        );
+
+        elementoGaleria.appendChild(card);
       });
 
-      document.querySelectorAll(".btn-excluir").forEach(btn => {
-        btn.addEventListener("click", function() {
-          const id = this.getAttribute("data-id");
-          excluirFoto(id, this);
-        });
-      });
+      contadorFotos.textContent =
+        fotos.length === 1
+          ? "1 fotografia cadastrada"
+          : `${fotos.length} fotografias cadastradas`;
     }
 
-    // ============================================================
-    // EXCLUIR
-    // ============================================================
+    /* Excluir fotografia */
+
     async function excluirFoto(id, botao) {
-      if (!confirm("Tem certeza que deseja excluir esta fotografia?")) return;
+      if (
+        id === null ||
+        id === undefined ||
+        String(id).trim() === ""
+      ) {
+        mostrarMensagem(
+          "Não foi possível identificar a fotografia selecionada.",
+          "erro"
+        );
+        return;
+      }
+
+      if (!confirm("Tem certeza que deseja excluir esta fotografia?")) {
+        return;
+      }
 
       botao.disabled = true;
       botao.textContent = "Excluindo...";
 
-      idTokenAtual = await firebase.auth().currentUser.getIdToken(true);
-
-      const payload = { action: "excluirFotografia", idToken: idTokenAtual, id: id };
-
       try {
-        const resposta = await fetch(SoloSmart.URL_API, {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: "payload=" + encodeURIComponent(JSON.stringify(payload))
-        });
+        await obterTokenAtual();
 
-        const dados = await resposta.json();
-        console.log("🔍 [Excluir] Resposta:", dados);
+        const payload = {
+          action: "excluirFotografia",
+          idToken: idTokenAtual,
+          id: id
+        };
 
-        if (!dados.sucesso) throw new Error(dados.mensagem || "Erro ao excluir.");
+        const dados = await enviarRequisicao(payload);
 
-        mostrarMensagem("Fotografia excluída com sucesso!", "sucesso");
+        if (!dados.sucesso) {
+          throw new Error(
+            dados.mensagem || "Erro ao excluir fotografia."
+          );
+        }
+
+        mostrarMensagem(
+          "Fotografia excluída com sucesso!",
+          "sucesso"
+        );
+
         await carregarGaleria();
 
       } catch (erro) {
-        console.error("❌ [Excluir] Erro:", erro);
-        mostrarMensagem(erro.message, "erro");
+        mostrarMensagem(
+          erro.message || "Não foi possível excluir a fotografia.",
+          "erro"
+        );
+
         botao.disabled = false;
         botao.textContent = "Excluir";
       }
     }
 
-    // ============================================================
-    // UPLOAD
-    // ============================================================
-    document.getElementById("formFoto").addEventListener("submit", async function (e) {
-      e.preventDefault();
+    /* Upload */
 
-      const btn = document.getElementById("btnSalvar");
-      const fileInput = document.getElementById("foto");
-      const amostraId = document.getElementById("amostra").value;
+    document
+      .getElementById("formFoto")
+      .addEventListener("submit", async function (evento) {
+        evento.preventDefault();
 
-      // Valida amostra ANTES de ler o arquivo (evita carregar 4MB à toa)
-      if (!amostraId) {
-        mostrarMensagem("Selecione uma amostra antes de enviar.", "erro");
-        return;
-      }
+        const formulario = this;
+        const botao = document.getElementById("btnSalvar");
+        const fileInput = document.getElementById("foto");
+        const amostraId = document.getElementById("amostra").value;
 
-      if (fileInput.files.length === 0) {
-        mostrarMensagem("Selecione uma imagem.", "erro");
-        return;
-      }
+        if (!amostraId) {
+          mostrarMensagem(
+            "Selecione uma amostra antes de enviar.",
+            "erro"
+          );
+          return;
+        }
 
-      const arquivo = fileInput.files[0];
-      if (arquivo.size > 4 * 1024 * 1024) {
-        mostrarMensagem("A imagem é muito grande. Escolha uma foto com menos de 4MB.", "erro");
-        return;
-      }
+        if (!fileInput.files || fileInput.files.length === 0) {
+          mostrarMensagem(
+            "Selecione uma imagem.",
+            "erro"
+          );
+          return;
+        }
 
-      btn.disabled = true;
-      btn.textContent = "Enviando...";
+        const arquivo = fileInput.files[0];
 
-      const reader = new FileReader();
-      reader.onload = async function(event) {
-        const base64Data = event.target.result;
+        const tiposPermitidos = [
+          "image/jpeg",
+          "image/png"
+        ];
 
-        idTokenAtual = await firebase.auth().currentUser.getIdToken(true);
+        if (!tiposPermitidos.includes(arquivo.type)) {
+          mostrarMensagem(
+            "Formato não permitido. Selecione uma imagem JPG ou PNG.",
+            "erro"
+          );
+          return;
+        }
 
-        const novaFoto = {
-          amostra_id: amostraId,
-          observacoes: document.getElementById("observacoes").value.trim(),
-          nome_arquivo: arquivo.name,
-          mime_type: arquivo.type,
-          base64: base64Data
+        const tamanhoMaximo = 4 * 1024 * 1024;
+
+        if (arquivo.size > tamanhoMaximo) {
+          mostrarMensagem(
+            "A imagem é muito grande. Escolha uma foto com menos de 4 MB.",
+            "erro"
+          );
+          return;
+        }
+
+        if (arquivo.size === 0) {
+          mostrarMensagem(
+            "O arquivo selecionado está vazio.",
+            "erro"
+          );
+          return;
+        }
+
+        botao.disabled = true;
+        botao.textContent = "Enviando...";
+
+        const reader = new FileReader();
+
+        reader.onload = async function (eventoLeitura) {
+          try {
+            const base64Data = eventoLeitura.target.result;
+
+            if (
+              typeof base64Data !== "string" ||
+              !base64Data.startsWith("data:image/")
+            ) {
+              throw new Error("Não foi possível ler a imagem selecionada.");
+            }
+
+            await obterTokenAtual();
+
+            const novaFoto = {
+              amostra_id: amostraId,
+              observacoes: document
+                .getElementById("observacoes")
+                .value.trim(),
+              nome_arquivo: arquivo.name,
+              mime_type: arquivo.type,
+              base64: base64Data
+            };
+
+            const payload = {
+              action: "criarFotografia",
+              idToken: idTokenAtual,
+              dados: novaFoto
+            };
+
+            const dados = await enviarRequisicao(payload);
+
+            if (!dados.sucesso) {
+              throw new Error(
+                dados.mensagem || "Erro ao salvar fotografia."
+              );
+            }
+
+            mostrarMensagem(
+              "Fotografia enviada com sucesso!",
+              "sucesso"
+            );
+
+            formulario.reset();
+
+            await carregarGaleria();
+
+          } catch (erro) {
+            mostrarMensagem(
+              erro.message || "Não foi possível enviar a fotografia.",
+              "erro"
+            );
+
+          } finally {
+            botao.disabled = false;
+            botao.innerHTML = "<span>＋</span> Enviar Fotografia";
+          }
         };
 
-        const payload = { action: "criarFotografia", idToken: idTokenAtual, dados: novaFoto };
+        reader.onerror = function () {
+          mostrarMensagem(
+            "Ocorreu um erro ao ler o arquivo. Tente selecionar a imagem novamente.",
+            "erro"
+          );
 
-        try {
-          const resposta = await fetch(SoloSmart.URL_API, {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: "payload=" + encodeURIComponent(JSON.stringify(payload))
-          });
-          const dados = await resposta.json();
-          console.log("🔍 [Upload] Resposta:", dados);
+          botao.disabled = false;
+          botao.innerHTML = "<span>＋</span> Enviar Fotografia";
+        };
 
-          if (!dados.sucesso) throw new Error(dados.mensagem || "Erro ao salvar.");
+        reader.readAsDataURL(arquivo);
+      });
 
-          mostrarMensagem("Fotografia enviada com sucesso!", "sucesso");
-          document.getElementById("formFoto").reset();
-          await carregarGaleria();
+    /* Menu responsivo */
 
-        } catch (erro) {
-          console.error("❌ [Upload] Erro:", erro);
-          mostrarMensagem(erro.message, "erro");
-        } finally {
-          btn.disabled = false;
-          btn.textContent = "Enviar Fotografia";
-        }
-      };
-
-      reader.readAsDataURL(arquivo);
-    });
-
-    // Logout e menu
-    document.getElementById("botaoSair").addEventListener("click", () => SoloSmart.sair());
     const sidebar = document.getElementById("sidebar");
     const overlay = document.getElementById("overlay");
-    document.getElementById("menuToggle").addEventListener("click", () => {
-      sidebar.classList.toggle("aberta"); overlay.classList.toggle("ativo");
+    const menuToggle = document.getElementById("menuToggle");
+
+    function abrirMenu() {
+      sidebar.classList.add("aberta");
+      overlay.classList.add("ativo");
+
+      menuToggle.setAttribute("aria-expanded", "true");
+      menuToggle.setAttribute("aria-label", "Fechar menu");
+    }
+
+    function fecharMenu() {
+      sidebar.classList.remove("aberta");
+      overlay.classList.remove("ativo");
+
+      menuToggle.setAttribute("aria-expanded", "false");
+      menuToggle.setAttribute("aria-label", "Abrir menu");
+    }
+
+    menuToggle.addEventListener("click", () => {
+      const menuAberto =
+        menuToggle.getAttribute("aria-expanded") === "true";
+
+      if (menuAberto) {
+        fecharMenu();
+      } else {
+        abrirMenu();
+      }
     });
-    overlay.addEventListener("click", () => {
-      sidebar.classList.remove("aberta"); overlay.classList.remove("ativo");
+
+    overlay.addEventListener("click", fecharMenu);
+
+    sidebar.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", fecharMenu);
     });
+
+    document.addEventListener("keydown", evento => {
+      if (evento.key === "Escape") {
+        fecharMenu();
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 900) {
+        fecharMenu();
+      }
+    });
+
+    /* Sair */
+
+    document
+      .getElementById("botaoSair")
+      .addEventListener("click", () => {
+        SoloSmart.sair();
+      });
+
+    /* Executar */
+
+    inicializarPagina();
   </script>
+
 </body>
 </html>
