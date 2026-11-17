@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#174b35">
+  <meta name="description" content="Gerencie sua conta e as preferências do SoloSmart.">
+  <title>Conta | SoloSmart</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --green: #236b45;
+      --green-dark: #174b35;
+      --green-deep: #123c2b;
+      --green-light: #eaf4ed;
+      --lime: #b6d957;
+      --background: #f5f7f4;
+      --surface: #ffffff;
+      --text: #203229;
+      --muted: #718078;
+      --border: #e0e8e1;
+      --shadow: 0 8px 28px rgba(24, 65, 43, 0.06);
+      --sidebar-width: 258px;
+      --header-height: 70px;
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--background);
+      color: var(--text);
+      font-family: "DM Sans", sans-serif;
+      font-size: 14px;
+    }
+
+    button, a {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app-header {
+      height: var(--header-height);
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-left,
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: var(--sidebar-width);
+    }
+
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 11px;
+      color: white;
+      background: var(--green-dark);
+      font-family: "Manrope", sans-serif;
+      font-size: 19px;
+      font-weight: 800;
+    }
+
+    .brand-name {
+      color: var(--green-deep);
+      font-family: "Manrope", sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+    }
+
+    .brand-name span {
+      color: var(--green);
+    }
+
+    .header-caption {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .user-area {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--green-light);
+      color: var(--green-dark);
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .user-name {
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .user-label {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .logout-button {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-left: 12px;
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: white;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+      transition: 0.2s ease;
+    }
+
+    .logout-button:hover {
+      color: #a43f3f;
+      border-color: #e9caca;
+      background: #fff8f8;
+    }
+
+    .menu-toggle {
+      display: none;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: white;
+      color: var(--green-dark);
+      font-size: 20px;
+    }
+
+    .sidebar {
+      width: var(--sidebar-width);
+      position: fixed;
+      top: var(--header-height);
+      bottom: 0;
+      left: 0;
+      z-index: 90;
+      display: flex;
+      flex-direction: column;
+      padding: 25px 16px 18px;
+      overflow-y: auto;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+    }
+
+    .nav-label {
+      margin: 8px 12px 10px;
+      color: #9aa69e;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.1px;
+      text-transform: uppercase;
+    }
+
+    .nav-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 24px;
+    }
+
+    .nav-link {
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 12px;
+      border-radius: 9px;
+      color: #68776e;
+      font-size: 13px;
+      font-weight: 500;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .nav-link:hover {
+      color: var(--green-dark);
+      background: #f3f7f3;
+    }
+
+    .nav-link.active {
+      color: var(--green-dark);
+      background: var(--green-light);
+      font-weight: 700;
+    }
+
+    .nav-icon {
+      width: 19px;
+      display: inline-flex;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 15px 12px 5px;
+      border-top: 1px solid var(--border);
+    }
+
+    .sidebar-footer p {
+      color: #9aa69e;
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .main-content {
+      min-height: 100vh;
+      margin-left: var(--sidebar-width);
+      padding: calc(var(--header-height) + 34px) 36px 45px;
+    }
+
+    .content-container {
+      width: 100%;
+      max-width: 1160px;
+      margin: 0 auto;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 22px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .breadcrumb span:last-child {
+      color: var(--green-dark);
+      font-weight: 700;
+    }
+
+    .page-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .page-heading h1 {
+      margin-bottom: 8px;
+      color: var(--green-deep);
+      font-family: "Manrope", sans-serif;
+      font-size: clamp(25px, 3vw, 31px);
+      font-weight: 800;
+      letter-spacing: -1.1px;
+    }
+
+    .page-heading p {
+      max-width: 620px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .account-overview {
+      display: flex;
+      align-items: center;
+      gap: 17px;
+      margin-bottom: 30px;
+      padding: 23px 25px;
+      border: 1px solid #dce9df;
+      border-radius: var(--radius);
+      background: linear-gradient(110deg, #edf6ef 0%, #f8fbf7 100%);
+    }
+
+    .overview-icon {
+      width: 52px;
+      height: 52px;
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      border-radius: 15px;
+      background: white;
+      color: var(--green);
+      font-size: 23px;
+    }
+
+    .overview-text h2 {
+      margin-bottom: 5px;
+      color: var(--green-deep);
+      font-family: "Manrope", sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .overview-text p {
+      color: #68796e;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .section-heading {
+      margin-bottom: 16px;
+    }
+
+    .section-heading h2 {
+      margin-bottom: 5px;
+      color: var(--text);
+      font-family: "Manrope", sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .section-heading p {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .account-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .account-card {
+      min-height: 235px;
+      display: flex;
+      flex-direction: column;
+      padding: 23px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .account-card:hover {
+      transform: translateY(-3px);
+      border-color: #bfd6c4;
+      box-shadow: 0 13px 32px rgba(24, 65, 43, 0.09);
+    }
+
+    .card-icon {
+      width: 47px;
+      height: 47px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 20px;
+      border-radius: 13px;
+      background: var(--green-light);
+      color: var(--green);
+      font-size: 21px;
+    }
+
+    .account-card h3 {
+      margin-bottom: 9px;
+      color: var(--green-deep);
+      font-family: "Manrope", sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .account-card p {
+      flex: 1;
+      margin-bottom: 22px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .card-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-top: 14px;
+      border-top: 1px solid #edf1ed;
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .card-link span:last-child {
+      font-size: 17px;
+      transition: transform 0.2s ease;
+    }
+
+    .account-card:hover .card-link span:last-child {
+      transform: translateX(4px);
+    }
+
+    .help-section {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      margin-top: 28px;
+      padding: 20px 23px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: white;
+    }
+
+    .help-content {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .help-icon {
+      width: 39px;
+      height: 39px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      border-radius: 11px;
+      background: #f1f4f1;
+      color: var(--green);
+      font-size: 17px;
+    }
+
+    .help-content h3 {
+      margin-bottom: 4px;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .help-content p {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .help-status {
+      padding: 7px 11px;
+      border: 1px solid #e5ebe5;
+      border-radius: 20px;
+      background: #f8faf8;
+      color: #7b887f;
+      font-size: 10px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .mobile-overlay {
+      display: none;
+    }
+
+    @media (max-width: 1100px) {
+      .account-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 900px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        box-shadow: 10px 0 30px rgba(0, 0, 0, 0.06);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .mobile-overlay.visible {
+        display: block;
+        position: fixed;
+        inset: var(--header-height) 0 0;
+        z-index: 80;
+        background: rgba(12, 34, 22, 0.35);
+      }
+
+      .main-content {
+        margin-left: 0;
+        padding-right: 25px;
+        padding-left: 25px;
+      }
+
+      .brand {
+        min-width: auto;
+      }
+
+      .menu-toggle {
+        display: grid;
+      }
+
+      .header-caption {
+        display: none;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .app-header {
+        padding: 0 16px;
+      }
+
+      .header-left,
+      .header-right {
+        gap: 10px;
+      }
+
+      .brand-name {
+        font-size: 18px;
+      }
+
+      .user-info,
+      .logout-button span {
+        display: none;
+      }
+
+      .logout-button {
+        margin-left: 0;
+        padding: 9px;
+      }
+
+      .main-content {
+        padding: calc(var(--header-height) + 25px) 17px 35px;
+      }
+
+      .page-heading {
+        margin-bottom: 23px;
+      }
+
+      .page-heading h1 {
+        font-size: 25px;
+      }
+
+      .account-overview {
+        align-items: flex-start;
+        padding: 18px;
+      }
+
+      .overview-icon {
+        width: 43px;
+        height: 43px;
+      }
+
+      .account-grid {
+        grid-template-columns: 1fr;
+        gap: 13px;
+      }
+
+      .account-card {
+        min-height: 205px;
+        padding: 20px;
+      }
+
+      .card-icon {
+        margin-bottom: 15px;
+      }
+
+      .help-section {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="app-header">
+    <div class="header-left">
+      <button
+        class="menu-toggle"
+        id="menuToggle"
+        type="button"
+        aria-label="Abrir menu"
+        aria-expanded="false"
+        aria-controls="sidebar"
+      >☰</button>
+
+      <a href="painel.html" class="brand" aria-label="SoloSmart, página inicial">
+        <div class="brand-mark">S</div>
+        <div class="brand-name">Solo<span>Smart</span></div>
+      </a>
+
+      <span class="header-caption">Gestão inteligente do campo</span>
+    </div>
+
+    <div class="header-right">
+      <div class="user-area">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <div class="user-info">
+          <span class="user-name" id="userName">Usuário</span>
+          <span class="user-label">Minha conta</span>
+        </div>
+      </div>
+
+      <button class="logout-button" id="logoutButton" type="button">
+        <span>Sair</span>
+        <span aria-hidden="true">↗</span>
+      </button>
+    </div>
+  </header>
+
+  <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
+    <nav>
+      <div class="nav-label">Principal</div>
+      <div class="nav-group">
+        <a href="painel.html" class="nav-link">
+          <span class="nav-icon">▦</span>
+          <span>Painel</span>
+        </a>
+      </div>
+
+      <div class="nav-label">Gestão</div>
+      <div class="nav-group">
+        <a href="propriedades.html" class="nav-link">
+          <span class="nav-icon">⌂</span>
+          <span>Propriedades</span>
+        </a>
+        <a href="talhoes.html" class="nav-link">
+          <span class="nav-icon">▧</span>
+          <span>Talhões</span>
+        </a>
+        <a href="amostras.html" class="nav-link">
+          <span class="nav-icon">◉</span>
+          <span>Amostras</span>
+        </a>
+        <a href="mapas.html" class="nav-link">
+          <span class="nav-icon">⌖</span>
+          <span>Mapas</span>
+        </a>
+        <a href="campanhas.html" class="nav-link">
+          <span class="nav-icon">◷</span>
+          <span>Campanhas</span>
+        </a>
+        <a href="fotografias.html" class="nav-link">
+          <span class="nav-icon">▣</span>
+          <span>Fotografias</span>
+        </a>
+        <a href="dispositivos-iot.html" class="nav-link">
+          <span class="nav-icon">⌁</span>
+          <span>Dispositivos IoT</span>
+        </a>
+        <a href="relatorios.html" class="nav-link">
+          <span class="nav-icon">▤</span>
+          <span>Relatórios</span>
+        </a>
+      </div>
+
+      <div class="nav-label">Conta</div>
+      <div class="nav-group">
+        <a href="conta.html" class="nav-link active" aria-current="page">
+          <span class="nav-icon">⚙</span>
+          <span>Conta</span>
+        </a>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <p>SoloSmart<br>Gestão inteligente para o agronegócio.</p>
+    </div>
+  </aside>
+
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+
+  <main class="main-content">
+    <div class="content-container">
+
+      <div class="breadcrumb">
+        <span>SoloSmart</span>
+        <span>›</span>
+        <span>Conta</span>
+      </div>
+
+      <section class="page-heading">
+        <div>
+          <h1>Minha conta</h1>
+          <p>
+            Gerencie suas informações pessoais, os dados da sua empresa
+            e as preferências de utilização do SoloSmart.
+          </p>
+        </div>
+      </section>
+
+      <section class="account-overview">
+        <div class="overview-icon" aria-hidden="true">⚙</div>
+        <div class="overview-text">
+          <h2>Central de gerenciamento da conta</h2>
+          <p>
+            Acesse cada área para consultar e administrar as informações
+            relacionadas ao seu cadastro e à sua experiência na plataforma.
+          </p>
+        </div>
+      </section>
+
+      <section aria-labelledby="accountOptionsTitle">
+        <div class="section-heading">
+          <h2 id="accountOptionsTitle">Gerenciamento</h2>
+          <p>Selecione a área que deseja acessar.</p>
+        </div>
+
+        <div class="account-grid">
+
+          <a href="meu-perfil.html" class="account-card">
+            <div class="card-icon" aria-hidden="true">♙</div>
+            <h3>Meu perfil</h3>
+            <p>
+              Consulte e gerencie seus dados pessoais, informações de contato
+              e identificação de usuário.
+            </p>
+            <div class="card-link">
+              <span>Acessar meu perfil</span>
+              <span aria-hidden="true">→</span>
+            </div>
+          </a>
+
+          <a href="empresa.html" class="account-card">
+            <div class="card-icon" aria-hidden="true">▥</div>
+            <h3>Empresa</h3>
+            <p>
+              Gerencie as informações cadastrais da organização, dados
+              institucionais e informações da empresa vinculada à conta.
+            </p>
+            <div class="card-link">
+              <span>Gerenciar empresa</span>
+              <span aria-hidden="true">→</span>
+            </div>
+          </a>
+
+          <a href="configuracoes.html" class="account-card">
+            <div class="card-icon" aria-hidden="true">☷</div>
+            <h3>Configurações</h3>
+            <p>
+              Consulte as preferências da plataforma e as opções de
+              personalização e funcionamento da sua conta.
+            </p>
+            <div class="card-link">
+              <span>Acessar configurações</span>
+              <span aria-hidden="true">→</span>
+            </div>
+          </a>
+
+        </div>
+      </section>
+
+      <section class="help-section">
+        <div class="help-content">
+          <div class="help-icon" aria-hidden="true">ⓘ</div>
+          <div>
+            <h3>Precisa de ajuda com sua conta?</h3>
+            <p>
+              As opções de gerenciamento serão disponibilizadas conforme
+              a integração dos respectivos recursos.
+            </p>
+          </div>
+        </div>
+        <span class="help-status">Central de conta</span>
+      </section>
+
+    </div>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="auth.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const menuToggle = document.getElementById("menuToggle");
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("mobileOverlay");
+      const logoutButton = document.getElementById("logoutButton");
+
+      function abrirMenu() {
+        sidebar.classList.add("open");
+        overlay.classList.add("visible");
+        menuToggle.setAttribute("aria-expanded", "true");
+        menuToggle.setAttribute("aria-label", "Fechar menu");
+      }
+
+      function fecharMenu() {
+        sidebar.classList.remove("open");
+        overlay.classList.remove("visible");
+        menuToggle.setAttribute("aria-expanded", "false");
+        menuToggle.setAttribute("aria-label", "Abrir menu");
+      }
+
+      menuToggle.addEventListener("click", () => {
+        const aberto = sidebar.classList.contains("open");
+        aberto ? fecharMenu() : abrirMenu();
+      });
+
+      overlay.addEventListener("click", fecharMenu);
+
+      document.querySelectorAll(".sidebar .nav-link").forEach(link => {
+        link.addEventListener("click", fecharMenu);
+      });
+
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape") fecharMenu();
+      });
+
+      window.addEventListener("resize", () => {
+        if (window.innerWidth > 900) fecharMenu();
+      });
+
+      function atualizarUsuario(user) {
+        if (!user) return;
+
+        const nome =
+          user.displayName ||
+          (user.email ? user.email.split("@")[0] : "Usuário");
+
+        document.getElementById("userName").textContent = nome;
+
+        const iniciais = nome
+          .trim()
+          .split(/\s+/)
+          .slice(0, 2)
+          .map(parte => parte.charAt(0))
+          .join("")
+          .toUpperCase();
+
+        document.getElementById("userAvatar").textContent = iniciais || "U";
+      }
+
+      try {
+        if (window.SoloSmart && typeof SoloSmart.protegerPagina === "function") {
+          await SoloSmart.protegerPagina({
+            paginaLogin: "login.html"
+          });
+        }
+
+        if (window.firebase && firebase.auth) {
+          const user = firebase.auth().currentUser;
+          if (user) atualizarUsuario(user);
+
+          firebase.auth().onAuthStateChanged(userAtual => {
+            if (userAtual) {
+              atualizarUsuario(userAtual);
+            }
+          });
+        }
+      } catch (_) {
+        // A proteção de página e o redirecionamento são tratados pelo auth.js.
+      }
+
+      logoutButton.addEventListener("click", async () => {
+        try {
+          if (window.SoloSmart && typeof SoloSmart.sair === "function") {
+            await SoloSmart.sair();
+            return;
+          }
+
+          if (window.firebase && firebase.auth) {
+            await firebase.auth().signOut();
+          }
+
+          window.location.href = "login.html";
+        } catch (_) {
+          window.location.href = "login.html";
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
