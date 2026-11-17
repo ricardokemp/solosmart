@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#174b35">
+  <title>Relatórios | SoloSmart</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <style>
+    :root {
+      --green: #236b45;
+      --green-dark: #174b35;
+      --green-deep: #123c2b;
+      --green-light: #eaf4ed;
+      --lime: #b6d957;
+      --background: #f5f7f4;
+      --surface: #ffffff;
+      --text: #203229;
+      --muted: #718078;
+      --border: #e0e8e1;
+      --danger: #c94d4d;
+      --shadow: 0 8px 28px rgba(26, 61, 42, 0.06);
+      --sidebar-width: 258px;
+      --header-height: 70px;
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--background);
+      color: var(--text);
+      font-family: "DM Sans", sans-serif;
+    }
+
+    button, input, select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .app-header {
+      height: var(--header-height);
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-left,
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 220px;
+    }
+
+    .brand-symbol {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      color: white;
+      background: var(--green);
+      font-size: 18px;
+    }
+
+    .brand-name {
+      color: var(--green-dark);
+      font-family: "Manrope", sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+    }
+
+    .brand-name span {
+      color: var(--green);
+    }
+
+    .menu-toggle {
+      display: none;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      font-size: 20px;
+      padding: 8px;
+    }
+
+    .user-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: var(--green-dark);
+      background: var(--green-light);
+      font-weight: 700;
+    }
+
+    .user-name {
+      max-width: 180px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .logout-button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: 13px;
+      transition: color 0.2s;
+    }
+
+    .logout-button:hover {
+      color: var(--danger);
+    }
+
+    .sidebar {
+      position: fixed;
+      top: var(--header-height);
+      bottom: 0;
+      left: 0;
+      z-index: 90;
+      width: var(--sidebar-width);
+      padding: 26px 16px;
+      overflow-y: auto;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      transition: transform 0.25s ease;
+    }
+
+    .nav-section {
+      margin-bottom: 27px;
+    }
+
+    .nav-label {
+      padding: 0 12px;
+      margin-bottom: 10px;
+      color: #9aa79f;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 43px;
+      padding: 10px 12px;
+      margin-bottom: 4px;
+      border-radius: 10px;
+      color: #64736a;
+      font-size: 13px;
+      font-weight: 500;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .nav-link i {
+      width: 18px;
+      text-align: center;
+      font-size: 15px;
+    }
+
+    .nav-link:hover {
+      color: var(--green);
+      background: #f3f7f3;
+    }
+
+    .nav-link.active {
+      color: var(--green-dark);
+      background: var(--green-light);
+      font-weight: 700;
+    }
+
+    .sidebar-footer {
+      margin-top: 35px;
+      padding: 16px 13px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fafcf9;
+    }
+
+    .sidebar-footer strong {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--green-dark);
+      font-family: "Manrope", sans-serif;
+      font-size: 12px;
+    }
+
+    .sidebar-footer p {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .main-content {
+      min-height: 100vh;
+      margin-left: var(--sidebar-width);
+      padding: calc(var(--header-height) + 34px) 34px 40px;
+    }
+
+    .page-container {
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .breadcrumb i {
+      font-size: 9px;
+    }
+
+    .page-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 27px;
+    }
+
+    .page-heading h1 {
+      margin-bottom: 7px;
+      color: var(--green-deep);
+      font-family: "Manrope", sans-serif;
+      font-size: clamp(25px, 3vw, 31px);
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    .page-heading p {
+      max-width: 680px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .info-banner {
+      display: flex;
+      align-items: flex-start;
+      gap: 13px;
+      padding: 16px 18px;
+      margin-bottom: 25px;
+      border: 1px solid #dcebdc;
+      border-radius: 13px;
+      background: #f0f7ef;
+    }
+
+    .info-banner > i {
+      margin-top: 2px;
+      color: var(--green);
+      font-size: 17px;
+    }
+
+    .info-banner strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--green-dark);
+      font-size: 13px;
+    }
+
+    .info-banner p {
+      color: #627568;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .section-title {
+      margin-bottom: 14px;
+      color: var(--green-deep);
+      font-family: "Manrope", sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .section-description {
+      margin-top: -7px;
+      margin-bottom: 17px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .report-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 17px;
+      margin-bottom: 29px;
+    }
+
+    .report-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-height: 195px;
+      padding: 21px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .report-card:hover {
+      transform: translateY(-3px);
+      border-color: #b9d2bf;
+    }
+
+    .report-icon {
+      width: 45px;
+      height: 45px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 17px;
+      border-radius: 13px;
+      background: var(--green-light);
+      color: var(--green);
+      font-size: 18px;
+    }
+
+    .report-card h3 {
+      margin-bottom: 7px;
+      color: var(--green-deep);
+      font-family: "Manrope", sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .report-card p {
+      flex: 1;
+      margin-bottom: 15px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .report-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-top: 12px;
+      border-top: 1px solid #edf1ed;
+      color: #8a978e;
+      font-size: 10px;
+    }
+
+    .report-card-footer span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .report-card-footer i {
+      color: var(--green);
+    }
+
+    .filter-card,
+    .preview-card {
+      margin-bottom: 25px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .card-header {
+      padding: 21px 23px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card-header h2 {
+      margin-bottom: 5px;
+      color: var(--green-deep);
+      font-family: "Manrope", sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .card-header p {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .filter-form {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 17px;
+      padding: 22px 23px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .form-group label {
+      color: #52645a;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .form-control {
+      width: 100%;
+      min-height: 42px;
+      padding: 0 12px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      outline: none;
+      background: #fff;
+      color: var(--text);
+      font-size: 12px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-control:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(35, 107, 69, 0.09);
+    }
+
+    .form-control:disabled {
+      cursor: not-allowed;
+      background: #f6f8f6;
+      color: #9aa69d;
+    }
+
+    .filter-actions {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      grid-column: 1 / -1;
+      padding-top: 3px;
+    }
+
+    .primary-button,
+    .secondary-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 42px;
+      padding: 0 17px;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 700;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .primary-button {
+      border: 0;
+      background: var(--green);
+      color: white;
+    }
+
+    .primary-button:hover:not(:disabled) {
+      background: var(--green-dark);
+      transform: translateY(-1px);
+    }
+
+    .secondary-button {
+      border: 1px solid var(--border);
+      background: white;
+      color: #66766b;
+    }
+
+    .secondary-button:hover:not(:disabled) {
+      background: #f5f8f5;
+    }
+
+    .primary-button:disabled,
+    .secondary-button:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+
+    .preview-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 285px;
+      padding: 35px 20px;
+      text-align: center;
+    }
+
+    .preview-icon {
+      width: 70px;
+      height: 70px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 17px;
+      border-radius: 21px;
+      background: var(--green-light);
+      color: var(--green);
+      font-size: 26px;
+    }
+
+    .preview-content h3 {
+      margin-bottom: 8px;
+      color: var(--green-deep);
+      font-family: "Manrope", sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .preview-content p {
+      max-width: 470px;
+      margin-bottom: 15px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .status-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 12px;
+      border-radius: 20px;
+      background: #f2f5f2;
+      color: #78867d;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .message {
+      display: none;
+      padding: 12px 15px;
+      margin-bottom: 18px;
+      border-radius: 9px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .message.visible {
+      display: block;
+    }
+
+    .message.error {
+      border: 1px solid #f0d2d2;
+      background: #fff2f2;
+      color: #a83e3e;
+    }
+
+    .page-footer {
+      padding: 23px 0 5px;
+      color: #97a39b;
+      font-size: 11px;
+      text-align: center;
+    }
+
+    .overlay {
+      display: none;
+    }
+
+    button:focus-visible,
+    a:focus-visible {
+      outline: 3px solid rgba(35, 107, 69, 0.3);
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 1100px) {
+      .main-content {
+        padding-right: 24px;
+        padding-left: 24px;
+      }
+
+      .report-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 900px) {
+      .menu-toggle {
+        display: block;
+      }
+
+      .brand {
+        min-width: auto;
+      }
+
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.aberta {
+        transform: translateX(0);
+      }
+
+      .overlay {
+        position: fixed;
+        inset: var(--header-height) 0 0;
+        z-index: 80;
+        background: rgba(13, 33, 23, 0.35);
+      }
+
+      .overlay.ativo {
+        display: block;
+      }
+
+      .main-content {
+        margin-left: 0;
+      }
+
+      .filter-form {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 650px) {
+      .app-header {
+        padding: 0 15px;
+      }
+
+      .brand-name {
+        font-size: 18px;
+      }
+
+      .user-name,
+      .logout-button span {
+        display: none;
+      }
+
+      .header-left,
+      .header-right {
+        gap: 8px;
+      }
+
+      .main-content {
+        padding: calc(var(--header-height) + 25px) 15px 30px;
+      }
+
+      .page-heading {
+        flex-direction: column;
+      }
+
+      .report-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .report-card {
+        min-height: 180px;
+      }
+
+      .filter-form {
+        grid-template-columns: 1fr;
+        padding: 18px;
+      }
+
+      .filter-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .filter-actions button {
+        width: 100%;
+      }
+
+      .card-header {
+        padding: 18px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="app-header">
+    <div class="header-left">
+      <button
+        class="menu-toggle"
+        id="menuToggle"
+        type="button"
+        aria-label="Abrir menu"
+        aria-controls="sidebar"
+        aria-expanded="false"
+      >
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
+      <a href="painel.html" class="brand" aria-label="SoloSmart, página inicial">
+        <div class="brand-symbol">
+          <i class="fa-solid fa-seedling"></i>
+        </div>
+        <div class="brand-name">Solo<span>Smart</span></div>
+      </a>
+    </div>
+
+    <div class="header-right">
+      <div class="user-area">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <span class="user-name" id="userName">Carregando...</span>
+      </div>
+
+      <button class="logout-button" id="btnSair" type="button">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        <span>Sair</span>
+      </button>
+    </div>
+  </header>
+
+  <aside class="sidebar" id="sidebar">
+    <nav aria-label="Menu principal">
+
+      <div class="nav-section">
+        <div class="nav-label">Principal</div>
+
+        <a href="painel.html" class="nav-link">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Painel</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Gestão</div>
+
+        <a href="propriedades.html" class="nav-link">
+          <i class="fa-solid fa-house-chimney"></i>
+          <span>Propriedades</span>
+        </a>
+
+        <a href="talhoes.html" class="nav-link">
+          <i class="fa-solid fa-border-all"></i>
+          <span>Talhões</span>
+        </a>
+
+        <a href="amostras.html" class="nav-link">
+          <i class="fa-solid fa-flask"></i>
+          <span>Amostras</span>
+        </a>
+
+        <a href="mapas.html" class="nav-link">
+          <i class="fa-solid fa-map-location-dot"></i>
+          <span>Mapas</span>
+        </a>
+
+        <a href="campanhas.html" class="nav-link">
+          <i class="fa-solid fa-calendar-days"></i>
+          <span>Campanhas</span>
+        </a>
+
+        <a href="fotografias.html" class="nav-link">
+          <i class="fa-solid fa-camera"></i>
+          <span>Fotografias</span>
+        </a>
+
+        <a href="dispositivos-iot.html" class="nav-link">
+          <i class="fa-solid fa-tower-broadcast"></i>
+          <span>Dispositivos IoT</span>
+        </a>
+
+        <a href="relatorios.html" class="nav-link active" aria-current="page">
+          <i class="fa-solid fa-file-lines"></i>
+          <span>Relatórios</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Conta</div>
+
+        <a href="conta.html" class="nav-link">
+          <i class="fa-solid fa-user-gear"></i>
+          <span>Conta</span>
+        </a>
+      </div>
+
+    </nav>
+
+    <div class="sidebar-footer">
+      <strong>SoloSmart</strong>
+      <p>Gestão inteligente para uma agricultura mais produtiva e sustentável.</p>
+    </div>
+  </aside>
+
+  <div class="overlay" id="overlay" aria-hidden="true"></div>
+
+  <main class="main-content">
+    <div class="page-container">
+
+      <div class="breadcrumb">
+        <span>Principal</span>
+        <i class="fa-solid fa-chevron-right"></i>
+        <span>Relatórios</span>
+      </div>
+
+      <section class="page-heading">
+        <div>
+          <h1>Relatórios</h1>
+          <p>
+            Consulte informações das propriedades, acompanhe análises de solo
+            e organize os dados da sua operação agrícola.
+          </p>
+        </div>
+      </section>
+
+      <div class="message" id="mensagem" role="status" aria-live="polite"></div>
+
+      <section class="info-banner">
+        <i class="fa-solid fa-circle-info"></i>
+        <div>
+          <strong>Central de relatórios</strong>
+          <p>
+            A estrutura da área de relatórios está preparada. A geração de
+            documentos e a consulta de dados serão habilitadas após a integração
+            com as informações disponíveis no backend do SoloSmart.
+          </p>
+        </div>
+      </section>
+
+      <section aria-labelledby="tiposRelatorios">
+        <h2 class="section-title" id="tiposRelatorios">Tipos de relatórios</h2>
+        <p class="section-description">
+          Selecione uma categoria para consultar os dados correspondentes.
+        </p>
+
+        <div class="report-grid">
+
+          <article class="report-card">
+            <div class="report-icon">
+              <i class="fa-solid fa-flask"></i>
+            </div>
+            <h3>Análises de solo</h3>
+            <p>
+              Histórico de amostras, resultados laboratoriais e indicadores
+              relacionados à qualidade do solo.
+            </p>
+            <div class="report-card-footer">
+              <span><i class="fa-solid fa-database"></i> Dados de amostras</span>
+              <span>Em preparação</span>
+            </div>
+          </article>
+
+          <article class="report-card">
+            <div class="report-icon">
+              <i class="fa-solid fa-house-chimney"></i>
+            </div>
+            <h3>Propriedades rurais</h3>
+            <p>
+              Informações cadastrais, áreas, localização e visão geral
+              das propriedades registradas.
+            </p>
+            <div class="report-card-footer">
+              <span><i class="fa-solid fa-database"></i> Dados cadastrais</span>
+              <span>Em preparação</span>
+            </div>
+          </article>
+
+          <article class="report-card">
+            <div class="report-icon">
+              <i class="fa-solid fa-border-all"></i>
+            </div>
+            <h3>Talhões</h3>
+            <p>
+              Organização das áreas de cultivo, identificação e informações
+              associadas aos talhões.
+            </p>
+            <div class="report-card-footer">
+              <span><i class="fa-solid fa-database"></i> Dados de talhões</span>
+              <span>Em preparação</span>
+            </div>
+          </article>
+
+          <article class="report-card">
+            <div class="report-icon">
+              <i class="fa-solid fa-calendar-days"></i>
+            </div>
+            <h3>Campanhas</h3>
+            <p>
+              Acompanhamento das campanhas de coleta, períodos e atividades
+              relacionadas às amostragens.
+            </p>
+            <div class="report-card-footer">
+              <span><i class="fa-solid fa-database"></i> Dados de campanhas</span>
+              <span>Em preparação</span>
+            </div>
+          </article>
+
+          <article class="report-card">
+            <div class="report-icon">
+              <i class="fa-solid fa-camera"></i>
+            </div>
+            <h3>Registros fotográficos</h3>
+            <p>
+              Organização das fotografias registradas e vinculadas às
+              amostras e propriedades.
+            </p>
+            <div class="report-card-footer">
+              <span><i class="fa-solid fa-database"></i> Dados fotográficos</span>
+              <span>Em preparação</span>
+            </div>
+          </article>
+
+          <article class="report-card">
+            <div class="report-icon">
+              <i class="fa-solid fa-chart-line"></i>
+            </div>
+            <h3>Indicadores gerais</h3>
+            <p>
+              Visão consolidada das informações cadastradas e da evolução
+              dos registros da operação.
+            </p>
+            <div class="report-card-footer">
+              <span><i class="fa-solid fa-database"></i> Dados consolidados</span>
+              <span>Em preparação</span>
+            </div>
+          </article>
+
+        </div>
+      </section>
+
+      <section class="filter-card" aria-labelledby="filtrosTitulo">
+        <div class="card-header">
+          <h2 id="filtrosTitulo">Filtros de consulta</h2>
+          <p>Defina os critérios para organizar os dados do relatório.</p>
+        </div>
+
+        <form class="filter-form" id="formFiltros">
+
+          <div class="form-group">
+            <label for="tipoRelatorio">Tipo de relatório</label>
+            <select class="form-control" id="tipoRelatorio" disabled>
+              <option value="">Selecione uma categoria</option>
+              <option value="solo">Análises de solo</option>
+              <option value="propriedades">Propriedades rurais</option>
+              <option value="talhoes">Talhões</option>
+              <option value="campanhas">Campanhas</option>
+              <option value="fotografias">Registros fotográficos</option>
+              <option value="indicadores">Indicadores gerais</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="propriedade">Propriedade</label>
+            <select class="form-control" id="propriedade" disabled>
+              <option value="">Todas as propriedades</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="periodo">Período</label>
+            <select class="form-control" id="periodo" disabled>
+              <option value="">Todo o período</option>
+              <option value="30">Últimos 30 dias</option>
+              <option value="90">Últimos 90 dias</option>
+              <option value="180">Últimos 6 meses</option>
+              <option value="365">Últimos 12 meses</option>
+              <option value="personalizado">Personalizado</option>
+            </select>
+          </div>
+
+          <div class="form-group" id="dataInicialGrupo" hidden>
+            <label for="dataInicial">Data inicial</label>
+            <input class="form-control" type="date" id="dataInicial" disabled>
+          </div>
+
+          <div class="form-group" id="dataFinalGrupo" hidden>
+            <label for="dataFinal">Data final</label>
+            <input class="form-control" type="date" id="dataFinal" disabled>
+          </div>
+
+          <div class="filter-actions">
+            <button class="primary-button" type="submit" disabled>
+              <i class="fa-solid fa-magnifying-glass"></i>
+              Gerar relatório
+            </button>
+
+            <button class="secondary-button" type="reset">
+              <i class="fa-solid fa-rotate-left"></i>
+              Limpar filtros
+            </button>
+          </div>
+
+        </form>
+      </section>
+
+      <section class="preview-card" aria-labelledby="visualizacaoTitulo">
+        <div class="card-header">
+          <h2 id="visualizacaoTitulo">Visualização do relatório</h2>
+          <p>Os resultados da consulta serão apresentados nesta área.</p>
+        </div>
+
+        <div class="preview-content">
+          <div class="preview-icon">
+            <i class="fa-solid fa-file-circle-question"></i>
+          </div>
+
+          <h3>Nenhum relatório gerado</h3>
+
+          <p>
+            Assim que a integração estiver disponível, você poderá selecionar
+            os filtros, gerar relatórios e visualizar os resultados nesta área.
+          </p>
+
+          <span class="status-label">
+            <i class="fa-solid fa-clock"></i>
+            Aguardando integração com o backend
+          </span>
+        </div>
+      </section>
+
+      <footer class="page-footer">
+        SoloSmart &copy; <span id="anoAtual"></span>. Gestão inteligente do campo.
+      </footer>
+
+    </div>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="auth.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", iniciarPagina);
+
+    async function iniciarPagina() {
+      document.getElementById("anoAtual").textContent =
+        new Date().getFullYear();
+
+      configurarMenu();
+      configurarFiltros();
+
+      try {
+        if (
+          !window.SoloSmart ||
+          typeof SoloSmart.protegerPagina !== "function"
+        ) {
+          throw new Error("Não foi possível inicializar a autenticação.");
+        }
+
+        const usuario = await SoloSmart.protegerPagina({
+          paginaLogin: "login.html"
+        });
+
+        const usuarioAtual =
+          usuario || firebase.auth().currentUser;
+
+        if (usuarioAtual) {
+          atualizarUsuario(usuarioAtual);
+        }
+
+      } catch (erro) {
+        mostrarMensagem(
+          "Não foi possível carregar os dados da sua sessão. Atualize a página ou entre novamente.",
+          "error"
+        );
+      }
+    }
+
+    function atualizarUsuario(usuario) {
+      const nome =
+        usuario.displayName ||
+        usuario.email ||
+        "Usuário";
+
+      document.getElementById("userName").textContent = nome;
+
+      const primeiraLetra =
+        nome.trim().charAt(0).toUpperCase() || "U";
+
+      document.getElementById("userAvatar").textContent =
+        primeiraLetra;
+    }
+
+    function mostrarMensagem(texto, tipo) {
+      const elemento = document.getElementById("mensagem");
+
+      elemento.textContent = texto;
+      elemento.className = "message visible " + tipo;
+    }
+
+    function configurarFiltros() {
+      const periodo = document.getElementById("periodo");
+      const dataInicialGrupo =
+        document.getElementById("dataInicialGrupo");
+      const dataFinalGrupo =
+        document.getElementById("dataFinalGrupo");
+
+      periodo.addEventListener("change", function() {
+        const personalizado = periodo.value === "personalizado";
+
+        dataInicialGrupo.hidden = !personalizado;
+        dataFinalGrupo.hidden = !personalizado;
+      });
+
+      document.getElementById("formFiltros")
+        .addEventListener("submit", function(evento) {
+          evento.preventDefault();
+
+          mostrarMensagem(
+            "A geração de relatórios será habilitada após a integração com o backend.",
+            "error"
+          );
+        });
+
+      document.getElementById("formFiltros")
+        .addEventListener("reset", function() {
+          window.setTimeout(function() {
+            dataInicialGrupo.hidden = true;
+            dataFinalGrupo.hidden = true;
+          }, 0);
+        });
+    }
+
+    function configurarMenu() {
+      const sidebar = document.getElementById("sidebar");
+      const toggle = document.getElementById("menuToggle");
+      const overlay = document.getElementById("overlay");
+
+      function abrirMenu() {
+        sidebar.classList.add("aberta");
+        overlay.classList.add("ativo");
+        overlay.setAttribute("aria-hidden", "false");
+        toggle.setAttribute("aria-expanded", "true");
+        toggle.setAttribute("aria-label", "Fechar menu");
+      }
+
+      function fecharMenu() {
+        sidebar.classList.remove("aberta");
+        overlay.classList.remove("ativo");
+        overlay.setAttribute("aria-hidden", "true");
+        toggle.setAttribute("aria-expanded", "false");
+        toggle.setAttribute("aria-label", "Abrir menu");
+      }
+
+      toggle.addEventListener("click", function() {
+        if (sidebar.classList.contains("aberta")) {
+          fecharMenu();
+        } else {
+          abrirMenu();
+        }
+      });
+
+      overlay.addEventListener("click", fecharMenu);
+
+      document.addEventListener("keydown", function(evento) {
+        if (evento.key === "Escape") {
+          fecharMenu();
+        }
+      });
+
+      sidebar.querySelectorAll("a").forEach(function(link) {
+        link.addEventListener("click", fecharMenu);
+      });
+
+      window.addEventListener("resize", function() {
+        if (window.innerWidth > 900) {
+          fecharMenu();
+        }
+      });
+    }
+
+    document.getElementById("btnSair")
+      .addEventListener("click", async function() {
+        try {
+          if (
+            window.SoloSmart &&
+            typeof SoloSmart.sair === "function"
+          ) {
+            await SoloSmart.sair();
+          } else {
+            await firebase.auth().signOut();
+            window.location.href = "login.html";
+          }
+        } catch (erro) {
+          mostrarMensagem(
+            "Não foi possível encerrar a sessão. Tente novamente.",
+            "error"
+          );
+        }
+      });
+  </script>
+
+</body>
+</html>
