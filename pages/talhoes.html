@@ -1069,7 +1069,7 @@
         throw new Error("Sua sessão expirou. Faça login novamente.");
       }
 
-      return usuarioFirebase.getIdToken(true);
+      return usuarioFirebase.getIdToken();
     }
 
     async function chamarAPI(payload) {
