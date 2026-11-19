@@ -1048,7 +1048,7 @@
         throw new Error("Sua sessão expirou. Faça login novamente.");
       }
 
-      idTokenAtual = await usuario.getIdToken(true);
+      idTokenAtual = await usuario.getIdToken();
 
       return idTokenAtual;
     }
