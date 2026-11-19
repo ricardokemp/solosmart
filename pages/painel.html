@@ -1272,48 +1272,29 @@
     }
 
     async function carregarKPIs() {
-      const consultas = [
-        {
-          acao: "listarPropriedades",
-          elemento: elementos.kpis.propriedades,
-          chave: "propriedades"
-        },
-        {
-          acao: "listarTalhoes",
-          elemento: elementos.kpis.talhoes,
-          chave: "talhoes"
-        },
-        {
-          acao: "listarCampanhas",
-          elemento: elementos.kpis.campanhas,
-          chave: "campanhas"
-        },
-        {
-          acao: "listarAmostras",
-          elemento: elementos.kpis.amostras,
-          chave: "amostras"
-        }
-      ];
+      const usuarioFirebase = firebase.auth().currentUser;
+      if (!usuarioFirebase) throw new Error("Sessão Firebase não encontrada.");
 
-      const resultados = await Promise.allSettled(
-        consultas.map(item => consultarIndicador(item.acao))
-      );
-
-      resultados.forEach((resultado, indice) => {
-        const consulta = consultas[indice];
-
-        if (resultado.status !== "fulfilled") {
-          consulta.elemento.textContent = "--";
-          return;
-        }
-
-        const quantidade = contarRegistrosAtivos(resultado.value);
-        consulta.elemento.textContent = quantidade;
-
-        if (consulta.chave === "propriedades" && quantidade === 0) {
-          elementos.banner.hidden = false;
-        }
+      const idToken = await usuarioFirebase.getIdToken();
+      const resposta = await fetch(SoloSmart.URL_API, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify({ action: "resumoPainel", idToken })
       });
+
+      if (!resposta.ok) throw new Error("Falha ao carregar indicadores do painel.");
+      const dados = await resposta.json();
+      if (!dados || dados.sucesso !== true || !dados.resultado) {
+        throw new Error((dados && dados.mensagem) || "Resposta inválida dos indicadores.");
+      }
+
+      const resumo = dados.resultado;
+      elementos.kpis.propriedades.textContent = resumo.propriedades ?? "--";
+      elementos.kpis.talhoes.textContent = resumo.talhoes ?? "--";
+      elementos.kpis.campanhas.textContent = resumo.campanhas ?? "--";
+      elementos.kpis.amostras.textContent = resumo.amostras ?? "--";
+
+      if (Number(resumo.propriedades) === 0) elementos.banner.hidden = false;
     }
 
     // =========================================================
