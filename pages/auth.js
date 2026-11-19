@@ -66,7 +66,7 @@ const SoloSmart = (function () {
   // ---------- Validação no backend (SoloSmart) ----------
 
   async function validarAcessoNoBackend(usuarioFirebase) {
-    const idToken = await usuarioFirebase.getIdToken(true);
+    const idToken = await usuarioFirebase.getIdToken();
     const url = `${URL_API}?action=validarAcesso&idToken=${encodeURIComponent(idToken)}`;
     const resposta = await fetch(url, { method: "GET" });
 
