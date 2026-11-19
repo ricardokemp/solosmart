@@ -828,7 +828,7 @@
 
         const usuarioFirebase = firebase.auth().currentUser;
 
-        idTokenAtual = await usuarioFirebase.getIdToken(true);
+        idTokenAtual = await usuarioFirebase.getIdToken();
 
         if (!idTokenAtual) {
           throw new Error("Não foi possível obter o token de autenticação.");
